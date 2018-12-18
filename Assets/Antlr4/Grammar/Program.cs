@@ -126,7 +126,6 @@ public class Program {
                 ParseTreeWalker walker = new ParseTreeWalker();
                 walker.Walk(new ProgressPrinter(), tree);
             }
-
         }
         catch (Exception e) {
             Debug.Log("Error (Program.cs): " + e);
