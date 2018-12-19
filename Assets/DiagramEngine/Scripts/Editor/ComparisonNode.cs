@@ -1,153 +1,182 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
+using System.Collections;
 using UnityEditor;
 
 public class ComparisonNode : BaseInputNode {
 
-	public enum ComparisonType { 
-        Greater,
-        Less,
-        Equal
-    }
 
-    private ComparisonType comparisonType;
+	//what kind of comparison do we have
+	private ComparisonType comparisonType;
 
-    private BaseInputNode input1;
-    private Rect input1Rect;
-    private BaseInputNode input2;
-    private Rect input2Rect;
+	public enum ComparisonType {
+		Greater,
+		Less,
+		Equal
+	}
 
-    private string compareText = "";
+	//variables for our inputs
+	private BaseInputNode input1;
+	private Rect input1Rect;
 
-    public ComparisonNode() {
-        windowTitle = "Comparison Node";
-        hasInputs = true;
-    }
+	private BaseInputNode input2;
+	private Rect input2Rect;
 
-    public override void DrawWindow() {
-        base.DrawWindow();
+	private string compareText = "";
 
-        Event e = Event.current;
-        comparisonType = (ComparisonType)EditorGUILayout.EnumPopup("Calculation Type", comparisonType);
 
-        string input1Title = "None";
+	//same as before
+	public ComparisonNode() {
+		windowTitle = "Comparison Node";
+		hasInputs = true;
+	}
 
-        if (input1) {
-            input1Title = input1.GetResult();
-        }
+	public override void DrawWindow() {
+		base.DrawWindow();
 
-        GUILayout.Label("Input 1: " + input1Title);
+		//same as before
+		Event e = Event.current;
+		comparisonType = (ComparisonType) EditorGUILayout.EnumPopup("Comparison Type", comparisonType);
 
-        if (e.type == EventType.Repaint) {
-            input1Rect = GUILayoutUtility.GetLastRect();
-        }
+		//get the results from each node
+		string input1Title = "None";
+		if(input1) {
+			input1Title = input1.getResult();
+		}
 
-        string input2Title = "None";
+		//draw a label
+		GUILayout.Label("Input 1: " + input1Title);
 
-        if (input2) {
-            input2Title = input2.GetResult();
-        }
+		//same as before
+		if(e.type == EventType.Repaint) {
+			input1Rect = GUILayoutUtility.GetLastRect();
 
-        GUILayout.Label("Input 2: " + input2Title);
+		}
 
-        if (e.type == EventType.Repaint) {
-            input2Rect = GUILayoutUtility.GetLastRect();
-        }
-    }
+		string input2Title = "None";
+		if(input2) {
+			input2Title = input2.getResult();
+		}
 
-    public override void SetInput(BaseInputNode inputNode, Vector2 clickPos) {
+		GUILayout.Label("Input 2: " + input2Title);
 
-        clickPos.x -= windowRect.x;
-        clickPos.y -= windowRect.y;
+		if(e.type == EventType.Repaint) {
+			input2Rect = GUILayoutUtility.GetLastRect();
 
-        if (input1Rect.Contains(clickPos)) {
-            input1 = inputNode;
-        }
-        else if (input2Rect.Contains(clickPos)) {
-            input2 = inputNode;
-        }
-    }
+		}
 
-    public override string GetResult() {
+	}
 
-        float input1Value = 0f;
-        float input2Value = 0f;
+	//same as before
 
-        if (input1) {
-            string input1Raw = input1.GetResult();
-            float.TryParse(input1Raw, out input1Value);
-        }
-        else if (input2) {
-            string input2Raw = input2.GetResult();
-            float.TryParse(input2Raw, out input2Value);
-        }
+	public override void SetInput (BaseInputNode input, Vector2 clickPos)
+	{
+		clickPos.x -= windowRect.x;
+		clickPos.y -= windowRect.y;
 
-        string result = "false";
+		if(input1Rect.Contains(clickPos)) {
+			input1 = input;
+		
+		} else if(input2Rect.Contains(clickPos)) {
+			input2 = input;
+		}
+	}
 
-        switch (comparisonType) {
+	public override void Tick (float deltaTime)
+	{
+		float input1Value = 0;
+		float input2Value = 0;
 
-            case ComparisonType.Equal:
-                result = input1Value == input2Value ? "true" : "false";
-                break;
-            case ComparisonType.Greater:
-                result = input1Value >= input2Value ? "true" : "false";
-                break;
-            case ComparisonType.Less:
-                result = input1Value <= input2Value ? "true" : "false";
-                break;
-        }
+		//same as before
+		if(input1) {
+			string input1Raw = input1.getResult();
+			float.TryParse(input1Raw, out input1Value);
+		}
 
-        return result;
-    }
+		if(input2) {
+			string input2Raw = input2.getResult();
+			float.TryParse(input2Raw, out input2Value);
+		}
 
-    public override void NodeDeleted(BaseNode node) {
+		string result = "false";
 
-        if (node.Equals(input1)) {
-            input1 = null;
-        }
-        else if (node.Equals(input2)) {
-            input2 = null;
-        }
-    }
+		//make the comparison according to typeß
+		switch(comparisonType) {
+			case ComparisonType.Equal:
+				if(input1Value == input2Value) {
+					result = "true";
+				}
+				break;
 
-    public override BaseInputNode ClickedOnInput(Vector2 pos) {
+			case ComparisonType.Greater:
+				if(input1Value > input2Value) {
+					result = "true";
+				}
+				break;
 
-        pos.x -= windowRect.x;
-        pos.y -= windowRect.y;
+			case ComparisonType.Less:
+				if(input1Value < input2Value) {
+					result = "true";
+				}
+				break;
 
-        BaseInputNode retVal = null;
-        if (input1Rect.Contains(pos)) {
-            retVal = input1;
-            input1 = null;
-        }
-        else if (input2Rect.Contains(pos)) {
-            retVal = input2;
-            input2 = null;
-        }
+		}
 
-        return retVal;
-    }
+		nodeResult = result;
+	}
 
-    public override void DrawCurves() {
+	//same as before
+	public override void NodeDeleted (BaseNode node)
+	{
+		if(node.Equals (input1)) {
+			input1 = null;
+		}
+		
+		if(node.Equals(input2)) {
+			input2 = null;
+		}
+	}
 
-        if (input1) {
-            Rect rect = windowRect;
-            rect.x += input1Rect.x;
-            rect.y += input1Rect.y + input2Rect.height / 2;
-            rect.width = 1;
-            rect.height = 1;
+	public override BaseInputNode ClickedOnInput (Vector2 pos)
+	{
+		BaseInputNode retVal = null;
+		
+		pos.x -= windowRect.x;
+		pos.y -= windowRect.y;
+		
+		if(input1Rect.Contains(pos)) {
+			retVal = input1;
+			input1 = null;
+		} else if(input2Rect.Contains(pos)) {
+			retVal = input2;
+			input2 = null;
+		}
+		
+		return retVal;
+	}
 
-            NodeEditor.DrawNodeCurve(input1.windowRect, rect);
-        }
-        else if (input2) {
-            Rect rect = windowRect;
-            rect.x += input2Rect.x;
-            rect.y += input2Rect.y + input2Rect.height / 2;
-            rect.width = 1;
-            rect.height = 1;
+	//same as before
+	public override void DrawCurves ()
+	{
+		if(input1) {
+			Rect rect = windowRect;
+			rect.x += input1Rect.x;
+			rect.y += input1Rect.y + input1Rect.height / 2;
+			rect.width = 1;
+			rect.height = 1;
+			
+			NodeEditor.DrawNodeCurve(input1.windowRect, rect);
+		}
+		
+		if(input2) {
+			Rect rect = windowRect;
+			rect.x += input2Rect.x;
+			rect.y += input2Rect.y + input2Rect.height / 2;
+			rect.width = 1;
+			rect.height = 1;
+			
+			NodeEditor.DrawNodeCurve(input2.windowRect, rect);
+		}
+	}
 
-            NodeEditor.DrawNodeCurve(input2.windowRect, rect);
-        }
-    }
+
 }

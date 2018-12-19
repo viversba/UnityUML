@@ -1,18 +1,21 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
+using System.Collections;
 
-public class BaseInputNode : BaseNode {
+//inherits from base node
+public abstract class BaseInputNode: BaseNode {
 
-    /// <summary>
-    /// Get result of the node
-    /// </summary>
-    /// <returns>The result.</returns>
-	public virtual string GetResult() {
-        return "None";
-    }
+	//We use this class in every node that can be used as input
 
-    public override void DrawCurves() {
-        throw new System.NotImplementedException();
-    }
+	protected string nodeResult = "None";
+
+	//retunrs the result of the node
+	public virtual string getResult() {
+		return nodeResult;
+	}
+
+	//we pass DrawCurves since it's abstract
+	public override void DrawCurves ()
+	{
+
+	}
 }

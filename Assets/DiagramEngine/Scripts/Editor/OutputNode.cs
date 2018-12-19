@@ -1,86 +1,116 @@
 ﻿using UnityEngine;
+using System.Collections;
 using UnityEditor;
 
-public class OutputNode : BaseNode {
+//inherits from base node
+public class OutputNode: BaseNode {
 
-    private string result = "";
+	//variable we use for visualizing the result
+	private string result = "";
 
-    /// <summary>
-    /// From which receives the value
-    /// </summary>
-    private BaseInputNode inputNode;
+	//The output node has only one input
+	private BaseInputNode inputNode;
+	private Rect inputNodeRect;
 
-    private Rect inputNodeRect;
+	//we give a title to the output node
+	//and can take an input
+	public OutputNode() {
+		windowTitle = "Output Node";
+		hasInputs = true;
+	}
 
-    public OutputNode(){
+	public override void Tick(float deltaTime) {
+		
+	}
+	
+	public override void DrawWindow ()
+	{
+		base.DrawWindow();
 
-        windowTitle = "Output Node";
-        hasInputs = true;
-    }
+		//check for events
+		Event e = Event.current;
 
-    public override void DrawWindow() {
-        base.DrawWindow();
+		//variable to help us visualize if there is an input node attached
+		string input1Title = "None";
 
-        Event e = Event.current;
+		//if there is an input node
+		if(inputNode) 
+		{
+			//the input title is the result of the attached node
+			input1Title = inputNode.getResult();
+		}
 
-        string input1Title = "None";
+		//draw a label with our value
+		GUILayout.Label("Input 1: " + input1Title);
 
-        if (inputNode) {
-            input1Title = inputNode.GetResult();
-        }
+		//We check when the window is repainted
+		if(e.type == EventType.Repaint) 
+		{
+			//and we store the rect of the last item, which is the input rect
+			inputNodeRect = GUILayoutUtility.GetLastRect();
+			
+		}
 
-        GUILayout.Label("Input 1 " + input1Title);
-        if(e.type == EventType.Repaint) {
-            inputNodeRect = GUILayoutUtility.GetLastRect();
-        }
+		//draw a label with the result
+		GUILayout.Label("Result: " + result);
+	}
 
-        GUILayout.Label("Result " + result);
-    }
 
-    public override void DrawCurves() {
+	public override void DrawCurves ()
+	{
+		if(inputNode) 
+		{
+			//draws a curve from the Input node to this node
+			Rect rect = windowRect;
+			rect.x += inputNodeRect.x;
+			rect.y += inputNodeRect.y + inputNodeRect.height / 2;
+			rect.width = 1;
+			rect.height = 1;
+			
+			NodeEditor.DrawNodeCurve(inputNode.windowRect, rect);
+		}
+	}
 
-        if (inputNode) {
-            Rect rect = windowRect;
 
-            rect.x += inputNodeRect.x;
-            rect.y += inputNodeRect.y + inputNodeRect.height / 2;
-            rect.width = 1;
-            rect.height = 1;
+	//we call it when we want to delete this node and checks if the deleted node is it's input and if it is, removes the input
+	public override void NodeDeleted (BaseNode node)
+	{
+		if(node.Equals (inputNode)) {
+			inputNode = null;
+		}
 
-            NodeEditor.DrawNodeCurve(inputNode.windowRect, rect);
-        }
-    }
+	}
 
-    public override void NodeDeleted(BaseNode node) {
-        base.NodeDeleted(node);
+	//Is called when a click happens in the window
+	public override BaseInputNode ClickedOnInput (Vector2 pos)
+	{
 
-        if (node.Equals(inputNode)) {
-            inputNode = null;
-        }
-    }
+		BaseInputNode retVal = null;
 
-    public override BaseInputNode ClickedOnInput(Vector2 pos) {
+		//convert the global input position to local space
+		pos.x -= windowRect.x;
+		pos.y -= windowRect.y;
 
-        BaseInputNode retVal = null;
-        pos.x -= windowRect.x;
-        pos.y -= windowRect.y;
+		//if the click is on top of the input label it returns the associated input
+		if(inputNodeRect.Contains(pos)) {
+			retVal = inputNode;
+			inputNode = null;
+			
+		}
 
-        if (inputNodeRect.Contains(pos)) {
-            retVal = inputNode;
-            inputNode = null;
-        }
+		return retVal;
+	}
 
-        return retVal;
-    }
-
-    public override void SetInput(BaseInputNode inputNode, Vector2 clickPos) {
-
-        clickPos.x -= windowRect.x;
-        clickPos.y -= windowRect.y;
-
-        if (inputNodeRect.Contains(clickPos)) {
-        
-            this.inputNode = inputNode;
-        }
-    }
+	//is called when the window is clicked during a transition, if the click happens on top of a input label
+	//it associates the passed node with that input
+	public override void SetInput (BaseInputNode input, Vector2 clickPos)
+	{
+		clickPos.x -= windowRect.x;
+		clickPos.y -= windowRect.y;
+		
+		if(inputNodeRect.Contains(clickPos)) {
+			inputNode = input;
+			
+		}
+	}
 }

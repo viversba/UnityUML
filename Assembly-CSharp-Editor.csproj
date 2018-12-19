@@ -67,9 +67,12 @@
     <Compile Include="Assets\DiagramEngine\Scripts\Editor\ComparisonNode.cs" />
     <Compile Include="Assets\DiagramEngine\Scripts\Editor\DiagramEngineGUI.cs" />
     <Compile Include="Assets\DiagramEngine\Scripts\Editor\EditorGUISplitView.cs" />
+    <Compile Include="Assets\DiagramEngine\Scripts\Editor\GameObjectActive.cs" />
+    <Compile Include="Assets\DiagramEngine\Scripts\Editor\GameObjectDistance.cs" />
     <Compile Include="Assets\DiagramEngine\Scripts\Editor\InputNode.cs" />
     <Compile Include="Assets\DiagramEngine\Scripts\Editor\NodeEditor.cs" />
     <Compile Include="Assets\DiagramEngine\Scripts\Editor\OutputNode.cs" />
+    <Compile Include="Assets\DiagramEngine\Scripts\Editor\TimerNode.cs" />
     <Reference Include="UnityEditor.StandardEvents">
       <HintPath>/Users/nicolasviveros/UnityProjects/UML/UnityUML/Library/ScriptAssemblies/UnityEditor.StandardEvents.dll</HintPath>
     </Reference>

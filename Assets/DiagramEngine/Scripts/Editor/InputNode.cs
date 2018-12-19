@@ -1,74 +1,92 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
+using System.Collections;
 using UnityEditor;
 
-public class InputNode : BaseInputNode {
+//inherits from BaseInputNode
+public class InputNode: BaseInputNode {
 
-    private InputType inputType;
+	//We want to have two types of input, a user inputed number or a random number
+	private InputType inputType;
+	public enum InputType {
+		Number,
+		Randomization
+	}
 
-    public enum InputType{
-    
-        Number,
-        Randomization
-    }
+	//variables for our random type
+	private string randomFrom = "";
+	private string randomTo = "";
+	//variable for the user inputed value
+	private string inputValue = "";
 
-    private string randomFrom = "";
-    private string randomTo = "";
+	//We add a default value on the input node
+	public InputNode() {
+		windowTitle = "Input Node";
+	}
 
-    private string inputValue = "";
+	//we pass the abstract DrawWindow
+	public override void DrawWindow() {
 
-    public InputNode() {
+		base.DrawWindow();
 
-        windowTitle = "Input Node";
-         
-    }
-
-    public override void DrawWindow() {
-        base.DrawWindow();
-
-        inputType = (InputType)EditorGUILayout.EnumPopup("Input type: ", inputType);
-
-        if (inputType == InputType.Number) {
-
-            inputValue = EditorGUILayout.TextField("Value", inputValue); 
-        }
-        else if(inputType == InputType.Randomization) {
-            randomFrom = EditorGUILayout.TextField("From", randomFrom);
-            randomTo = EditorGUILayout.TextField("To", randomTo);
-
-            if(GUILayout.Button("Calculate Random")) {
-                CalculateRandom();
-            }
-        }
-    }
-
-    public override void DrawCurves() {
-        base.DrawCurves();
+		//We make a enum popup so the user can choose the type
+		inputType = (InputType) EditorGUILayout.EnumPopup("Input type: ", inputType);
 
 
-    }
+		if(inputType == InputType.Number) 
+		{
+			//we add a textfield for the user to insert a value
+			inputValue = EditorGUILayout.TextField("Value", inputValue);
+		}
+		else if(inputType == InputType.Randomization) 
+		{
+			//we add 2 textfields, the min and max range the random number can have
+			randomFrom = EditorGUILayout.TextField("From", randomFrom);
+			randomTo = EditorGUILayout.TextField("To", randomTo);
 
-    private void CalculateRandom() {
+			//We don't want to calculate it every frame so we add a button to generate a new random value when the user presses it
+			if(GUILayout.Button("Calculate Random")) 
+			{
+				calculateRandom();
+			}
+		}
 
-        float rFrom = 0f;
-        float rTo = 0f;
+		nodeResult = inputValue.ToString();
 
-        float.TryParse(randomFrom, out rFrom);
-        float.TryParse(randomTo, out rTo);
+	}
 
-        int randFrom = (int)(rFrom * 10);
-        int randTo = (int)(rTo * 10);
+	//Pass the abstract class
+	public override void DrawCurves ()
+	{
 
-        int selected = Random.Range(randFrom, randTo + 1);
+	}
 
-        float selectedValue = selected / 10f;
+	//function to calculate the random number
+	private void calculateRandom() {
+		float rFrom = 0;
+		float rTo = 0;
+		
+		float.TryParse(randomFrom, out rFrom);
+		float.TryParse(randomTo, out rTo);
 
-        inputValue = selectedValue.ToString();
-    }
+		//we cast it as an int so that we don't have decimal values
+		int randFrom = (int)(rFrom * 10);
+		int randTo = (int)(rTo * 10);
 
-    public override string GetResult() {
-        return inputValue;
+		//we calculate the random
+		int selected = UnityEngine.Random.Range(randFrom, randTo + 1);
 
-    }
+		//and make it into a float once again
+		float selectedValue = selected / 10;
+
+		//we pass the final value as a string to the input value
+		inputValue = selectedValue.ToString();
+	}
+
+	public override void Tick(float deltaTime)
+	{
+		
+		
+	}
+
+
 }
