@@ -6,7 +6,5 @@ public class Test : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-
-        DiagramEngine.getInstance().Run();
-	}
+   	}
 }
