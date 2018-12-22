@@ -23,7 +23,6 @@ public class ComparisonNode : BaseInputNode {
 
 	private string compareText = "";
 
-
 	//same as before
 	public ComparisonNode() {
 		windowTitle = "Comparison Node";

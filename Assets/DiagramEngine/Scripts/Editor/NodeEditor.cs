@@ -26,7 +26,7 @@ public class NodeEditor : EditorWindow {
 	private Vector2 scrollStartMousePos;
 
 	//In order to be accessible the window from the menue we add a menu item
-	[MenuItem("Window/Node Editor")]
+	[MenuItem("UML/Node Editor")]
 	static void ShowEditor() {
 		NodeEditor editor  = EditorWindow.GetWindow<NodeEditor>();
 
@@ -88,13 +88,15 @@ public class NodeEditor : EditorWindow {
 					menu.AddItem(new GUIContent("Add Output Node"), false, ContextCallback, "outputNode");
 					menu.AddItem(new GUIContent("Add Calculation Node"), false, ContextCallback, "calcNode");
 					menu.AddItem(new GUIContent("Add Comparison Node"), false, ContextCallback, "compNode");
+                    menu.AddItem(new GUIContent("Add Class Node"), false, ContextCallback, "classNode");
 					menu.AddSeparator("");
 					menu.AddItem(new GUIContent("Add GameObject Active Node"), false, ContextCallback, "goActive");
 					menu.AddItem(new GUIContent("Add GameObject Distance Node"), false, ContextCallback, "goDistance");
 					menu.AddItem(new GUIContent("Add Timer Node"), false, ContextCallback, "timerNode");
 
 					menu.ShowAsContext ();
-					e.Use();
+
+                    e.Use();
 				} 
 					else 
 				{
@@ -249,100 +251,123 @@ public class NodeEditor : EditorWindow {
 		//make the passed object to a string
 		string clb = obj.ToString();
 
-		//add the node we want
-		if (clb.Equals ("inputNode")) {
+        //add the node we want
+        if (clb.Equals("inputNode"))
+        {
 
             InputNode inputNode = (InputNode)ScriptableObject.CreateInstance("InputNode");
-			inputNode.windowRect = new Rect (mousePos.x, mousePos.y, 200, 150);
+            inputNode.windowRect = new Rect(mousePos.x, mousePos.y, 200, 150);
 
-			windows.Add (inputNode);
+            windows.Add(inputNode);
 
-		} else if (clb.Equals ("outputNode")) {
-			OutputNode outputNode = (OutputNode)ScriptableObject.CreateInstance("OutputNode");
-            outputNode.windowRect = new Rect (mousePos.x, mousePos.y, 200, 100);
+        }
+        else if (clb.Equals("outputNode"))
+        {
+            OutputNode outputNode = (OutputNode)ScriptableObject.CreateInstance("OutputNode");
+            outputNode.windowRect = new Rect(mousePos.x, mousePos.y, 200, 100);
 
-			windows.Add (outputNode);
+            windows.Add(outputNode);
 
-		} else if (clb.Equals ("calcNode")) {
-			CalcNode calcNode = (CalcNode)ScriptableObject.CreateInstance("CalcNode");
-            calcNode.windowRect = new Rect (mousePos.x, mousePos.y, 200, 100);
+        }
+        else if (clb.Equals("calcNode"))
+        {
+            CalcNode calcNode = (CalcNode)ScriptableObject.CreateInstance("CalcNode");
+            calcNode.windowRect = new Rect(mousePos.x, mousePos.y, 200, 100);
 
-			windows.Add (calcNode);
+            windows.Add(calcNode);
 
-		} else if (clb.Equals ("compNode")) {
-			ComparisonNode compNode = (ComparisonNode)ScriptableObject.CreateInstance("ComparisonNode");
-            compNode.windowRect = new Rect (mousePos.x, mousePos.y, 200, 100);
+        }
+        else if (clb.Equals("compNode"))
+        {
+            ComparisonNode compNode = (ComparisonNode)ScriptableObject.CreateInstance("ComparisonNode");
+            compNode.windowRect = new Rect(mousePos.x, mousePos.y, 200, 100);
 
-			windows.Add (compNode);
+            windows.Add(compNode);
 
-		}else if(clb.Equals("goActive")){
+        }
+        else if (clb.Equals("goActive"))
+        {
             GameObjectActive goNode = (GameObjectActive)ScriptableObject.CreateInstance("GameObjectActive");
-			goNode.windowRect = new Rect(mousePos.x, mousePos.y, 200, 100);
-			windows.Add(goNode);
-		} else if(clb.Equals("goDistance")) {
-			GameObjectDistance goDistance = (GameObjectDistance)ScriptableObject.CreateInstance("GameObjectDistance");
+            goNode.windowRect = new Rect(mousePos.x, mousePos.y, 200, 100);
+            windows.Add(goNode);
+        }
+        else if (clb.Equals("goDistance"))
+        {
+            GameObjectDistance goDistance = (GameObjectDistance)ScriptableObject.CreateInstance("GameObjectDistance");
             goDistance.windowRect = new Rect(mousePos.x, mousePos.y, 200, 100);
-			windows.Add(goDistance);
-			
-		} else if(clb.Equals("timerNode")) {
-			
-			TimerNode tNode = (TimerNode)ScriptableObject.CreateInstance("TimerNode");
+            windows.Add(goDistance);
+
+        }
+        else if (clb.Equals("timerNode"))
+        {
+
+            TimerNode tNode = (TimerNode)ScriptableObject.CreateInstance("TimerNode");
             tNode.windowRect = new Rect(mousePos.x, mousePos.y, 200, 100);
-			windows.Add(tNode);
-			
-		
-		} //if it's a transition
-		else if(clb.Equals("makeTransition")) 
-		{
-			bool clickedOnWindow = false;
-			int selectedIndex = -1;
-			//find the window that it was clicked
-			for(int i=0; i<windows.Count; i++) 
-			{
-				if(windows[i].windowRect.Contains(mousePos)) {
-					selectedIndex = i;
-					clickedOnWindow = true;
-					break;
-				}
-			}
-
-			//and make it the selected node of the transition
-			if(clickedOnWindow) 
-			{
-				selectedNode = windows[selectedIndex];
-				makeTransitionMode = true;
-			}
-
-		} 
-		else if(clb.Equals("deleteNode")) //if it's a delete node
-		{
-			bool clickedOnWindow = false;
-			int selectedIndex = -1;
-
-			//find the selected node
-			for(int i=0; i<windows.Count; i++) 
-			{
-				if(windows[i].windowRect.Contains(mousePos)) {
-					selectedIndex = i;
-					clickedOnWindow = true;
-					break;
-				}
-			}
+            windows.Add(tNode);
 
 
-			if(clickedOnWindow) 
-			{
-				//delete it from our list
-				BaseNode selNode = windows[selectedIndex];
-				windows.RemoveAt(selectedIndex);
+        } //if it's a transition
+        else if (clb.Equals("makeTransition"))
+        {
+            bool clickedOnWindow = false;
+            int selectedIndex = -1;
+            //find the window that it was clicked
+            for (int i = 0; i < windows.Count; i++)
+            {
+                if (windows[i].windowRect.Contains(mousePos))
+                {
+                    selectedIndex = i;
+                    clickedOnWindow = true;
+                    break;
+                }
+            }
 
-				//then pass it to all our nodes that is deleted
-				foreach(BaseNode n in windows) 
-				{
-					n.NodeDeleted(selNode);
-				}
-			}
-		}
+            //and make it the selected node of the transition
+            if (clickedOnWindow)
+            {
+                selectedNode = windows[selectedIndex];
+                makeTransitionMode = true;
+            }
+
+        }
+        else if (clb.Equals("deleteNode")) //if it's a delete node
+        {
+            bool clickedOnWindow = false;
+            int selectedIndex = -1;
+
+            //find the selected node
+            for (int i = 0; i < windows.Count; i++)
+            {
+                if (windows[i].windowRect.Contains(mousePos))
+                {
+                    selectedIndex = i;
+                    clickedOnWindow = true;
+                    break;
+                }
+            }
+
+
+            if (clickedOnWindow)
+            {
+                //delete it from our list
+                BaseNode selNode = windows[selectedIndex];
+                windows.RemoveAt(selectedIndex);
+
+                //then pass it to all our nodes that is deleted
+                foreach (BaseNode n in windows)
+                {
+                    n.NodeDeleted(selNode);
+                }
+            }
+        }
+        else if (clb.Equals("classNode"))
+        {
+            //ClassNode classNode = (ClassNode)ScriptableObject.CreateInstance("ClassNode");
+            ClassNode classNode = new ClassNode();
+            classNode.windowRect = new Rect(mousePos.x, mousePos.y, 200, 20 + 22 * classNode.numberOfLines);
+            Debug.Log("Number of lines: " + classNode.numberOfLines);
+            windows.Add(classNode);
+        } 
 
 		//we use else if instead of a switch because:
 		/*Selecting from a set of multiple cases is faster with if statements than with switch 

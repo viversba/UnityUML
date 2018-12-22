@@ -7,8 +7,9 @@ namespace PL {
 
         public override void EnterClass_definition([NotNull] CSharpParser.Class_definitionContext context) {
             base.EnterClass_definition(context);
-            var name = context.identifier().IDENTIFIER().GetText();
-            Debug.Log("HOLA " + name + ". Ke ase");
+            var name = context.identifier().IDENTIFIER().GetText();        
         }
+
+        //public override void 
     }
 }

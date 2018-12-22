@@ -15,11 +15,11 @@ public class Program {
 
         try {
 
-            Debug.Log("Ola k ase");
+            //Debug.Log("Ola k ase");
             string[] files = Directory.GetFiles("./Assets/Antlr4/Grammar", "*.cs");
             foreach (string file in files) {
 
-                Debug.Log(file + "---------------------------------------");
+                //Debug.Log(file + "---------------------------------------");
 
                 //Read the file
                 string text = File.ReadAllText(file);
