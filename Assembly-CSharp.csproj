@@ -79,6 +79,7 @@
     <Compile Include="Assets\Antlr4\Grammar\UMLEngine.cs" />
     <Compile Include="Assets\DiagramEngine\Scripts\DiagramController.cs" />
     <Compile Include="Assets\DiagramEngine\Scripts\DiagramEngine.cs" />
+    <Compile Include="Assets\DiagramEngine\Scripts\Structs.cs" />
     <Compile Include="Assets\Test.cs" />
     <None Include="Assets\Antlr4\Packages\Antlr4.Runtime.4.6.5\lib\net20\Antlr4.Runtime.Standard.xml" />
     <Reference Include="Unity.TextMeshPro.Editor">

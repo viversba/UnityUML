@@ -362,9 +362,9 @@ public class NodeEditor : EditorWindow {
         }
         else if (clb.Equals("classNode"))
         {
-            //ClassNode classNode = (ClassNode)ScriptableObject.CreateInstance("ClassNode");
-            ClassNode classNode = new ClassNode();
-            classNode.windowRect = new Rect(mousePos.x, mousePos.y, 200, 20 + 22 * classNode.numberOfLines);
+            ClassNode classNode = (ClassNode)ScriptableObject.CreateInstance("ClassNode");
+            //ClassNode classNode = new ClassNode();
+            classNode.windowRect = new Rect(mousePos.x, mousePos.y, 200, 80 + 22 * classNode.numberOfLines);
             Debug.Log("Number of lines: " + classNode.numberOfLines);
             windows.Add(classNode);
         } 

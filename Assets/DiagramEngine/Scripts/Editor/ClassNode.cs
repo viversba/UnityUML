@@ -4,143 +4,6 @@ using UnityEngine;
 using UnityEditor;
 using System.Collections.Generic;
 
-/// <summary>
-/// Enum providing all access modifier types on C#
-/// </summary>
-public enum AccessModifier { 
-
-    PRIVATE,
-    PUBLIC,
-    PROTECTED,
-    INTERNAL,
-    PROTECTED_INTERNAL,
-    PRIVATE_PROTECTED,
-    NONE
-}
-
-/// <summary>
-/// Attribute struct used to represent a declared attribute inside a class;
-/// </summary>
-public struct Attribute {
-
-    string name;
-    string type;
-    AccessModifier modifier;
-
-    public Attribute(string name, string type) {
-
-        this.modifier = AccessModifier.NONE;
-        this.name = name;
-        this.type = type; 
-    }
-
-    public Attribute(string name, AccessModifier modifier, string type) {
-
-        this.name = name;
-        this.type = type;
-        this.modifier = modifier;
-    }
-
-    public override string ToString() {
-        return name;
-    }
-}
-
-/// <summary>
-/// Method struct used to represent a declared method iside a class
-/// </summary>
-public struct Method {
-
-    string name;
-    AccessModifier modifier;
-    string returnType;
-
-    public Method(string name, AccessModifier modifier, string returnType) {
-        this.name = name;
-        this.modifier = modifier;
-        this.returnType = returnType;
-    }
-
-    public override string ToString()
-    {
-        return name;
-    }
-}
-
-/// <summary>
-/// Constructor struct used to represent a declated constructor list inside a class
-/// </summary>
-public struct Constructor {
-
-    string name;
-    List<Attribute> attributes;
-
-    public Constructor(string name) {
-        this.name = name;
-        this.attributes = null;
-    }
-
-    public Constructor(string name, List<Attribute> attributes) {
-        this.name = name;
-        this.attributes = attributes;
-    }
-}
-
-/// <summary>
-/// Constructor struct used to represent a declated delegate list inside a class
-/// </summary>
-public struct Delegate {
-
-    string type;
-    string returnType;
-    AccessModifier modifier;
-
-    public Delegate(string type, string returnType, AccessModifier modifier) {
-
-        this.type = type;
-        this.returnType = returnType;
-        this.modifier = modifier;
-    }
-
-    public override string ToString(){
-        return type;
-    }
-}
-
-/// <summary>
-/// Constructor struct used to represent a declated struct list inside a class
-/// </summary>
-public struct Struct {
-    string name;
-
-    public Struct(string name) {
-        this.name = name;
-    }
-
-    public override string ToString()
-    {
-        return name;
-    }
-}
-
-/// <summary>
-/// Constructor struct used to represent a declated class list inside a class
-/// </summary>
-public struct Class {
-
-    string name;
-
-    public Class(string name) {
-        this.name = name;
-    }
-
-    public override string ToString()
-    {
-        return name;
-    }
-
-}
-
 public class ClassNode : BaseNode
 {
     private List<Attribute> attributes = new List<Attribute>();
@@ -151,13 +14,6 @@ public class ClassNode : BaseNode
     private List<Class> classes = new List<Class>();
 
     public int numberOfLines;
-
-    //List<string> attributesList = new List<string>(),
-                //methodsList = new List<string>(),
-                //constructorsList = new List<string>(),
-                //delegatesList = new List<string>(),
-                //structsList = new List<string>(),
-                //classesList = new List<string>();
 
     public ClassNode(string title) {
 
@@ -192,6 +48,19 @@ public class ClassNode : BaseNode
         AddMethod("GetString", AccessModifier.PRIVATE, "string");
         AddMethod("SetString", AccessModifier.PUBLIC, "void");
         AddMethod("Add", AccessModifier.PROTECTED, "int");
+
+        AddConstructor("CharacterController");
+        AddConstructor("CharacterController", new string[] { "size", "scale" });
+        AddConstructor("MapController", new string[] { "name", "texture" });
+
+        AddStruct("ConsoleType", AccessModifier.PUBLIC);
+        AddStruct("ConsoleSize", AccessModifier.PRIVATE);
+        AddStruct("Types");
+
+        AddDelegate("Hola", "int", AccessModifier.INTERNAL);
+        AddDelegate("Nico", "void");
+        AddDelegate("Yenny", "float");
+
     }
 
     public void AddClass(string name) {
@@ -200,7 +69,7 @@ public class ClassNode : BaseNode
     }
 
     public void AddMethod(string name, AccessModifier modifier, string returnType) {
-        methods.Add(new Method(name, modifier, returnType));
+        methods.Add(new Method(name, modifier, returnType, MethodType.ABSTRACT));
         AddLine();
     }
 
@@ -209,17 +78,18 @@ public class ClassNode : BaseNode
         AddLine();
     }
 
-    public void AddConstructor(string name, string[] attribs) {
-        if (attribs.Length > 0){
+    public void AddConstructor(string name, string[] attribs = null) {
+        if (attribs == null){
             constructors.Add(new Constructor(name));
         }
         else {
-            List<Attribute> attrbs = null;
+            List<Attribute> attrbs = new List<Attribute>();
             foreach(string att in attribs) {
                 Debug.LogWarning("List of attributes is being declared with the name on both fields");
                 #pragma warning List of attributes is being declared with the name on both fields
                 attrbs.Add(new Attribute(name, name));
             }
+            constructors.Add(new Constructor(name,attrbs));
         }
         AddLine();
     }
@@ -230,41 +100,74 @@ public class ClassNode : BaseNode
         AddLine();
     }
 
+    public void AddDelegate(string type, string returnType) {
+
+        delegates.Add(new Delegate(type, returnType));
+        AddLine();
+    }
+
     public void AddStruct(string name) {
 
         structs.Add(new Struct(name));
         AddLine();
     }
 
+    public void AddStruct(string name, AccessModifier modifier) {
+
+        structs.Add(new Struct(name, modifier));
+        AddLine();
+    }
+
     public void AddLine() {
         numberOfLines++;
-        Debug.Log("Line added!!!!");
     }
 
     public override void DrawCurves(){
+
     }
 
     public override void DrawWindow(){
         base.DrawWindow();
 
-        //Initialize();
+        var header = new GUIStyle();
+        var public_ = new GUIStyle();
+        var private_ = new GUIStyle();
+        var protected_ = new GUIStyle();
+        header.normal.textColor = Color.grey;
+        public_.normal.textColor = Color.green;
+        private_.normal.textColor = Color.red;
+        protected_.normal.textColor = Color.magenta;
 
-        //GUILayout.Label("Ola");
+        GUILayout.Label("Attributes",header);
         foreach (Attribute attribute in attributes) {
             GUILayout.Label(attribute.ToString());
         }
+        GUILayout.Label("Methods",header);
         foreach (Method method in methods){
-            GUILayout.Label(method.ToString());
+            GUILayout.BeginHorizontal();
+            if (method.modifier == AccessModifier.PRIVATE) {
+                GUILayout.Label("- ", private_, GUILayout.Width(5));
+                GUILayout.Label(method.ToString() + "()");
+            }
+            else if (method.modifier == AccessModifier.PUBLIC) {
+                GUILayout.Label("+ ", public_, GUILayout.Width(5));
+                GUILayout.Label(method.ToString() + "()");
+            }
+            GUILayout.EndHorizontal();
         }
+        GUILayout.Label("Constructors",header);
         foreach (Constructor constructor in constructors){
             GUILayout.Label(constructor.ToString());
         }
+        GUILayout.Label("Structs",header);
         foreach (Struct struct_ in structs){
             GUILayout.Label(struct_.ToString());
         }
+        GUILayout.Label("Delegates",header);
         foreach (Delegate delegate_ in delegates){
             GUILayout.Label(delegate_.ToString());
         }
+        GUILayout.Label("Classes",header);
         foreach (Class class_ in classes){
             GUILayout.Label(class_.ToString());
         }
