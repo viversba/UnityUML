@@ -4,18 +4,20 @@ using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace PL {
+namespace DEngine.Model{
     public class ProgressPrinter: CSharpParserBaseListener {
 
         private string className;
         private string methodName;
         private List<string> modifiers;
         private string type;
+        private string name;
         private List<string> constants;
         private List<string> variables;
 
         public ProgressPrinter() {
 
+            name = "";
             methodName = "";
             modifiers = new List<string>();
             type = "";
@@ -37,33 +39,58 @@ namespace PL {
 
         public override void ExitMethod_declaration([NotNull] CSharpParser.Method_declarationContext context) {
             foreach(string modifier in modifiers) {
-                Debug.Log("Modifier: " + modifier);
+                //Debug.Log("Modifier: " + modifier);
             }
-            Debug.Log("TYPE: " + type + "\n");
-            Debug.Log("NAME: " + methodName + "\n");
-            Debug.Log("------------------------------------");
+            //Debug.Log("TYPE: " + type + "\n");
+            //Debug.Log("NAME: " + methodName + "\n");
+            //Debug.Log("------------------------------------");
         }
 
         public override void EnterProperty_declaration([NotNull] CSharpParser.Property_declarationContext context) {
             base.EnterProperty_declaration(context);
 
-            Debug.Log("PROPERTY: " + context.member_name().GetText());
+            name = context.member_name().GetText();
+            //Debug.Log("PROPERTY: " + context.member_name().GetText());
+        }
+
+        public override void ExitProperty_declaration([NotNull] CSharpParser.Property_declarationContext context) {
+            base.ExitProperty_declaration(context);
+
+            //foreach(var modifier in modifiers) {
+            //    Debug.Log("MODIFIER: " + modifier);
+            //}
+            //Debug.Log("TYPE: " + type + "\n");
+            //Debug.Log("NAME: " + name + "\n");
         }
 
         public override void EnterField_declaration([NotNull] CSharpParser.Field_declarationContext context) {
             base.EnterField_declaration(context);
 
+            // Clear the current variables array
             variables.Clear();
             try {
-                variables = context.variable_declarators().GetText().Split(',').ToList<string>();
-                foreach (string variable in variables) {
-                    Debug.Log("FIELD: " + variable);
+                //Get the whole variable declarations array
+                var vars = context.variable_declarators().variable_declarator();
+                foreach(var variable in vars) {
+                    // Add all of the one by one to the global variables array
+                    variables.Add(variable.identifier().GetText());
                 }
             }
             catch(Exception e) {
-                variables.Add(context.variable_declarators().GetText());
-                Debug.Log("FIELD: " + variables[0]);
+                ItDoesNothing("Field " + e.ToString());
             }
+        }
+
+        public override void ExitField_declaration([NotNull] CSharpParser.Field_declarationContext context) {
+            base.ExitField_declaration(context);
+
+            //foreach (var modifier in modifiers) {
+            //    Debug.Log("MODIFIER: " + modifier);
+            //}
+            //Debug.Log("TYPE: " + type + "\n");
+            //foreach (var field in variables) {
+            //    Debug.Log("VARIABLE: " + field);
+            //}
         }
 
         public override void EnterConstant_declaration([NotNull] CSharpParser.Constant_declarationContext context) {
@@ -71,22 +98,34 @@ namespace PL {
 
             constants.Clear();
             try {
-                constants = context.constant_declarators().GetText().Split(',').ToList<string>();
-                foreach (string constant in constants) {
-                    Debug.Log("CONSTANT: " + constant);
+
+                type = context.type().GetText();
+                var consts = context.constant_declarators().constant_declarator();
+                foreach(var constant in consts) {
+                    constants.Add(constant.identifier().GetText());
                 }
             }
-            catch {
-                constants.Add(context.constant_declarators().GetText());
-                Debug.Log("CONSTANT: " + constants[0]);
+            catch(Exception e) {
+                ItDoesNothing("Constant " + e.ToString());
             }
+        }
 
+        public override void ExitConstant_declaration([NotNull] CSharpParser.Constant_declarationContext context) {
+            base.ExitConstant_declaration(context);
+
+            //foreach (var modifier in modifiers) {
+            //    Debug.Log("MODIFIER: " + modifier);
+            //}
+            //Debug.Log("const\nTYPE: " + type + "\n");
+            //foreach (var constant in constants) {
+            //    Debug.Log("CONSTANT: " + constant);
+            //}
         }
 
         public override void EnterClass_member_declaration([NotNull] CSharpParser.Class_member_declarationContext context) {
             base.EnterClass_member_declaration(context);
 
-            modifiers = new List<string>();
+            modifiers.Clear();
             // Get the access modifiers
             try {
                 foreach(var modifier in context.all_member_modifiers().all_member_modifier()) {
@@ -94,10 +133,10 @@ namespace PL {
                 }
             }
             catch(Exception e) {
-                ItDoesNothing();
+                ItDoesNothing("Member " + e.ToString());
             }
 
-            // Get the return type of the method
+            // Get the return type
             try {
                 try {
                     type = context.common_member_declaration().VOID().GetText();
@@ -105,13 +144,17 @@ namespace PL {
                 catch(Exception e) {
 
                     type = context.common_member_declaration().typed_member_declaration().type().GetText();
+                    ItDoesNothing("Nested return type " + e.ToString());
                 }
             }
             catch(Exception e) {
-                ItDoesNothing();
+                ItDoesNothing("Return type " + e.ToString());
             }
         }
+        
+        private void ItDoesNothing(string e) {
 
-        private void ItDoesNothing() {}
+            //Debug.Log(e);
+        }
     }
 }

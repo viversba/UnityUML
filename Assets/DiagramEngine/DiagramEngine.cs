@@ -2,29 +2,32 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DiagramEngine{
+namespace DEngine {
 
-    /// <summary>
-    /// Static reference to the diagram engine
-    /// </summary>
-    private static DiagramEngine diagramEngine = new DiagramEngine();
-    private Program program;
+    public class DiagramEngine {
 
-    /// <summary>
-    /// Private constructor
-    /// </summary>
-    private DiagramEngine() {
+        /// <summary>
+        /// Static reference to the diagram engine
+        /// </summary>
+        private static DiagramEngine diagramEngine = new DiagramEngine();
+        private Program program;
 
-        program = new Program();
-    }
+        /// <summary>
+        /// Private constructor
+        /// </summary>
+        private DiagramEngine() {
 
-    public static DiagramEngine getInstance() {
+            program = new Program();
+        }
 
-        return diagramEngine;
-    }
+        public static DiagramEngine getInstance() {
 
-    public void Run() {
+            return diagramEngine;
+        }
 
-        program.Start();    
+        public void Run() {
+
+            program.Start();
+        }
     }
 }
