@@ -4,8 +4,8 @@ using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace DEngine.Model{
-    public class ProgressPrinter: CSharpParserBaseListener {
+namespace DEngine.Model {
+    public class ProgressPrinter : CSharpParserBaseListener {
 
         private string className;
         private string methodName;
@@ -14,6 +14,8 @@ namespace DEngine.Model{
         private string name;
         private List<string> constants;
         private List<string> variables;
+        private string constructor;
+        private List<string[]> parameters;
 
         public ProgressPrinter() {
 
@@ -24,6 +26,8 @@ namespace DEngine.Model{
             className = "";
             constants = new List<string>();
             variables = new List<string>();
+            constructor = "";
+            parameters = new List<string[]>();
         }
 
         public override void EnterClass_definition([NotNull] CSharpParser.Class_definitionContext context) {
@@ -32,13 +36,57 @@ namespace DEngine.Model{
             Debug.Log("CLASS: " + className);
         }
 
+        public override void EnterConstructor_declaration([NotNull] CSharpParser.Constructor_declarationContext context) {
+            base.EnterConstructor_declaration(context);
+
+            parameters.Clear();
+            constructor = context.identifier().GetText();
+            string[] pars = new string[2];
+            try {
+                pars[0] = context.formal_parameter_list().parameter_array().GetText();
+                pars[1] = "NONE";
+                parameters.Add(pars);
+            }
+            catch(Exception e) {
+
+                ItDoesNothing("Constructor " + e);
+                try {
+                    // This is going to hold every parameter of the list of parameters
+                    var params_ = context.formal_parameter_list().fixed_parameters().fixed_parameter();
+                    foreach (var param in params_) {
+                        // For each one, extract the type of parameter and the name
+                        pars[0] = param.arg_declaration().type().GetText();
+                        pars[1] = param.arg_declaration().identifier().GetText();
+                        parameters.Add(pars);
+                    }
+                }
+                catch(Exception e1) {
+                    Debug.Log("No pude mano");
+                    ItDoesNothing("Nested Constructor " + e1);
+                }
+            }
+        }
+
+        public override void ExitConstructor_declaration([NotNull] CSharpParser.Constructor_declarationContext context) {
+            base.ExitConstructor_declaration(context);
+
+            foreach (var modifier in modifiers) {
+                Debug.Log("MODIFIER: " + modifier);
+            }
+            Debug.Log("CONSTRUCTOR: " + constructor);
+            foreach(var par in parameters) {
+                Debug.Log("PARAMETER TYPE: " + par[0]);
+                Debug.Log("PARAMETER NAME: " + par[1]);
+            }
+        }
+
         public override void EnterMethod_declaration([NotNull] CSharpParser.Method_declarationContext context) {
             base.EnterMethod_declaration(context);
             methodName = context.method_member_name().GetText();
         }
 
         public override void ExitMethod_declaration([NotNull] CSharpParser.Method_declarationContext context) {
-            foreach(string modifier in modifiers) {
+            foreach (string modifier in modifiers) {
                 //Debug.Log("Modifier: " + modifier);
             }
             //Debug.Log("TYPE: " + type + "\n");
@@ -71,12 +119,12 @@ namespace DEngine.Model{
             try {
                 //Get the whole variable declarations array
                 var vars = context.variable_declarators().variable_declarator();
-                foreach(var variable in vars) {
+                foreach (var variable in vars) {
                     // Add all of the one by one to the global variables array
                     variables.Add(variable.identifier().GetText());
                 }
             }
-            catch(Exception e) {
+            catch (Exception e) {
                 ItDoesNothing("Field " + e.ToString());
             }
         }
@@ -101,11 +149,11 @@ namespace DEngine.Model{
 
                 type = context.type().GetText();
                 var consts = context.constant_declarators().constant_declarator();
-                foreach(var constant in consts) {
+                foreach (var constant in consts) {
                     constants.Add(constant.identifier().GetText());
                 }
             }
-            catch(Exception e) {
+            catch (Exception e) {
                 ItDoesNothing("Constant " + e.ToString());
             }
         }
@@ -128,11 +176,11 @@ namespace DEngine.Model{
             modifiers.Clear();
             // Get the access modifiers
             try {
-                foreach(var modifier in context.all_member_modifiers().all_member_modifier()) {
+                foreach (var modifier in context.all_member_modifiers().all_member_modifier()) {
                     modifiers.Add(modifier.GetText());
                 }
             }
-            catch(Exception e) {
+            catch (Exception e) {
                 ItDoesNothing("Member " + e.ToString());
             }
 
@@ -141,17 +189,17 @@ namespace DEngine.Model{
                 try {
                     type = context.common_member_declaration().VOID().GetText();
                 }
-                catch(Exception e) {
+                catch (Exception e) {
 
                     type = context.common_member_declaration().typed_member_declaration().type().GetText();
                     ItDoesNothing("Nested return type " + e.ToString());
                 }
             }
-            catch(Exception e) {
+            catch (Exception e) {
                 ItDoesNothing("Return type " + e.ToString());
             }
         }
-        
+
         private void ItDoesNothing(string e) {
 
             //Debug.Log(e);
