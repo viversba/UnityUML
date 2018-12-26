@@ -61,7 +61,6 @@ namespace DEngine.Model {
                     }
                 }
                 catch(Exception e1) {
-                    Debug.Log("No pude mano");
                     ItDoesNothing("Nested Constructor " + e1);
                 }
             }
@@ -83,6 +82,30 @@ namespace DEngine.Model {
         public override void EnterMethod_declaration([NotNull] CSharpParser.Method_declarationContext context) {
             base.EnterMethod_declaration(context);
             methodName = context.method_member_name().GetText();
+
+            string[] pars = new string[2];
+            try {
+                pars[0] = context.formal_parameter_list().parameter_array().GetText();
+                pars[1] = "NONE";
+                parameters.Add(pars);
+            }
+            catch (Exception e) {
+
+                ItDoesNothing("Method " + e);
+                try {
+                    // This is going to hold every parameter of the list of parameters
+                    var params_ = context.formal_parameter_list().fixed_parameters().fixed_parameter();
+                    foreach (var param in params_) {
+                        // For each one, extract the type of parameter and the name
+                        pars[0] = param.arg_declaration().type().GetText();
+                        pars[1] = param.arg_declaration().identifier().GetText();
+                        parameters.Add(pars);
+                    }
+                }
+                catch (Exception e1) {
+                    ItDoesNothing("Nested Method " + e1);
+                }
+            }
         }
 
         public override void ExitMethod_declaration([NotNull] CSharpParser.Method_declarationContext context) {

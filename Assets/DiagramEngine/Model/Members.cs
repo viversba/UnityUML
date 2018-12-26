@@ -43,7 +43,13 @@ namespace DEngine.Model {
     public enum ConstructorType {
         PUBLIC,
         PRIVATE,
-        STATIC
+        STATIC,
+        OTHER
+    }
+
+    public enum AttributeType { 
+        STATIC,
+        NONE
     }
 
     /// <summary>
@@ -51,22 +57,34 @@ namespace DEngine.Model {
     /// </summary>
     public struct Attribute {
 
+        public AccessModifier modifier;
+        public AttributeType attributeType;
         public string name;
         public string type;
-        public AccessModifier modifier;
+
 
         public Attribute(string name, string type) {
 
             modifier = AccessModifier.NONE;
             this.name = name;
             this.type = type;
+            attributeType = AttributeType.NONE;
         }
 
-        public Attribute(string name, AccessModifier modifier, string type) {
+        public Attribute(string name, AttributeType attributeType, string type) { 
+            
+            this.name = name;
+            this.type = type;
+            modifier = AccessModifier.NONE;
+            this.attributeType = attributeType;
+        }
+
+        public Attribute(string name, AccessModifier modifier, string type, AttributeType attributeType) {
 
             this.name = name;
             this.type = type;
             this.modifier = modifier;
+            this.attributeType = attributeType;
         }
 
         public override string ToString() {
@@ -79,10 +97,10 @@ namespace DEngine.Model {
     /// </summary>
     public struct Method {
 
-        public string name;
         public AccessModifier modifier;
-        public string returnType;
         public MethodType type;
+        public string returnType;
+        public string name;
 
         public Method(string name) {
             this.name = name;
@@ -109,116 +127,32 @@ namespace DEngine.Model {
     public struct Constructor {
 
         public string name;
-        public List<Attribute> attributes;
-        public ConstructorType type;
+        public AccessModifier modifier;
+        public MethodType type;
 
         public Constructor(string name) {
+
             this.name = name;
-            attributes = null;
-            type = ConstructorType.PRIVATE;
+            modifier = AccessModifier.NONE;
+            type = MethodType.NONE;
         }
 
-        public Constructor(string name, List<Attribute> attributes, ConstructorType type) {
-            this.name = name;
-            this.attributes = attributes;
-            this.type = type;
-        }
+        public Constructor(string name, AccessModifier modifier) {
 
-        public Constructor(string name, ConstructorType type) {
-            this.name = name;
-            attributes = null;
-            this.type = type;
-        }
-
-        public Constructor(string name, List<Attribute> attributes) {
-            this.name = name;
-            this.attributes = attributes;
-            type = ConstructorType.PRIVATE;
-        }
-
-        public override string ToString() {
-            return name;
-        }
-    }
-
-    /// <summary>
-    /// Constructor struct used to represent a declated delegate list inside a class
-    /// </summary>
-    public struct Delegate {
-
-        public string type;
-        public string returnType;
-        public AccessModifier modifier;
-
-        public Delegate(string type, string returnType, AccessModifier modifier) {
-
-            this.type = type;
-            this.returnType = returnType;
-            this.modifier = modifier;
-        }
-
-        public Delegate(string type, string returnType) {
-
-            this.type = type;
-            this.returnType = returnType;
-            this.modifier = AccessModifier.PROTECTED;
-        }
-
-        public override string ToString() {
-            return type;
-        }
-    }
-
-    /// <summary>
-    /// Constructor struct used to represent a declated struct list inside a class
-    /// </summary>
-    public struct Struct {
-        public string name;
-        public AccessModifier modifier;
-
-        public Struct(string name) {
-            this.name = name;
-            modifier = AccessModifier.PRIVATE;
-        }
-
-        public Struct(string name, AccessModifier modifier) {
             this.name = name;
             this.modifier = modifier;
+            type = MethodType.NONE;
         }
 
-        public override string ToString() {
-            return name;
-        }
-    }
+        public Constructor(string name, MethodType type) {
 
-    /// <summary>
-    /// Constructor struct used to represent a declated class list inside a class
-    /// </summary>
-    public struct Class {
-
-        public string name;
-        public ClassType type;
-        public AccessModifier modifier;
-
-        public Class(string name) {
             this.name = name;
-            type = ClassType.NONE;
-            modifier = AccessModifier.INTERNAL;
-        }
-
-        public Class(string name, AccessModifier modifier) {
-            this.name = name;
-            type = ClassType.NONE;
-            this.modifier = AccessModifier.INTERNAL;
-        }
-
-        public Class(string name, ClassType type) {
-            this.name = name;
-            this.type = ClassType.NONE;
+            this.type = type;
             modifier = AccessModifier.NONE;
         }
 
-        public Class(string name, ClassType type, AccessModifier modifier) {
+        public Constructor(string name, AccessModifier modifier, MethodType type) {
+
             this.name = name;
             this.type = type;
             this.modifier = modifier;
@@ -227,6 +161,5 @@ namespace DEngine.Model {
         public override string ToString() {
             return name;
         }
-
     }
 }
