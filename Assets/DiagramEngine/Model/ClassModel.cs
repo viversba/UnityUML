@@ -3,16 +3,40 @@ using System.Collections.Generic;
 
 namespace DEngine.Model {
 
-    public class ClassModel : BaseModel{
+    public class ClassModel : BaseModel {
 
-        public List<Constructor> constructors;
+        private List<InterfaceModel> interfaces;
+        private List<Constructor> constructors;
+        private ClassModel superClass;
 
-        public ClassModel() : base(){
+        public ClassModel() : base() {
 
             constructors = new List<Constructor>();
+            superClass = null;
+            interfaces = new List<InterfaceModel>();
         }
 
-        public void AddConstructo(Constructor constructor) {
+        public void AddInterface(InterfaceModel interface_) {
+
+            interfaces.Add(interface_);
+        }
+
+        public List<InterfaceModel> GetInterfaces() {
+
+            return interfaces;
+        }
+
+        public ClassModel GetSuperClass() {
+
+            return superClass;
+        }
+
+        public void SetSuperClass(ClassModel superClass) {
+
+            this.superClass = superClass;
+        }
+
+        public void AddConstructor(Constructor constructor) {
 
             constructors.Add(constructor);
         }
@@ -24,6 +48,10 @@ namespace DEngine.Model {
 
         public void ClearConstructors() {
 
+            constructors.Clear();
+        }
+
+        ~ClassModel(){
             constructors.Clear();
         }
     }

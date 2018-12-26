@@ -5,12 +5,25 @@ namespace DEngine.Model {
 
     public class BaseModel {
 
+        private string name;
         private List<Method> methods;
         private List<Attribute> attributes;
 
         public BaseModel() {
+
+            name = "Generic";
             methods = new List<Method>();
             attributes = new List<Attribute>();
+        }
+
+        public string GetName() {
+
+            return name;
+        }
+
+        public void SetName(string name) {
+
+            this.name = name;
         }
 
         public void ClearAttributes() {
@@ -39,6 +52,11 @@ namespace DEngine.Model {
         public List<Attribute> GetAttributes() {
 
             return attributes;
+        }
+
+        ~BaseModel() {
+            methods.Clear();
+            attributes.Clear();
         }
     }
 }

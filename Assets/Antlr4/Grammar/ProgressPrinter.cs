@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 namespace DEngine.Model {
+
     public class ProgressPrinter : CSharpParserBaseListener {
 
         private string className;
@@ -16,6 +17,8 @@ namespace DEngine.Model {
         private List<string> variables;
         private string constructor;
         private List<string[]> parameters;
+        private string classAttributes;
+        private List<string> classModifiers;
 
         public ProgressPrinter() {
 
@@ -28,12 +31,42 @@ namespace DEngine.Model {
             variables = new List<string>();
             constructor = "";
             parameters = new List<string[]>();
+            classAttributes = "";
+            classModifiers = new List<string>();
         }
 
         public override void EnterClass_definition([NotNull] CSharpParser.Class_definitionContext context) {
             base.EnterClass_definition(context);
             className = context.identifier().GetText();
+            //Debug.Log("TYPE: " + classAttributes);
+            foreach (string modifier in classModifiers) {
+                Debug.Log("MODIFIER: " + modifier);
+            }
             Debug.Log("CLASS: " + className);
+        }
+
+        public override void EnterType_declaration([NotNull] CSharpParser.Type_declarationContext context) {
+            base.EnterType_declaration(context);
+            classModifiers.Clear();
+
+            // Get the attributes
+            try {
+                classAttributes = context.attributes().GetText();
+            }
+            catch (Exception e) {
+                ItDoesNothing("Class type " + e);
+            }
+
+            // Get the class modifiers
+            try {
+                var members = context.all_member_modifiers().all_member_modifier();
+                foreach(var member in members) {
+                    classModifiers.Add(member.GetText());
+                }
+            }
+            catch (Exception e) {
+                ItDoesNothing("Class modifier " + e);
+            }
         }
 
         public override void EnterConstructor_declaration([NotNull] CSharpParser.Constructor_declarationContext context) {
@@ -69,14 +102,14 @@ namespace DEngine.Model {
         public override void ExitConstructor_declaration([NotNull] CSharpParser.Constructor_declarationContext context) {
             base.ExitConstructor_declaration(context);
 
-            foreach (var modifier in modifiers) {
-                Debug.Log("MODIFIER: " + modifier);
-            }
-            Debug.Log("CONSTRUCTOR: " + constructor);
-            foreach(var par in parameters) {
-                Debug.Log("PARAMETER TYPE: " + par[0]);
-                Debug.Log("PARAMETER NAME: " + par[1]);
-            }
+            //foreach (var modifier in modifiers) {
+            //    Debug.Log("MODIFIER: " + modifier);
+            //}
+            //Debug.Log("CONSTRUCTOR: " + constructor);
+            //foreach(var par in parameters) {
+            //    Debug.Log("PARAMETER TYPE: " + par[0]);
+            //    Debug.Log("PARAMETER NAME: " + par[1]);
+            //}
         }
 
         public override void EnterMethod_declaration([NotNull] CSharpParser.Method_declarationContext context) {
