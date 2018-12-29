@@ -1,6 +1,7 @@
 ﻿using DEngine.Model;
 using System.Collections.Generic;
 using System;
+using UnityEngine;
 
 namespace DEngine.Controller {
 
@@ -17,6 +18,28 @@ namespace DEngine.Controller {
             currentEntity = null;
         }
 
+        public void AddClass(string name) {
+
+            entities.Add(new ClassModel(name));
+            currentEntity = entities[entities.Count - 1];
+            int numberOfEntities = entities.Count;
+            if (numberOfEntities > 1) {
+                currentEntity.SetContainer(entities[numberOfEntities - 2]);
+            }
+            isClass = true;
+        }
+
+        public void AddInterface(string name) {
+
+            entities.Add(new InterfaceModel(name));
+            currentEntity = entities[entities.Count - 1];
+            int numberOfEntities = entities.Count;
+            if (numberOfEntities > 1) {
+                entities[numberOfEntities - 1].SetContainer(entities[numberOfEntities - 2]);
+            }
+            isClass = false;
+        }
+
         public void SetContainer() {
 
             if (entities.Count > 1) {
@@ -27,32 +50,11 @@ namespace DEngine.Controller {
 
         public void FinishEntity() {
 
+            //Debug.Log(currentEntity.ToString());
             entities.RemoveAt(entities.Count - 1);
-            if(entities.Count > 0) {
-                currentEntity = entities[entities.Count - 1];
-            }
-            else {
-                currentEntity = null;
-            }
+            currentEntity = entities.Count > 0 ? entities[entities.Count - 1] : null;
             isClass = false;
         }
-
-        public void AddClass(string name) {
-
-            entities.Add(new ClassModel(name));
-            currentEntity = entities[entities.Count - 1];
-            isClass = true;
-        }
-
-        public void AddInterface(string name) {
-
-            entities.Add(new InterfaceModel(name));
-        }
-
-        //public void SetClass(string name) {
-
-        //    currentEntity.SetName(name);
-        //}
 
         public void AddMethodTo(Method method) {
 
@@ -83,6 +85,48 @@ namespace DEngine.Controller {
 
         public static T ParseEnum<T>(string value) {
             return (T)Enum.Parse(typeof(T),value, true);
+        }
+
+        /// <summary>
+        /// Receives a list of modifiers and matches them with defined enums
+        /// </summary>
+        /// <param name="modifiers">List containing all the modifiers to check</param>
+        /// <param name="mod"><c>out</c> variable that will contain the Access Modifier</param>
+        /// <param name="methodType"><c>out</c> variable that will contain the Method Type</param>
+        public static void ModifierMatch(List<string> modifiers, ref AccessModifier mod, ref MethodType methodType) {
+
+            foreach (string modifier in modifiers) {
+
+                if (Enum.IsDefined(typeof(AccessModifier), modifier.ToUpper())) {
+                    // It is an access modifier, convert to modifier enum
+                    mod = ParseEnum<AccessModifier>(modifier);
+                }
+                else if (Enum.IsDefined(typeof(MethodType), modifier.ToUpper())) {
+                    // If it is a method type, convert to method type enum
+                    methodType = ParseEnum<MethodType>(modifier);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Receives a list of modifiers and matches them with defined enums
+        /// </summary>
+        /// <param name="modifiers">List containing all the modifiers to check</param>
+        /// <param name="mod"><c>out</c> variable that will contain the Access Modifier</param>
+        /// <param name="attributeType"><c>out</c> variable that will contain the Method Type</param>
+        public static void ModifierMatch(List<string> modifiers, ref AccessModifier mod, ref AttributeType attributeType) {
+
+            foreach (string modifier in modifiers) {
+
+                if (Enum.IsDefined(typeof(AccessModifier), modifier.ToUpper())) {
+                    // It is an access modifier, convert to modifier enum
+                    mod = ParseEnum<AccessModifier>(modifier);
+                }
+                else if (Enum.IsDefined(typeof(AttributeType), modifier.ToUpper())) {
+                    // If it is a method type, convert to method type enum
+                    attributeType = ParseEnum<AttributeType>(modifier);
+                }
+            }
         }
     }
 

@@ -96,6 +96,7 @@ namespace DEngine.Model {
             //    Debug.Log("PARAMETER: " + param[0] + " " + param[1]);
             //}
 
+            Debug.Log(wrapper.currentEntity.ToString());
             entities.RemoveAt(entities.Count - 1);
             wrapper.FinishEntity();
         }
@@ -112,6 +113,9 @@ namespace DEngine.Model {
         public override void ExitInterface_definition([NotNull] CSharpParser.Interface_definitionContext context) {
             base.ExitInterface_definition(context);
 
+            Debug.Log("HERE BOI-------------------");
+            Debug.Log(wrapper.currentEntity.GetType());
+            Debug.Log(wrapper.currentEntity.ToString());
             entities.RemoveAt(entities.Count - 1);
             wrapper.FinishEntity();
         }
@@ -173,25 +177,11 @@ namespace DEngine.Model {
         public override void ExitConstructor_declaration([NotNull] CSharpParser.Constructor_declarationContext context) {
             base.ExitConstructor_declaration(context);
 
-            AccessModifier mod = AccessModifier.NONE;
+            AccessModifier mod = AccessModifier.INTERNAL;
             MethodType methodType = MethodType.NONE;
+            ClassWrapper.ModifierMatch(modifiers, ref mod, ref methodType);
 
-            foreach (string modifier in modifiers) {
-
-                if (Enum.IsDefined(typeof(AccessModifier), modifier.ToUpper())) {
-                    // It is an access modifier, convert to modifier enum
-                    mod = ClassWrapper.ParseEnum<AccessModifier>(modifier);
-                }
-                else if(Enum.IsDefined(typeof(MethodType), modifier.ToUpper())) {
-                    // If it is a method type, convert to method type enum
-                    methodType = ClassWrapper.ParseEnum<MethodType>(modifier);
-                }
-            }
             wrapper.AddConstructor(new Constructor(constructor, mod, methodType));
-
-            Debug.Log("ACCESS MODIFER: " + mod.ToString());
-            Debug.Log("TYPE: " + methodType);
-            Debug.Log("CONSTRUCTOR: " + constructor);
 
             //TODO add parameters to constructors
             //foreach(var par in parameters) {
@@ -202,6 +192,7 @@ namespace DEngine.Model {
 
         public override void EnterMethod_declaration([NotNull] CSharpParser.Method_declarationContext context) {
             base.EnterMethod_declaration(context);
+            parameters.Clear();
             methodName = context.method_member_name().GetText();
 
             string[] pars = new string[2];
@@ -230,12 +221,14 @@ namespace DEngine.Model {
         }
 
         public override void ExitMethod_declaration([NotNull] CSharpParser.Method_declarationContext context) {
-            foreach (string modifier in modifiers) {
-                //Debug.Log("Modifier: " + modifier);
-            }
-            //Debug.Log("TYPE: " + type + "\n");
-            //Debug.Log("NAME: " + methodName + "\n");
-            //Debug.Log("------------------------------------");
+
+            AccessModifier mod = AccessModifier.PRIVATE;
+            MethodType methodType = MethodType.NONE;
+            ClassWrapper.ModifierMatch(modifiers, ref mod, ref methodType);
+
+            wrapper.AddMethodTo(new Method(methodName, mod, type, methodType));
+
+            // TODO: take care of parameters
         }
 
         public override void EnterProperty_declaration([NotNull] CSharpParser.Property_declarationContext context) {
@@ -247,6 +240,12 @@ namespace DEngine.Model {
 
         public override void ExitProperty_declaration([NotNull] CSharpParser.Property_declarationContext context) {
             base.ExitProperty_declaration(context);
+
+            AccessModifier mod = AccessModifier.PRIVATE;
+            AttributeType attributeType = AttributeType.NONE;
+            ClassWrapper.ModifierMatch(modifiers, ref mod, ref attributeType);
+
+            wrapper.AddAttributeTo(new Attribute(propertyName, mod, type, attributeType));
 
             //foreach(var modifier in modifiers) {
             //    Debug.Log("MODIFIER: " + modifier);
@@ -276,13 +275,14 @@ namespace DEngine.Model {
         public override void ExitField_declaration([NotNull] CSharpParser.Field_declarationContext context) {
             base.ExitField_declaration(context);
 
-            //foreach (var modifier in modifiers) {
-            //    Debug.Log("MODIFIER: " + modifier);
-            //}
-            //Debug.Log("TYPE: " + type + "\n");
-            //foreach (var field in variables) {
-            //    Debug.Log("VARIABLE: " + field);
-            //}
+
+            AccessModifier mod = AccessModifier.PRIVATE;
+            AttributeType attributeType = AttributeType.NONE;
+            ClassWrapper.ModifierMatch(modifiers, ref mod, ref attributeType);
+
+            foreach (var variable in variables) {
+                wrapper.AddAttributeTo(new Attribute(variable, mod, type, attributeType));
+            }
         }
 
         public override void EnterConstant_declaration([NotNull] CSharpParser.Constant_declarationContext context) {
@@ -305,6 +305,13 @@ namespace DEngine.Model {
         public override void ExitConstant_declaration([NotNull] CSharpParser.Constant_declarationContext context) {
             base.ExitConstant_declaration(context);
 
+            AccessModifier mod = AccessModifier.PRIVATE;
+            AttributeType attributeType = AttributeType.NONE;
+            ClassWrapper.ModifierMatch(modifiers, ref mod, ref attributeType);
+
+            foreach(var constant in constants) {
+                wrapper.AddAttributeTo(new Attribute(constant, mod, type, attributeType));
+            }
             //foreach (var modifier in modifiers) {
             //    Debug.Log("MODIFIER: " + modifier);
             //}

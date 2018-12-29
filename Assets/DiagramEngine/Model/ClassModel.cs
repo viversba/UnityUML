@@ -9,7 +9,7 @@ namespace DEngine.Model {
         private List<ClassModel> subClasses;
         private ClassModel superClass;
 
-        public ClassModel(string name) : base(){
+        public ClassModel(string name){
 
             this.name = name;
             constructors = new List<Constructor>();
@@ -17,7 +17,7 @@ namespace DEngine.Model {
             subClasses = new List<ClassModel>();
         }
 
-        public ClassModel() : base() {
+        public ClassModel(){
 
             constructors = new List<Constructor>();
             superClass = null;
@@ -52,6 +52,22 @@ namespace DEngine.Model {
         public void ClearConstructors() {
 
             constructors.Clear();
+        }
+
+        public override string ToString() {
+
+            string description = name;
+            description += container != null ? "<-" + container.GetName() + "\n" : "\n";
+            foreach (Constructor constructor in constructors) {
+                description += constructor.ToString() + "\n";
+            }
+            foreach(Method method in methods) {
+                description += method.ToString() + "()\n";
+            }
+            foreach(Attribute attribute in attributes) {
+                description += attribute.ToString() + "\n";
+            }
+            return description;
         }
 
         ~ClassModel(){

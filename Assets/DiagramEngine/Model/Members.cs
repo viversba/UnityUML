@@ -76,7 +76,10 @@ namespace DEngine.Model {
         }
 
         public override string ToString() {
-            return name;
+            string description = modifier != AccessModifier.NONE ? (modifier.ToString() + " ") : "";
+            description += attributeType != AttributeType.NONE ? (attributeType.ToString() + " ") : "";
+            description += type + " " + name;
+            return description;
         }
     }
 
@@ -100,7 +103,10 @@ namespace DEngine.Model {
         }
 
         public override string ToString() {
-            return name;
+            string description = modifier != AccessModifier.NONE? (modifier.ToString() + " " ) : "";
+            description += type != MethodType.NONE ? (type.ToString() + " " ) : "";
+            description += returnType + " " + name;
+            return description;
         }
     }
 
@@ -127,7 +133,10 @@ namespace DEngine.Model {
         }
 
         public override string ToString() {
-            return name;
+            string description = modifier != AccessModifier.NONE ? (modifier.ToString() + " ") : "";
+            description += type != MethodType.NONE ? (type.ToString() + " ") : "";
+            description += name;
+            return description;
         }
     }
 }

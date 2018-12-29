@@ -72,6 +72,19 @@ namespace DEngine.Model {
             this.container = container;
         }
 
+        public override string ToString() {
+
+            string description = name;
+            description += container != null?  "<-" + container.name + "\n": "\n";
+            foreach (Method method in methods) {
+                description += method.ToString() + "()\n";
+            }
+            foreach (Attribute attribute in attributes) {
+                description += attribute.ToString() + "\n";
+            }
+            return description;
+        }
+
         ~BaseModel() {
             methods.Clear();
             attributes.Clear();
