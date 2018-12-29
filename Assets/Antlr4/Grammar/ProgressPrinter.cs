@@ -3,6 +3,7 @@ using Antlr4.Runtime.Misc;
 using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
+using DEngine.Controller;
 
 namespace DEngine.Model {
 
@@ -12,17 +13,25 @@ namespace DEngine.Model {
         private string methodName;
         private List<string> modifiers;
         private string type;
-        private string name;
+        private string propertyName;
         private List<string> constants;
         private List<string> variables;
         private string constructor;
         private List<string[]> parameters;
         private string classAttributes;
         private List<string> classModifiers;
+        private List<string[]> classParameters;
+        private string interfaceName;
+        
+        /// <summary>
+        /// The entities.
+        /// </summary>
+        private List<string> entities;
+        private ClassWrapper wrapper;
 
         public ProgressPrinter() {
 
-            name = "";
+            propertyName = "";
             methodName = "";
             modifiers = new List<string>();
             type = "";
@@ -33,16 +42,78 @@ namespace DEngine.Model {
             parameters = new List<string[]>();
             classAttributes = "";
             classModifiers = new List<string>();
+            classParameters = new List<string[]>();
+            interfaceName = "";
+
+            entities = new List<string>();
+
+            wrapper = new ClassWrapper();
         }
 
         public override void EnterClass_definition([NotNull] CSharpParser.Class_definitionContext context) {
             base.EnterClass_definition(context);
+            
+            classParameters.Clear();
             className = context.identifier().GetText();
-            //Debug.Log("TYPE: " + classAttributes);
-            foreach (string modifier in classModifiers) {
-                Debug.Log("MODIFIER: " + modifier);
+            string[] params_ = { "", "" };
+            try {
+                var paramList = context.type_parameter_list().type_parameter();
+                foreach (var param in paramList) {
+                    try {
+                        params_[0] = param.attributes().GetText();
+                    }
+                    catch (Exception e) {
+
+                        ItDoesNothing("Class parameters Nested" + e);
+                    }
+                    params_[1] = param.identifier().GetText();
+                    classParameters.Add(params_);
+                }
             }
-            Debug.Log("CLASS: " + className);
+            catch (Exception e) {
+                ItDoesNothing("Class parameters" + e);
+            }
+
+
+            // TODO set the container
+            // Add the last discovered class to the class pile
+
+            entities.Add(className);
+
+            wrapper.AddClass(className);
+        }
+
+        public override void ExitClass_definition([NotNull] CSharpParser.Class_definitionContext context) {
+            base.ExitClass_definition(context);
+
+            //TODO Here is going to lie the class termination code
+            //Debug.Log("TYPE: " + classAttributes);
+            //foreach (string modifier in classModifiers) {
+            //    Debug.Log("MODIFIER: " + modifier);
+            //}
+            //Debug.Log("CLASS: " + className);
+            //foreach(var param in classParameters) {
+            //    Debug.Log("PARAMETER: " + param[0] + " " + param[1]);
+            //}
+
+            entities.RemoveAt(entities.Count - 1);
+            wrapper.FinishEntity();
+        }
+
+        public override void EnterInterface_definition([NotNull] CSharpParser.Interface_definitionContext context) {
+            base.EnterInterface_definition(context);
+
+            interfaceName = context.identifier().GetText();
+
+            entities.Add(interfaceName);
+            wrapper.AddInterface(interfaceName);
+        }
+
+        public override void ExitInterface_definition([NotNull] CSharpParser.Interface_definitionContext context) {
+            base.ExitInterface_definition(context);
+
+            entities.RemoveAt(entities.Count - 1);
+            wrapper.FinishEntity();
         }
 
         public override void EnterType_declaration([NotNull] CSharpParser.Type_declarationContext context) {
@@ -74,10 +145,10 @@ namespace DEngine.Model {
 
             parameters.Clear();
             constructor = context.identifier().GetText();
-            string[] pars = new string[2];
+            string[] pars = { "", ""};
             try {
                 pars[0] = context.formal_parameter_list().parameter_array().GetText();
-                pars[1] = "NONE";
+                pars[1] = "";
                 parameters.Add(pars);
             }
             catch(Exception e) {
@@ -102,10 +173,27 @@ namespace DEngine.Model {
         public override void ExitConstructor_declaration([NotNull] CSharpParser.Constructor_declarationContext context) {
             base.ExitConstructor_declaration(context);
 
-            //foreach (var modifier in modifiers) {
-            //    Debug.Log("MODIFIER: " + modifier);
-            //}
-            //Debug.Log("CONSTRUCTOR: " + constructor);
+            AccessModifier mod = AccessModifier.NONE;
+            MethodType methodType = MethodType.NONE;
+
+            foreach (string modifier in modifiers) {
+
+                if (Enum.IsDefined(typeof(AccessModifier), modifier.ToUpper())) {
+                    // It is an access modifier, convert to modifier enum
+                    mod = ClassWrapper.ParseEnum<AccessModifier>(modifier);
+                }
+                else if(Enum.IsDefined(typeof(MethodType), modifier.ToUpper())) {
+                    // If it is a method type, convert to method type enum
+                    methodType = ClassWrapper.ParseEnum<MethodType>(modifier);
+                }
+            }
+            wrapper.AddConstructor(new Constructor(constructor, mod, methodType));
+
+            Debug.Log("ACCESS MODIFER: " + mod.ToString());
+            Debug.Log("TYPE: " + methodType);
+            Debug.Log("CONSTRUCTOR: " + constructor);
+
+            //TODO add parameters to constructors
             //foreach(var par in parameters) {
             //    Debug.Log("PARAMETER TYPE: " + par[0]);
             //    Debug.Log("PARAMETER NAME: " + par[1]);
@@ -153,7 +241,7 @@ namespace DEngine.Model {
         public override void EnterProperty_declaration([NotNull] CSharpParser.Property_declarationContext context) {
             base.EnterProperty_declaration(context);
 
-            name = context.member_name().GetText();
+            propertyName = context.member_name().GetText();
             //Debug.Log("PROPERTY: " + context.member_name().GetText());
         }
 

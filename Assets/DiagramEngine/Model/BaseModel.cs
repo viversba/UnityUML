@@ -5,15 +5,19 @@ namespace DEngine.Model {
 
     public class BaseModel {
 
-        private string name;
-        private List<Method> methods;
-        private List<Attribute> attributes;
+        protected string name;
+        protected List<Method> methods;
+        protected List<Attribute> attributes;
+        protected List<InterfaceModel> interfaces;
+        protected BaseModel container;
 
         public BaseModel() {
 
             name = "Generic";
             methods = new List<Method>();
             attributes = new List<Attribute>();
+            interfaces = new List<InterfaceModel>();
+            container = null;
         }
 
         public string GetName() {
@@ -49,9 +53,23 @@ namespace DEngine.Model {
             return methods;
         }
 
+        public void AddInterface(InterfaceModel interface_) {
+
+            interfaces.Add(interface_);
+        }
+
         public List<Attribute> GetAttributes() {
 
             return attributes;
+        }
+
+        public List<InterfaceModel> GetInterfaces() {
+
+            return interfaces;
+        }
+
+        public void SetContainer(BaseModel container) {
+            this.container = container;
         }
 
         ~BaseModel() {

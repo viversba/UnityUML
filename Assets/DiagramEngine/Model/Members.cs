@@ -63,21 +63,9 @@ namespace DEngine.Model {
         public string type;
 
 
-        public Attribute(string name, string type) {
+        public Attribute(string name, string type): this(name, AccessModifier.NONE, type, AttributeType.NONE) {}
 
-            modifier = AccessModifier.NONE;
-            this.name = name;
-            this.type = type;
-            attributeType = AttributeType.NONE;
-        }
-
-        public Attribute(string name, AttributeType attributeType, string type) { 
-            
-            this.name = name;
-            this.type = type;
-            modifier = AccessModifier.NONE;
-            this.attributeType = attributeType;
-        }
+        public Attribute(string name, AttributeType attributeType, string type): this(name, AccessModifier.NONE, type, attributeType) {}
 
         public Attribute(string name, AccessModifier modifier, string type, AttributeType attributeType) {
 
@@ -102,12 +90,7 @@ namespace DEngine.Model {
         public string returnType;
         public string name;
 
-        public Method(string name) {
-            this.name = name;
-            modifier = AccessModifier.PROTECTED;
-            returnType = "void";
-            type = MethodType.NONE;
-        }
+        public Method(string name): this(name, AccessModifier.PROTECTED, "void", MethodType.NONE) {}
 
         public Method(string name, AccessModifier modifier, string returnType, MethodType type) {
             this.name = name;
@@ -130,26 +113,11 @@ namespace DEngine.Model {
         public AccessModifier modifier;
         public MethodType type;
 
-        public Constructor(string name) {
+        public Constructor(string name): this(name, AccessModifier.NONE, MethodType.NONE) {}
 
-            this.name = name;
-            modifier = AccessModifier.NONE;
-            type = MethodType.NONE;
-        }
+        public Constructor(string name, AccessModifier modifier): this(name, modifier, MethodType.NONE) {}
 
-        public Constructor(string name, AccessModifier modifier) {
-
-            this.name = name;
-            this.modifier = modifier;
-            type = MethodType.NONE;
-        }
-
-        public Constructor(string name, MethodType type) {
-
-            this.name = name;
-            this.type = type;
-            modifier = AccessModifier.NONE;
-        }
+        public Constructor(string name, MethodType type): this(name, AccessModifier.NONE, type) {}
 
         public Constructor(string name, AccessModifier modifier, MethodType type) {
 

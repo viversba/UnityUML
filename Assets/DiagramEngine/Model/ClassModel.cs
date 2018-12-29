@@ -5,25 +5,23 @@ namespace DEngine.Model {
 
     public class ClassModel : BaseModel {
 
-        private List<InterfaceModel> interfaces;
         private List<Constructor> constructors;
+        private List<ClassModel> subClasses;
         private ClassModel superClass;
+
+        public ClassModel(string name) : base(){
+
+            this.name = name;
+            constructors = new List<Constructor>();
+            superClass = null;
+            subClasses = new List<ClassModel>();
+        }
 
         public ClassModel() : base() {
 
             constructors = new List<Constructor>();
             superClass = null;
-            interfaces = new List<InterfaceModel>();
-        }
-
-        public void AddInterface(InterfaceModel interface_) {
-
-            interfaces.Add(interface_);
-        }
-
-        public List<InterfaceModel> GetInterfaces() {
-
-            return interfaces;
+            subClasses = new List<ClassModel>();
         }
 
         public ClassModel GetSuperClass() {
@@ -39,6 +37,11 @@ namespace DEngine.Model {
         public void AddConstructor(Constructor constructor) {
 
             constructors.Add(constructor);
+        }
+
+        public void AddClass(ClassModel class_) {
+
+            subClasses.Add(class_);
         }
 
         public List<Constructor> GetConstructors() {
