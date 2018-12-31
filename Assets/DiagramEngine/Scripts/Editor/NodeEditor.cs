@@ -2,6 +2,7 @@
 using System.Collections;
 using UnityEditor;
 using System.Collections.Generic;
+using DEngine.View;
 
 //inherits from EditorWindow  
 public class NodeEditor : EditorWindow {
