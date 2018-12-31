@@ -77,6 +77,12 @@
     <Compile Include="Assets\Antlr4\Grammar\Program.cs" />
     <Compile Include="Assets\Antlr4\Grammar\ProgressPrinter.cs" />
     <Compile Include="Assets\Antlr4\Grammar\UMLEngine.cs" />
+    <Compile Include="Assets\DiagramEngine\Controller\ClassWrapper.cs" />
+    <Compile Include="Assets\DiagramEngine\DiagramEngine.cs" />
+    <Compile Include="Assets\DiagramEngine\Model\BaseModel.cs" />
+    <Compile Include="Assets\DiagramEngine\Model\ClassModel.cs" />
+    <Compile Include="Assets\DiagramEngine\Model\InterfaceModel.cs" />
+    <Compile Include="Assets\DiagramEngine\Model\Members.cs" />
     <Compile Include="Assets\DiagramEngine\Scripts\DiagramController.cs" />
     <Compile Include="Assets\DiagramEngine\Scripts\DiagramEngine.cs" />
     <Compile Include="Assets\DiagramEngine\Scripts\Structs.cs" />
