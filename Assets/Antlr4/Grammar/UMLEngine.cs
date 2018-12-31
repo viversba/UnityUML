@@ -1,21 +1,25 @@
 ﻿
-public class UMLEngine{
+namespace DEngine {
 
-    private static UMLEngine engine = new UMLEngine();
+    public class UMLEngine {
 
-    private Program program;
+        private static UMLEngine engine = new UMLEngine();
 
-    private UMLEngine() {
+        private Program program;
 
-        program = new Program();
+        private UMLEngine() {
+
+            program = new Program();
+        }
+
+        public static UMLEngine getInstance() {
+            return engine;
+        }
+
+        public void Run() {
+
+            program.Start();
+        }
     }
 
-    public static UMLEngine getInstance() {
-        return engine;
-    }
-
-    public void Run() {
-
-        program.Start();
-    }
 }
