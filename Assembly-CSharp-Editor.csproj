@@ -61,19 +61,21 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\DiagramEngine\Scripts\Editor\BaseInputNode.cs" />
-    <Compile Include="Assets\DiagramEngine\Scripts\Editor\BaseNode.cs" />
-    <Compile Include="Assets\DiagramEngine\Scripts\Editor\CalcNode.cs" />
-    <Compile Include="Assets\DiagramEngine\Scripts\Editor\ClassNode.cs" />
-    <Compile Include="Assets\DiagramEngine\Scripts\Editor\ComparisonNode.cs" />
-    <Compile Include="Assets\DiagramEngine\Scripts\Editor\DiagramEngineGUI.cs" />
-    <Compile Include="Assets\DiagramEngine\Scripts\Editor\EditorGUISplitView.cs" />
-    <Compile Include="Assets\DiagramEngine\Scripts\Editor\GameObjectActive.cs" />
-    <Compile Include="Assets\DiagramEngine\Scripts\Editor\GameObjectDistance.cs" />
-    <Compile Include="Assets\DiagramEngine\Scripts\Editor\InputNode.cs" />
-    <Compile Include="Assets\DiagramEngine\Scripts\Editor\NodeEditor.cs" />
-    <Compile Include="Assets\DiagramEngine\Scripts\Editor\OutputNode.cs" />
-    <Compile Include="Assets\DiagramEngine\Scripts\Editor\TimerNode.cs" />
+    <Compile Include="Assets\DiagramEngine\Editor\BaseInputNode.cs" />
+    <Compile Include="Assets\DiagramEngine\Editor\BaseNode.cs" />
+    <Compile Include="Assets\DiagramEngine\Editor\CalcNode.cs" />
+    <Compile Include="Assets\DiagramEngine\Editor\ClassNode.cs" />
+    <Compile Include="Assets\DiagramEngine\Editor\ComparisonNode.cs" />
+    <Compile Include="Assets\DiagramEngine\Editor\DiagramEngineGUI.cs" />
+    <Compile Include="Assets\DiagramEngine\Editor\EditorGUISplitView.cs" />
+    <Compile Include="Assets\DiagramEngine\Editor\GameObjectActive.cs" />
+    <Compile Include="Assets\DiagramEngine\Editor\GameObjectDistance.cs" />
+    <Compile Include="Assets\DiagramEngine\Editor\InputNode.cs" />
+    <Compile Include="Assets\DiagramEngine\Editor\LeftPanel.cs" />
+    <Compile Include="Assets\DiagramEngine\Editor\NodeEditor.cs" />
+    <Compile Include="Assets\DiagramEngine\Editor\OutputNode.cs" />
+    <Compile Include="Assets\DiagramEngine\Editor\RightPanel.cs" />
+    <Compile Include="Assets\DiagramEngine\Editor\TimerNode.cs" />
     <Reference Include="Unity.TextMeshPro.Editor">
       <HintPath>/Users/nicolasviveros/UnityProjects/UnityUML/Library/ScriptAssemblies/Unity.TextMeshPro.Editor.dll</HintPath>
     </Reference>

@@ -10,11 +10,16 @@ namespace DEngine.Controller {
         private List<BaseModel> entities;
         private bool isClass;
         public BaseModel currentEntity;
+        /// <summary>
+        /// This will be written to disk
+        /// </summary>
+        public List<BaseModel> allEntities;
 
         public ClassWrapper() {
 
             isClass = false;
             entities = new List<BaseModel>();
+            allEntities = new List<BaseModel>();
             currentEntity = null;
         }
 
@@ -50,7 +55,9 @@ namespace DEngine.Controller {
 
         public void FinishEntity() {
 
-            //Debug.Log(currentEntity.ToString());
+            if(entities.Count == 1) {
+                allEntities.Add(entities[entities.Count - 1]);
+            }
             entities.RemoveAt(entities.Count - 1);
             currentEntity = entities.Count > 0 ? entities[entities.Count - 1] : null;
             isClass = false;

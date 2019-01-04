@@ -96,7 +96,6 @@ namespace DEngine.Model {
             //    Debug.Log("PARAMETER: " + param[0] + " " + param[1]);
             //}
 
-            Debug.Log(wrapper.currentEntity.ToString());
             entities.RemoveAt(entities.Count - 1);
             wrapper.FinishEntity();
         }
@@ -113,9 +112,6 @@ namespace DEngine.Model {
         public override void ExitInterface_definition([NotNull] CSharpParser.Interface_definitionContext context) {
             base.ExitInterface_definition(context);
 
-            Debug.Log("HERE BOI-------------------");
-            Debug.Log(wrapper.currentEntity.GetType());
-            Debug.Log(wrapper.currentEntity.ToString());
             entities.RemoveAt(entities.Count - 1);
             wrapper.FinishEntity();
         }
@@ -349,6 +345,10 @@ namespace DEngine.Model {
             catch (Exception e) {
                 ItDoesNothing("Return type " + e.ToString());
             }
+        }
+
+        public List<BaseModel> GetAllEntities() {
+            return wrapper.allEntities;
         }
 
         private void ItDoesNothing(string e) {
