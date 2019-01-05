@@ -64,17 +64,20 @@ namespace DEngine.Controller {
         }
 
         public void AddMethodTo(Method method) {
-
+            if (currentEntity == null)
+                return;
             currentEntity.AddMethod(method);
         }
 
         public void AddAttributeTo(Model.Attribute attribute) {
-
+            if (currentEntity == null)
+                return;
             currentEntity.AddAttribute(attribute);
         }
 
         public void AddInterface(InterfaceModel interface_) {
-
+            if (currentEntity == null)
+                return;
             currentEntity.AddInterface(interface_);
         }
 
@@ -84,7 +87,8 @@ namespace DEngine.Controller {
         }
 
         public void AddConstructor(Constructor constructor) {
-
+            if (currentEntity == null)
+                return;
             var currentClass = (ClassModel)currentEntity;
             currentClass.AddConstructor(constructor);
             currentEntity = currentClass;

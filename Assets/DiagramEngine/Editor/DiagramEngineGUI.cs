@@ -11,7 +11,7 @@ public class DiagramEngineGUI : EditorWindow {
     /// <summary>
     /// Current instance of the window;
     /// </summary>
-    private static EditorWindow window = GetWindow<DiagramEngineGUI>();
+    private static EditorWindow window;
     //private static DiagramEngineGUI engineGUI = new DiagramEngineGUI();
     private static DiagramEngineGUI engineGUI = (DiagramEngineGUI)ScriptableObject.CreateInstance("DiagramEngineGUI");
 
@@ -22,7 +22,11 @@ public class DiagramEngineGUI : EditorWindow {
     /// <summary>
     /// This is the current list of entities that is going to be rendered;
     /// </summary>
-    private List<BaseModel> selectedEntities;
+    private List<BaseModel> selectedEntities = new List<BaseModel>();
+    /// <summary>
+    /// Position of the left panel scroll
+    /// </summary>
+    private Vector2 scrollPos = new Vector2();
 
     EditorGUISplitView horizontalSplitView = new EditorGUISplitView(EditorGUISplitView.Direction.Horizontal);
     EditorGUISplitView verticalSplitView = new EditorGUISplitView(EditorGUISplitView.Direction.Vertical);
@@ -38,14 +42,18 @@ public class DiagramEngineGUI : EditorWindow {
         return engineGUI;
     }
 
+    private void Awake() {
+
+        selected = 0;
+        selectedEntities = new List<BaseModel>();
+        LoadAllEntities();
+    }
+
     private void Run() {
 
         var window = GetWindow<DiagramEngineGUI>();
         window.position = new Rect(200, 200, 800, 400);
         window.minSize = new Vector2(200, 200);
-        selectedEntities = new List<BaseModel>();
-        selected = 0;
-        LoadAllEntities();
     }
 
     public void OnGUI() {
@@ -64,9 +72,9 @@ public class DiagramEngineGUI : EditorWindow {
     private void LoadAllEntities() {
 
         switch (selected) {
-
             case 0:
                 foreach(string file in SearchAllFilesInDirectory("./Assets/")) {
+                    var list = EntityWrapper.GetEntitiesFromFile(file);
                     selectedEntities.AddRange(EntityWrapper.GetEntitiesFromFile(file));
                 }
                 break;
@@ -98,11 +106,28 @@ public class DiagramEngineGUI : EditorWindow {
 
     void DrawLeftPanel() {
 
-        LeftPanel.DrawLeftPanel(ref selected,selectedEntities);
+        //if (selectedEntities == null) {
+        //    return;
+        //}
+        bool generateDiagram;
+        if(selectedEntities.Count == 0) {
+            generateDiagram = LeftPanel.DrawLeftPanel(ref selected, new List<BaseModel>(), ref scrollPos);
+            return;
+        }
+        generateDiagram = LeftPanel.DrawLeftPanel(ref selected,selectedEntities, ref scrollPos);
+
+        //if (generateDiagram) {
+            //TODO finish
+        //}
     }
 
     void DrawRightPanel() {
 
         RightPanel.DrawRightPanel(ref selected);
+    }
+
+    private void OnDestroy() {
+
+        scrollPos = new Vector2();
     }
 }
