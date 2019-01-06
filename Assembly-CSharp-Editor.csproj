@@ -75,6 +75,7 @@
     <Compile Include="Assets\DiagramEngine\Editor\NodeEditor.cs" />
     <Compile Include="Assets\DiagramEngine\Editor\OutputNode.cs" />
     <Compile Include="Assets\DiagramEngine\Editor\RightPanel.cs" />
+    <Compile Include="Assets\DiagramEngine\Editor\ScaleTest.cs" />
     <Compile Include="Assets\DiagramEngine\Editor\TimerNode.cs" />
     <Reference Include="Unity.TextMeshPro.Editor">
       <HintPath>/Users/nicolasviveros/UnityProjects/UnityUML/Library/ScriptAssemblies/Unity.TextMeshPro.Editor.dll</HintPath>

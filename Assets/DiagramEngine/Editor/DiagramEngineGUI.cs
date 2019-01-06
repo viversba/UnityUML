@@ -47,6 +47,7 @@ public class DiagramEngineGUI : EditorWindow {
         selected = 0;
         selectedEntities = new List<BaseModel>();
         LoadAllEntities();
+        RightPanel.Init();
     }
 
     private void Run() {
@@ -106,24 +107,18 @@ public class DiagramEngineGUI : EditorWindow {
 
     void DrawLeftPanel() {
 
-        //if (selectedEntities == null) {
-        //    return;
-        //}
         bool generateDiagram;
         if(selectedEntities.Count == 0) {
             generateDiagram = LeftPanel.DrawLeftPanel(ref selected, new List<BaseModel>(), ref scrollPos);
             return;
         }
         generateDiagram = LeftPanel.DrawLeftPanel(ref selected,selectedEntities, ref scrollPos);
-
-        //if (generateDiagram) {
-            //TODO finish
-        //}
     }
 
     void DrawRightPanel() {
 
-        RightPanel.DrawRightPanel(ref selected);
+        float begginingOfRightPanel = horizontalSplitView.splitNormalizedPosition * position.width;
+        RightPanel.DrawRightPanel(ref selected, maxSize, begginingOfRightPanel);
     }
 
     private void OnDestroy() {

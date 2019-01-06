@@ -10,6 +10,7 @@ namespace DEngine.Model {
         protected List<Attribute> attributes;
         protected List<InterfaceModel> interfaces;
         protected BaseModel container;
+        protected bool isClass;
 
         public BaseModel() {
 
@@ -18,6 +19,15 @@ namespace DEngine.Model {
             attributes = new List<Attribute>();
             interfaces = new List<InterfaceModel>();
             container = null;
+            isClass = false;
+        }
+
+        /// <summary>
+        /// Set the type of entity to an interface or a class
+        /// </summary>
+        /// <param name="isClass"><c>true</c> if the entity is a class and false for an interface.</param>
+        public void SetTypeOfEntity(bool isClass) {
+            this.isClass = isClass;
         }
 
         public string GetName() {

@@ -50,6 +50,8 @@ namespace DEngine.Model {
             wrapper = new ClassWrapper();
         }
 
+        #region Class Handling
+
         public override void EnterClass_definition([NotNull] CSharpParser.Class_definitionContext context) {
             base.EnterClass_definition(context);
             
@@ -74,43 +76,12 @@ namespace DEngine.Model {
                 ItDoesNothing("Class parameters" + e);
             }
 
-
-            // TODO set the container
-            // Add the last discovered class to the class pile
-
             entities.Add(className);
-
             wrapper.AddClass(className);
         }
 
         public override void ExitClass_definition([NotNull] CSharpParser.Class_definitionContext context) {
             base.ExitClass_definition(context);
-
-            //TODO Here is going to lie the class termination code
-            //Debug.Log("TYPE: " + classAttributes);
-            //foreach (string modifier in classModifiers) {
-            //    Debug.Log("MODIFIER: " + modifier);
-            //}
-            //Debug.Log("CLASS: " + className);
-            //foreach(var param in classParameters) {
-            //    Debug.Log("PARAMETER: " + param[0] + " " + param[1]);
-            //}
-
-            entities.RemoveAt(entities.Count - 1);
-            wrapper.FinishEntity();
-        }
-
-        public override void EnterInterface_definition([NotNull] CSharpParser.Interface_definitionContext context) {
-            base.EnterInterface_definition(context);
-
-            interfaceName = context.identifier().GetText();
-
-            entities.Add(interfaceName);
-            wrapper.AddInterface(interfaceName);
-        }
-
-        public override void ExitInterface_definition([NotNull] CSharpParser.Interface_definitionContext context) {
-            base.ExitInterface_definition(context);
 
             entities.RemoveAt(entities.Count - 1);
             wrapper.FinishEntity();
@@ -131,7 +102,7 @@ namespace DEngine.Model {
             // Get the class modifiers
             try {
                 var members = context.all_member_modifiers().all_member_modifier();
-                foreach(var member in members) {
+                foreach (var member in members) {
                     classModifiers.Add(member.GetText());
                 }
             }
@@ -145,13 +116,13 @@ namespace DEngine.Model {
 
             parameters.Clear();
             constructor = context.identifier().GetText();
-            string[] pars = { "", ""};
+            string[] pars = { "", "" };
             try {
                 pars[0] = context.formal_parameter_list().parameter_array().GetText();
                 pars[1] = "";
                 parameters.Add(pars);
             }
-            catch(Exception e) {
+            catch (Exception e) {
 
                 ItDoesNothing("Constructor " + e);
                 try {
@@ -164,7 +135,7 @@ namespace DEngine.Model {
                         parameters.Add(pars);
                     }
                 }
-                catch(Exception e1) {
+                catch (Exception e1) {
                     ItDoesNothing("Nested Constructor " + e1);
                 }
             }
@@ -231,7 +202,6 @@ namespace DEngine.Model {
             base.EnterProperty_declaration(context);
 
             propertyName = context.member_name().GetText();
-            //Debug.Log("PROPERTY: " + context.member_name().GetText());
         }
 
         public override void ExitProperty_declaration([NotNull] CSharpParser.Property_declarationContext context) {
@@ -242,12 +212,6 @@ namespace DEngine.Model {
             ClassWrapper.ModifierMatch(modifiers, ref mod, ref attributeType);
 
             wrapper.AddAttributeTo(new Attribute(propertyName, mod, type, attributeType));
-
-            //foreach(var modifier in modifiers) {
-            //    Debug.Log("MODIFIER: " + modifier);
-            //}
-            //Debug.Log("TYPE: " + type + "\n");
-            //Debug.Log("NAME: " + name + "\n");
         }
 
         public override void EnterField_declaration([NotNull] CSharpParser.Field_declarationContext context) {
@@ -305,16 +269,9 @@ namespace DEngine.Model {
             AttributeType attributeType = AttributeType.NONE;
             ClassWrapper.ModifierMatch(modifiers, ref mod, ref attributeType);
 
-            foreach(var constant in constants) {
+            foreach (var constant in constants) {
                 wrapper.AddAttributeTo(new Attribute(constant, mod, type, attributeType));
             }
-            //foreach (var modifier in modifiers) {
-            //    Debug.Log("MODIFIER: " + modifier);
-            //}
-            //Debug.Log("const\nTYPE: " + type + "\n");
-            //foreach (var constant in constants) {
-            //    Debug.Log("CONSTANT: " + constant);
-            //}
         }
 
         public override void EnterClass_member_declaration([NotNull] CSharpParser.Class_member_declarationContext context) {
@@ -346,6 +303,74 @@ namespace DEngine.Model {
                 ItDoesNothing("Return type " + e.ToString());
             }
         }
+
+        #endregion
+
+        #region Interface Handling
+
+        public override void EnterInterface_definition([NotNull] CSharpParser.Interface_definitionContext context) {
+            base.EnterInterface_definition(context);
+
+            interfaceName = context.identifier().GetText();
+
+            entities.Add(interfaceName);
+            wrapper.AddInterface(interfaceName);
+        }
+
+        public override void ExitInterface_definition([NotNull] CSharpParser.Interface_definitionContext context) {
+            base.ExitInterface_definition(context);
+
+            entities.RemoveAt(entities.Count - 1);
+            wrapper.FinishEntity();
+        }
+
+        public override void EnterInterface_member_declaration([NotNull] CSharpParser.Interface_member_declarationContext context) {
+
+            Debug.Log(interfaceName);
+
+            // Type Handling
+            try {
+                type = context.type().GetText();
+            }
+            catch(Exception e) {
+                type = context.VOID().GetText();
+            }
+
+            // Name Handling
+            methodName = context.identifier().GetText();
+
+            // Parameters Handling
+            string[] pars = new string[2];
+            try {
+                pars[0] = context.formal_parameter_list().parameter_array().GetText();
+                pars[1] = "NONE";
+                parameters.Add(pars);
+            }
+            catch (Exception e) {
+
+                ItDoesNothing("Method " + e);
+                try {
+                    // This is going to hold every parameter of the list of parameters
+                    var params_ = context.formal_parameter_list().fixed_parameters().fixed_parameter();
+                    foreach (var param in params_) {
+                        // For each one, extract the type of parameter and the name
+                        pars[0] = param.arg_declaration().type().GetText();
+                        pars[1] = param.arg_declaration().identifier().GetText();
+                        parameters.Add(pars);
+                    }
+                }
+                catch (Exception e1) {
+                    ItDoesNothing("Nested Method " + e1);
+                }
+            }
+        }
+
+        public override void ExitInterface_member_declaration([NotNull] CSharpParser.Interface_member_declarationContext context) {
+
+            wrapper.AddMethodTo(new Method(methodName, AccessModifier.NONE, type, MethodType.NONE));
+        }
+
+        #endregion
 
         public List<BaseModel> GetAllEntities() {
             return wrapper.allEntities;

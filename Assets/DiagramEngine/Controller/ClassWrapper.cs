@@ -31,6 +31,7 @@ namespace DEngine.Controller {
             if (numberOfEntities > 1) {
                 currentEntity.SetContainer(entities[numberOfEntities - 2]);
             }
+            currentEntity.SetTypeOfEntity(true);
             isClass = true;
         }
 
@@ -79,6 +80,7 @@ namespace DEngine.Controller {
             if (currentEntity == null)
                 return;
             currentEntity.AddInterface(interface_);
+            currentEntity.SetTypeOfEntity(false);
         }
 
         public ClassModel GetClass() {
