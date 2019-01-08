@@ -18,7 +18,7 @@ public class NodeEditor : EditorWindow {
 	//variable to determine if we are on a transition mode
 	private bool makeTransitionMode = false;
 
-	private System.Diagnostics.Stopwatch stopWatch = new System.Diagnostics.Stopwatch();
+	//private System.Diagnostics.Stopwatch stopWatch = new System.Diagnostics.Stopwatch();
 
 	float PanY;
 	float PanX;
@@ -31,23 +31,23 @@ public class NodeEditor : EditorWindow {
 	static void ShowEditor() {
 		NodeEditor editor  = EditorWindow.GetWindow<NodeEditor>();
 
-		editor.stopWatch.Start ();
+		//editor.stopWatch.Start ();
 	}
 
 	void Update()
 	{
-		long dTime = stopWatch.ElapsedMilliseconds;
+		//long dTime = stopWatch.ElapsedMilliseconds;
 
-		float deltaTime = ((float)dTime) / 1000;
+		//float deltaTime = ((float)dTime) / 1000;
 
-		foreach(BaseNode b in windows)
-		{
-			b.Tick(deltaTime);
+		//foreach(BaseNode b in windows)
+		//{
+		//	b.Tick(deltaTime);
 
-		}
+		//}
 
-		stopWatch.Reset();
-		stopWatch.Start();
+		//stopWatch.Reset();
+		//stopWatch.Start();
 		
 		Repaint ();
 	}

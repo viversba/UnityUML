@@ -37,6 +37,7 @@ public class EditorGUISplitView
 			scrollPosition = GUILayout.BeginScrollView(scrollPosition, GUILayout.Width(availableRect.width * splitNormalizedPosition));
 		else
 			scrollPosition = GUILayout.BeginScrollView(scrollPosition, GUILayout.Height(availableRect.height * splitNormalizedPosition));
+
 	}
 
 	public void Split() {
@@ -82,7 +83,11 @@ public class EditorGUISplitView
 				splitNormalizedPosition = Event.current.mousePosition.x / availableRect.width;
 			else
 				splitNormalizedPosition = Event.current.mousePosition.y / availableRect.height;
-		}
+
+            //Limiters
+            splitNormalizedPosition = splitNormalizedPosition < 0.15f ? 0.15f : splitNormalizedPosition;
+            splitNormalizedPosition = splitNormalizedPosition > 0.85f ? 0.85f : splitNormalizedPosition;
+        }
 		if(Event.current.type == EventType.MouseUp)
 			resize = false;        
 	}
