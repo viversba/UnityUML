@@ -326,7 +326,7 @@ namespace DEngine.Model {
 
         public override void EnterInterface_member_declaration([NotNull] CSharpParser.Interface_member_declarationContext context) {
 
-            Debug.Log(interfaceName);
+            //Debug.Log(interfaceName);
 
             // Type Handling
             try {

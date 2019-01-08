@@ -60,7 +60,7 @@ namespace DEngine.Model {
 
         public List<Method> GetMethods() {
 
-            return methods;
+            return methods ?? new List<Method>();
         }
 
         public void AddInterface(InterfaceModel interface_) {
@@ -70,12 +70,12 @@ namespace DEngine.Model {
 
         public List<Attribute> GetAttributes() {
 
-            return attributes;
+            return attributes ?? new List<Attribute>();
         }
 
         public List<InterfaceModel> GetInterfaces() {
 
-            return interfaces;
+            return interfaces ?? new List<InterfaceModel>();
         }
 
         public void SetContainer(BaseModel container) {
@@ -93,6 +93,10 @@ namespace DEngine.Model {
                 description += attribute.ToString() + "\n";
             }
             return description;
+        }
+
+        public bool IsClass() {
+            return isClass;
         }
 
         ~BaseModel() {

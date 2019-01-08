@@ -31,13 +31,21 @@ public class LeftPanel : EditorWindow{
         switch (selected) {
 
             case 0:
-                GUILayout.Label("Found Classe/Interfaces: ", EditorStyles.boldLabel);
-                scrollPos = EditorGUILayout.BeginScrollView(scrollPos);
-                foreach (var entity in selectedEntities) {
-                    GUILayout.Label(entity.GetName());
+               
+                // Render entities only if there are
+                if(selectedEntities.Count == 0) {
+                    GUILayout.Label("There's nothing to render here :(");
+                    GUILayout.Label("Add some scripts and reopen the window");
                 }
-                EditorGUILayout.EndScrollView();
-                generateDiagramButton = GUILayout.Button("Generate!");
+                else {
+                    GUILayout.Label("Found Classe/Interfaces: ", EditorStyles.boldLabel);
+                    scrollPos = EditorGUILayout.BeginScrollView(scrollPos);
+                    foreach (var entity in selectedEntities) {
+                        GUILayout.Label(entity.GetName());
+                    }
+                    EditorGUILayout.EndScrollView();
+                    generateDiagramButton = GUILayout.Button("Generate!");
+                }
                 break;
             case 1:
                 GUILayout.Label("Coming Soon!");
@@ -56,7 +64,12 @@ public class LeftPanel : EditorWindow{
 
         selected = 0;
         selectedEntities = new List<BaseModel>();
+        
         LoadAllEntities();
+    }
+
+    public List<BaseModel> GetSelectedEntities() {
+        return selectedEntities;
     }
 
     private void LoadAllEntities() {
@@ -85,7 +98,8 @@ public class LeftPanel : EditorWindow{
                 files.Add(file);
             }
             foreach (string dir in Directory.GetDirectories(directory)) {
-                files.AddRange(SearchAllFilesInDirectory(dir));
+                if(dir != "./Assets/DiagramEngine")
+                    files.AddRange(SearchAllFilesInDirectory(dir));
             }
         }
         catch (Exception e) {

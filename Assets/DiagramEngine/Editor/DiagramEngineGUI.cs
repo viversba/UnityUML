@@ -29,6 +29,10 @@ public class DiagramEngineGUI : EditorWindow {
     /// Reference to the right panel
     /// </summary>
     private RightPanel rightPanel;
+    /// <summary>
+    /// Tells if the Generate Diagram button has already been pressed
+    /// </summary>
+    private bool drawNodes;
 
     EditorGUISplitView horizontalSplitView = new EditorGUISplitView(EditorGUISplitView.Direction.Horizontal);
     EditorGUISplitView verticalSplitView = new EditorGUISplitView(EditorGUISplitView.Direction.Vertical);
@@ -41,7 +45,7 @@ public class DiagramEngineGUI : EditorWindow {
 
     private static DiagramEngineGUI GetInstance() {
 
-        DiagramEngineGUI engine = engineGUI == null ? (DiagramEngineGUI)CreateInstance("DiagramEngineGUI") : engineGUI;
+        DiagramEngineGUI engine = engineGUI ?? (DiagramEngineGUI)CreateInstance("DiagramEngineGUI");
         return engine;
     }
 
@@ -55,19 +59,26 @@ public class DiagramEngineGUI : EditorWindow {
         window.position = new Rect(200, 200, 800, 400);
         window.minSize = new Vector2(200, 200);
 
+        drawNodes = false;
         leftPanel = leftPanel ?? (LeftPanel)ScriptableObject.CreateInstance("LeftPanel");
         rightPanel = rightPanel ?? (RightPanel)ScriptableObject.CreateInstance("RightPanel");
     }
 
     public void OnGUI() {
         horizontalSplitView.BeginSplitView();
-        leftPanel.DrawLeftPanel();
+        drawNodes = leftPanel.DrawLeftPanel();
         horizontalSplitView.Split();
         //verticalSplitView.BeginSplitView();
         //DrawRightPanel();
         //verticalSplitView.Split();
         float begginingOfRightPanel = horizontalSplitView.splitNormalizedPosition * position.width;
-        rightPanel.DrawRightPanel(maxSize, begginingOfRightPanel);
+        rightPanel.SetBegginingOfRightPanel(begginingOfRightPanel);
+        if (drawNodes) {
+            selectedEntities = leftPanel.GetSelectedEntities();
+            rightPanel.DrawNodes(selectedEntities);
+            drawNodes = false;
+        }
+        rightPanel.DrawRightPanel(maxSize);
         //verticalSplitView.EndSplitView();
         horizontalSplitView.EndSplitView();
         Repaint();

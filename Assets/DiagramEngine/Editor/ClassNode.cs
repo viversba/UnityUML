@@ -19,17 +19,30 @@ namespace DEngine.View {
             windowTitle = title;
             hasInputs = false;
             numberOfLines = 0;
-            Initialize();
         }
 
-        public ClassNode() {
-            windowTitle = "Generic Class";
-            hasInputs = false;
+        public ClassNode(Model:: ClassModel classModel) {
+            windowTitle = classModel.GetName();
+            //windowTitle = "Generic Class";
+            //hasInputs = false;
+            attributes.AddRange(classModel.GetAttributes());
+            methods.AddRange(classModel.GetMethods());
+            constructors.AddRange(classModel.GetConstructors());
             numberOfLines = 0;
-            Initialize();
         }
 
-        private void Initialize() { 
+        public void Init(Model::ClassModel classModel) {
+            windowTitle = classModel.GetName();
+            //windowTitle = "Generic Class";
+            //hasInputs = false;
+            attributes = new List<Model::Attribute>();
+            methods = new List<Model::Method>();
+            constructors = new List<Model::Constructor>();
+
+            attributes.AddRange(classModel.GetAttributes());
+            methods.AddRange(classModel.GetMethods());
+            constructors.AddRange(classModel.GetConstructors());
+            numberOfLines = 0;
         }
 
         public void AddLine() {

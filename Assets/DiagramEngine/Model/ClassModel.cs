@@ -46,7 +46,7 @@ namespace DEngine.Model {
 
         public List<Constructor> GetConstructors() {
 
-            return constructors;
+            return constructors ?? new List<Constructor>();
         }
 
         public void ClearConstructors() {
