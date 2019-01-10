@@ -142,7 +142,7 @@ public class RightPanel : EditorWindow {
 
         Event e = Event.current;
         mousePos = e.mousePosition;
-        float minDistance = 7;
+        float minDistance = 2;
 
         if (selectedWindow != null) {
             Rect windowRect = selectedWindow.windowRect;
