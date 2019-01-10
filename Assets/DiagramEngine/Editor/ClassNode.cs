@@ -12,6 +12,11 @@ namespace DEngine.View {
         private List<Model :: Method> methods = new List<Model :: Method>();
         private List<Model :: Constructor> constructors = new List<Model :: Constructor>();
 
+        /// <summary>
+        /// Scroll position of the list of entities to render
+        /// </summary>
+        private Vector2 scrollPos;
+
         public int numberOfLines;
 
         public ClassNode(string title) {
@@ -39,6 +44,8 @@ namespace DEngine.View {
             methods = new List<Model::Method>();
             constructors = new List<Model::Constructor>();
 
+            scrollPos = new Vector2();
+
             attributes.AddRange(classModel.GetAttributes());
             methods.AddRange(classModel.GetMethods());
             constructors.AddRange(classModel.GetConstructors());
@@ -50,7 +57,6 @@ namespace DEngine.View {
         }
 
         public override void DrawWindow() {
-            base.DrawWindow();
 
             var header = new GUIStyle();
             var public_ = new GUIStyle();
@@ -61,6 +67,7 @@ namespace DEngine.View {
             private_.normal.textColor = Color.red;
             protected_.normal.textColor = Color.magenta;
 
+            scrollPos = EditorGUILayout.BeginScrollView(scrollPos);
             GUILayout.Label("Attributes", header);
             foreach (Model :: Attribute attribute in attributes) {
                 GUILayout.Label(attribute.ToString());
@@ -82,6 +89,7 @@ namespace DEngine.View {
             foreach (Model :: Constructor constructor in constructors) {
                 GUILayout.Label(constructor.ToString());
             }
+            EditorGUILayout.EndScrollView();
         }
 
         public override void Tick(float deltaTime) {

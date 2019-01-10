@@ -15,7 +15,6 @@ public class DiagramEngineGUI : EditorWindow {
     /// <summary>
     /// Instance of itself
     /// </summary>
-    //private static DiagramEngineGUI engineGUI = (DiagramEngineGUI)ScriptableObject.CreateInstance("DiagramEngineGUI");
     private static DiagramEngineGUI engineGUI;
     /// <summary>
     /// This is the current list of entities that is going to be rendered;
@@ -44,7 +43,7 @@ public class DiagramEngineGUI : EditorWindow {
     }
 
     private static DiagramEngineGUI GetInstance() {
-
+        
         DiagramEngineGUI engine = engineGUI ?? (DiagramEngineGUI)CreateInstance("DiagramEngineGUI");
         return engine;
     }
@@ -55,9 +54,10 @@ public class DiagramEngineGUI : EditorWindow {
 
     private void Run() {
 
-        var window = GetWindow<DiagramEngineGUI>();
+        window = GetWindow<DiagramEngineGUI>();
         window.position = new Rect(200, 200, 800, 400);
         window.minSize = new Vector2(200, 200);
+
 
         drawNodes = false;
         leftPanel = leftPanel ?? (LeftPanel)ScriptableObject.CreateInstance("LeftPanel");
@@ -73,12 +73,15 @@ public class DiagramEngineGUI : EditorWindow {
         //verticalSplitView.Split();
         float begginingOfRightPanel = horizontalSplitView.splitNormalizedPosition * position.width;
         rightPanel.SetBegginingOfRightPanel(begginingOfRightPanel);
+        //Rect rightPanelRect = new Rect(begginingOfRightPanel, position.y, position.width - begginingOfRightPanel, position.height);
+        //rightPanel.SetRightPanelRect(rightPanelRect);
+        //rightPanel.SetRightPanelRect(horizontalSplitView.availableRect);
         if (drawNodes) {
             selectedEntities = leftPanel.GetSelectedEntities();
             rightPanel.DrawNodes(selectedEntities);
             drawNodes = false;
         }
-        rightPanel.DrawRightPanel(maxSize);
+        rightPanel.DrawRightPanel(new Vector2(position.width, position.height));
         //verticalSplitView.EndSplitView();
         horizontalSplitView.EndSplitView();
         Repaint();

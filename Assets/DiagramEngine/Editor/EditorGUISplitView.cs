@@ -14,7 +14,7 @@ public class EditorGUISplitView
 	public float splitNormalizedPosition;
 	bool resize;
 	public Vector2 scrollPosition;
-	Rect availableRect;
+	public Rect availableRect;
 
 
 	public EditorGUISplitView(Direction splitDirection) {
