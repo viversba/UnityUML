@@ -197,7 +197,6 @@ public class NodeEditor : EditorWindow {
 		//draw each curve for every node
 		foreach(BaseNode n in windows) {
 			n.DrawCurves();
-		
 		}
 
 		//draw the actual windows

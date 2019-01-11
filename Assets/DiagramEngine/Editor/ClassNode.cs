@@ -13,6 +13,8 @@ namespace DEngine.View {
         private List<Model :: Attribute> attributes = new List<Model :: Attribute>();
         private List<Model :: Method> methods = new List<Model :: Method>();
         private List<Model :: Constructor> constructors = new List<Model :: Constructor>();
+        private List<InterfaceNode> interfaces = new List<InterfaceNode>();
+        private ClassNode superClass;
 
         /// <summary>
         /// Scroll position of the list of entities to render
@@ -26,6 +28,7 @@ namespace DEngine.View {
             windowTitle = title;
             hasInputs = false;
             numberOfLines = 0;
+            superClass = null;
         }
 
         public ClassNode(Model:: ClassModel classModel) {
@@ -36,6 +39,7 @@ namespace DEngine.View {
             methods.AddRange(classModel.GetMethods());
             constructors.AddRange(classModel.GetConstructors());
             numberOfLines = 0;
+            superClass = null;
         }
 
         public void Init(Model::ClassModel classModel) {
@@ -45,7 +49,9 @@ namespace DEngine.View {
             attributes = new List<Model::Attribute>();
             methods = new List<Model::Method>();
             constructors = new List<Model::Constructor>();
+            interfaces = new List<InterfaceNode>();
             superClassName = "";
+            superClass = null;
 
             scrollPos = new Vector2();
 
@@ -56,11 +62,32 @@ namespace DEngine.View {
             numberOfLines = 0;
         }
 
+        /// <summary>
+        /// Assigns the super class window.
+        /// </summary>
+        /// <param name="superClass">Super class.</param>
+        public void SetSuperClassNode(ClassNode superClass) {
+            this.superClass = superClass;
+        }
+
+        /// <summary>
+        /// Assigns windows of other entities
+        /// </summary>
+        public void AssignRelations() {
+
+            Debug.Log(windowTitle);
+        }
+
         public void AddLine() {
             numberOfLines++;
         }
 
         public override void DrawWindow() {
+
+            if(attributes.Count == 0 && methods.Count == 0 && constructors.Count == 0) {
+                windowRect.height = 50;
+                return;
+            }
 
             var header = new GUIStyle();
             var public_ = new GUIStyle();
@@ -72,41 +99,66 @@ namespace DEngine.View {
             protected_.normal.textColor = Color.magenta;
 
             scrollPos = EditorGUILayout.BeginScrollView(scrollPos);
-            GUILayout.Label("Attributes", header);
-            foreach (Model :: Attribute attribute in attributes) {
-                GUILayout.Label(attribute.ToString());
+
+            // Display attributes
+            if(attributes.Count > 0) {
+                GUILayout.Label("Attributes", header);
+                foreach (Model::Attribute attribute in attributes) {
+                    GUILayout.Label(attribute.ToString());
+                }
             }
-            GUILayout.Label("Methods", header);
-            foreach (Model :: Method method in methods) {
-                GUILayout.BeginHorizontal();
-                if (method.modifier == Model :: AccessModifier.PRIVATE) {
-                    GUILayout.Label("- ", private_, GUILayout.Width(5));
-                    GUILayout.Label(method.ToString() + "()");
+
+            // Display Methods
+            if(methods.Count > 0) {
+                GUILayout.Label("Methods", header);
+                foreach (Model::Method method in methods) {
+                    GUILayout.BeginHorizontal();
+                    if (method.modifier == Model::AccessModifier.PRIVATE) {
+                        GUILayout.Label("- ", private_, GUILayout.Width(5));
+                        GUILayout.Label(method.ToString() + "()");
+                    }
+                    else if (method.modifier == Model::AccessModifier.PUBLIC) {
+                        GUILayout.Label("+ ", public_, GUILayout.Width(5));
+                        GUILayout.Label(method.ToString() + "()");
+                    }
+                    else if (method.modifier == Model::AccessModifier.PROTECTED) {
+                        GUILayout.Label("# ", protected_, GUILayout.Width(5));
+                        GUILayout.Label(method.ToString() + "()");
+                    }
+                    else {
+                        GUILayout.Label(method.ToString() + "()");
+                    }
+                    GUILayout.EndHorizontal();
                 }
-                else if (method.modifier == Model :: AccessModifier.PUBLIC) {
-                    GUILayout.Label("+ ", public_, GUILayout.Width(5));
-                    GUILayout.Label(method.ToString() + "()");
-                }
-                else if (method.modifier == Model::AccessModifier.PROTECTED) {
-                    GUILayout.Label("# ", protected_, GUILayout.Width(5));
-                    GUILayout.Label(method.ToString() + "()");
-                }
-                else {
-                    GUILayout.Label(method.ToString() + "()");
-                }
-                GUILayout.EndHorizontal();
             }
-            GUILayout.Label("Constructors", header);
-            foreach (Model :: Constructor constructor in constructors) {
-                GUILayout.Label(constructor.ToString());
+
+            //Display Constructors
+            if(constructors.Count > 0) {
+                GUILayout.Label("Constructors", header);
+                foreach (Model::Constructor constructor in constructors) {
+                    GUILayout.Label(constructor.ToString());
+                }
             }
             EditorGUILayout.EndScrollView();
+        }
+
+        public string GetSuperClassName() {
+            return superClassName;
         }
 
         public override void Tick(float deltaTime) {
         }
 
         public override void DrawCurves() {
+
+            if (superClass != null) {
+                Rect superClassRect = superClass.windowRect;
+                superClassRect.y = superClass.windowRect.y + superClass.windowRect.height / 2;
+                superClassRect.height = 1;
+                superClassRect.width = 1;
+                RightPanel.DrawNodeCurve(windowRect, superClassRect);
+            }
+
         }
     }
 

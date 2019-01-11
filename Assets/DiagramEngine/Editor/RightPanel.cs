@@ -5,6 +5,7 @@ using UnityEditor;
 using System.IO;
 using DEngine.Model;
 using DEngine.View;
+using System;
 
 public class RightPanel : EditorWindow {
 
@@ -115,6 +116,12 @@ public class RightPanel : EditorWindow {
 
                 windows[i].windowRect = GUI.Window(i, windows[i].windowRect, DrawNodeWindow, windows[i].windowTitle);
             }
+
+            //draw each curve for every node
+            foreach (BaseNode n in windows) {
+                n.DrawCurves();
+            }
+
             EndWindows();
         }
     }
@@ -123,15 +130,16 @@ public class RightPanel : EditorWindow {
     /// <summary>
     /// Sets the local list of windows so that all entities have a window
     /// </summary>
-    /// <param name="entities">List of entities.</param>
-    public void CreateWindowList(List<BaseModel> entities) {
+    /// <param name="selectedEntities">List of entities.</param>
+    public void CreateWindowList(List<BaseModel> selectedEntities) {
 
-        if (entities != null || entities.Count != 0) {
+        if (selectedEntities != null || selectedEntities.Count != 0) {
             drawNodes = true;
-            foreach (BaseModel entity in entities) {
+            foreach (BaseModel entity in selectedEntities) {
                 // Draw Classes
                 if (entity.IsClass()) {
                     ClassNode classNode = (ClassNode)CreateInstance("ClassNode");
+                    ClassModel classModel = (ClassModel)entity;
                     classNode.Init((ClassModel)entity);
                     classNode.windowRect = new Rect(100f + begginingOfRightPanel, 100f, 150f, 150f);
                     windows.Add(classNode);
@@ -142,6 +150,17 @@ public class RightPanel : EditorWindow {
                     interfaceNode.Init((InterfaceModel)entity);
                     interfaceNode.windowRect = new Rect(100f + begginingOfRightPanel, 100f, 170f, 150f);
                     windows.Add(interfaceNode);
+                }
+            }
+
+            foreach(BaseNode window in windows) {
+
+                try {
+                    ClassNode classNode = (ClassNode)window;
+                    classNode.SetSuperClassNode(GetWindowWithTitle(classNode.GetSuperClassName()));
+                }
+                catch(Exception e) { 
+                    
                 }
             }
         }
@@ -228,6 +247,47 @@ public class RightPanel : EditorWindow {
 
     public void SetRightPanelRect(Rect rightPanelRect) {
         this.rightPanelRect = rightPanelRect;
+    }
+
+    //draw the node curve from the middle of the start Rect to the middle of the end rect 
+    public static void DrawNodeCurve(Rect start, Rect end) {
+
+        Vector3 startPos = new Vector3(start.x + start.width / 2, start.y + start.height / 2, 0);
+        Vector3 endPos = new Vector3(end.x + end.width / 2, end.y + end.height / 2, 0);
+        Vector3 startTan = startPos + Vector3.right * 50;
+        Vector3 endTan = endPos + Vector3.left * 50;
+        Color shadowCol = new Color(0, 0, 0, 0.06f);
+
+        for (int i = 0; i < 3; i++) {// Draw a shadow
+            Handles.DrawBezier(startPos, endPos, startTan, endTan, shadowCol, null, (i + 1) * 5);
+        }
+        Handles.DrawBezier(startPos, endPos, startTan, endTan, Color.red, null, 1);
+
+        // Draw the handle for Inheritance type
+        float triangleHeight = 5f * 2/3;
+        float positionX = end.x - 5;
+        float positionY = end.y;
+        Vector3[] positions = {
+            new Vector3(triangleHeight + positionX, positionY),
+            new Vector3(-triangleHeight + positionX, triangleHeight + positionY),
+            new Vector3(-triangleHeight + positionX, -triangleHeight + positionY),
+            new Vector3(triangleHeight + positionX, positionY)};
+        Handles.DrawPolyLine(positions);
+    }
+
+    private ClassNode GetWindowWithTitle(string title) { 
+        
+        foreach(BaseNode window in windows) {
+            try {
+                ClassNode classNode = (ClassNode)window;
+                if (classNode.windowTitle == title) {
+                    return classNode;
+                }
+            }
+            catch {
+            }
+        }
+        return null;
     }
 
     //function that draws the windows
