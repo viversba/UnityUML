@@ -4,6 +4,7 @@ using UnityEngine;
 //using UnityEngine.
 using UnityEditor;
 using DEngine.Model;
+using DEngine.Controller;
 using System;
 using System.IO;
 
@@ -22,6 +23,11 @@ public class LeftPanel : EditorWindow{
     /// </summary>
     private int selected = 0;
 
+
+    /// <summary>
+    /// Draws the left panel.
+    /// </summary>
+    /// <returns><c>true</c>, if the GenerateDiagram button was pressed, <c>false</c> otherwise.</returns>
     public bool DrawLeftPanel() {
 
         bool generateDiagramButton = false;
@@ -66,8 +72,13 @@ public class LeftPanel : EditorWindow{
         selectedEntities = new List<BaseModel>();
         
         LoadAllEntities();
+        ClassWrapper.RelateEntities(ref selectedEntities);
     }
 
+    /// <summary>
+    /// Gets the selected entities.
+    /// </summary>
+    /// <returns>The selected entities.</returns>
     public List<BaseModel> GetSelectedEntities() {
         return selectedEntities;
     }

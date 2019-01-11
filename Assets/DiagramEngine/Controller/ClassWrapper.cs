@@ -35,6 +35,15 @@ namespace DEngine.Controller {
             isClass = true;
         }
 
+        public void SetSuperClassName(string superClassName) {
+
+            if (currentEntity == null)
+                return;
+            ClassModel currentClass = (ClassModel)currentEntity;
+            currentClass.SetSuperClassName(superClassName);
+            currentEntity = currentClass;
+        }
+
         public void AddInterface(string name) {
 
             entities.Add(new InterfaceModel(name));
@@ -141,6 +150,65 @@ namespace DEngine.Controller {
                 }
             }
         }
-    }
 
+
+        /// <summary>
+        /// Given a list of BaseModels it relates all elements as they are connected
+        /// </summary>
+        /// <param name="selectedEntities">List of entities</param>
+        public static void RelateEntities(ref List<BaseModel> selectedEntities) {
+
+            for (int i = 0; i < selectedEntities.Count; i++) {
+
+                // Checks for class
+                if (selectedEntities[i].IsClass()) {
+                    ClassModel classModel = (ClassModel)selectedEntities[i];
+                    // The class has a super class
+                    if (classModel.GetSuperClassName() != "") {
+                        // Check for the Super Class to existe
+                        int index = FindEnttyWithName(ref selectedEntities, classModel.GetSuperClassName());
+                        // The fact that the entity was not found doesn't mean it is a class.
+                        // But if it is not in the files, the screw it, i'll say it is a class
+                        if(index == -1) {
+                            // If it doesn't exist, then create a new one because a window of it is still needed
+                            ClassModel superClass = new ClassModel(classModel.GetSuperClassName());
+                            superClass.SetTypeOfEntity(true);
+                            classModel.SetSuperClass(superClass);
+                            selectedEntities.Add(superClass);
+                        }
+                        else {
+                            //Check if the entity is a class  or an interface and handle each one
+                            if (selectedEntities[index].IsClass()) {
+                                classModel.SetSuperClass((ClassModel)selectedEntities[index]);
+                            }
+                            else {
+                                InterfaceModel interfaceModel = new InterfaceModel(classModel.GetSuperClassName());
+                                interfaceModel.SetTypeOfEntity(false);
+                                classModel.AddInterface(interfaceModel);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Finds the index of the Class with a name X in a list of BaseEntities
+        /// </summary>
+        /// <returns>The class with name.</returns>
+        /// <param name="entities">List of entities.</param>
+        /// <param name="entityName">Class name.</param>
+        public static int FindEnttyWithName(ref List<BaseModel> entities, string entityName) {
+
+            // Iterate trough all the models to find class with name "className"
+            for (int i=0; i<entities.Count; i++) { 
+                // If the entity is a class and the name 
+                if(entities[i].GetName() == entityName) {
+                    return i;
+                }
+            }
+            // If not found, then return null
+            return -1;
+        }
+    }
 }

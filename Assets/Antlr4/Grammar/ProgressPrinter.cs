@@ -22,6 +22,7 @@ namespace DEngine.Model {
         private List<string> classModifiers;
         private List<string[]> classParameters;
         private string interfaceName;
+        private string superClassName;
         
         /// <summary>
         /// The entities.
@@ -44,6 +45,7 @@ namespace DEngine.Model {
             classModifiers = new List<string>();
             classParameters = new List<string[]>();
             interfaceName = "";
+            superClassName = "";
 
             entities = new List<string>();
 
@@ -56,8 +58,11 @@ namespace DEngine.Model {
             base.EnterClass_definition(context);
             
             classParameters.Clear();
+            superClassName = "";
             className = context.identifier().GetText();
             string[] params_ = { "", "" };
+
+            // Class parameters handling
             try {
                 var paramList = context.type_parameter_list().type_parameter();
                 foreach (var param in paramList) {
@@ -76,8 +81,18 @@ namespace DEngine.Model {
                 ItDoesNothing("Class parameters" + e);
             }
 
+            // SuperClass Handling
+            try {
+                superClassName = context.class_base().class_type().GetText();
+            }
+            catch(Exception e) {
+                ItDoesNothing(e.ToString());
+            }
+
             entities.Add(className);
             wrapper.AddClass(className);
+            if(superClassName != "")
+                wrapper.SetSuperClassName(superClassName);
         }
 
         public override void ExitClass_definition([NotNull] CSharpParser.Class_definitionContext context) {
@@ -371,6 +386,7 @@ namespace DEngine.Model {
         }
 
         #endregion
+
 
         public List<BaseModel> GetAllEntities() {
             return wrapper.allEntities;

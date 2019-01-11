@@ -5,9 +5,22 @@ namespace DEngine.Model {
 
     public class ClassModel : BaseModel {
 
+        /// <summary>
+        /// List of constructors of the current class
+        /// </summary>
         private List<Constructor> constructors;
+        /// <summary>
+        /// List of nested classes of the current class
+        /// </summary>
         private List<ClassModel> subClasses;
+        /// <summary>
+        /// Super Class
+        /// </summary>
         private ClassModel superClass;
+        /// <summary>
+        /// Name of the super class
+        /// </summary>
+        private string superClassName;
 
         public ClassModel(string name){
 
@@ -15,6 +28,7 @@ namespace DEngine.Model {
             constructors = new List<Constructor>();
             superClass = null;
             subClasses = new List<ClassModel>();
+            superClassName = "";
         }
 
         public ClassModel(){
@@ -22,6 +36,7 @@ namespace DEngine.Model {
             constructors = new List<Constructor>();
             superClass = null;
             subClasses = new List<ClassModel>();
+            superClassName = "";
         }
 
         public ClassModel GetSuperClass() {
@@ -42,6 +57,15 @@ namespace DEngine.Model {
         public void AddClass(ClassModel class_) {
 
             subClasses.Add(class_);
+        }
+
+        public void SetSuperClassName(string superClassName) {
+
+            this.superClassName = superClassName;
+        }
+
+        public string GetSuperClassName() {
+            return superClassName;
         }
 
         public List<Constructor> GetConstructors() {

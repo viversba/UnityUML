@@ -8,6 +8,8 @@ using Model = DEngine.Model;
 namespace DEngine.View {
 
     public class ClassNode : BaseNode {
+
+        private string superClassName = "";
         private List<Model :: Attribute> attributes = new List<Model :: Attribute>();
         private List<Model :: Method> methods = new List<Model :: Method>();
         private List<Model :: Constructor> constructors = new List<Model :: Constructor>();
@@ -43,12 +45,14 @@ namespace DEngine.View {
             attributes = new List<Model::Attribute>();
             methods = new List<Model::Method>();
             constructors = new List<Model::Constructor>();
+            superClassName = "";
 
             scrollPos = new Vector2();
 
             attributes.AddRange(classModel.GetAttributes());
             methods.AddRange(classModel.GetMethods());
             constructors.AddRange(classModel.GetConstructors());
+            superClassName = classModel.GetSuperClassName();
             numberOfLines = 0;
         }
 
@@ -62,7 +66,7 @@ namespace DEngine.View {
             var public_ = new GUIStyle();
             var private_ = new GUIStyle();
             var protected_ = new GUIStyle();
-            header.normal.textColor = Color.grey;
+            header.normal.textColor = new Color(0.188f, 0.258f, 0.733f, 1f);
             public_.normal.textColor = Color.green;
             private_.normal.textColor = Color.red;
             protected_.normal.textColor = Color.magenta;
@@ -81,6 +85,13 @@ namespace DEngine.View {
                 }
                 else if (method.modifier == Model :: AccessModifier.PUBLIC) {
                     GUILayout.Label("+ ", public_, GUILayout.Width(5));
+                    GUILayout.Label(method.ToString() + "()");
+                }
+                else if (method.modifier == Model::AccessModifier.PROTECTED) {
+                    GUILayout.Label("# ", protected_, GUILayout.Width(5));
+                    GUILayout.Label(method.ToString() + "()");
+                }
+                else {
                     GUILayout.Label(method.ToString() + "()");
                 }
                 GUILayout.EndHorizontal();

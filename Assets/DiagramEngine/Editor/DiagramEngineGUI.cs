@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 using DEngine.Model;
+using DEngine.Controller;
 using System;
 
 public class DiagramEngineGUI : EditorWindow {
@@ -73,12 +74,9 @@ public class DiagramEngineGUI : EditorWindow {
         //verticalSplitView.Split();
         float begginingOfRightPanel = horizontalSplitView.splitNormalizedPosition * position.width;
         rightPanel.SetBegginingOfRightPanel(begginingOfRightPanel);
-        //Rect rightPanelRect = new Rect(begginingOfRightPanel, position.y, position.width - begginingOfRightPanel, position.height);
-        //rightPanel.SetRightPanelRect(rightPanelRect);
-        //rightPanel.SetRightPanelRect(horizontalSplitView.availableRect);
         if (drawNodes) {
             selectedEntities = leftPanel.GetSelectedEntities();
-            rightPanel.DrawNodes(selectedEntities);
+            rightPanel.CreateWindowList(selectedEntities);
             drawNodes = false;
         }
         rightPanel.DrawRightPanel(new Vector2(position.width, position.height));

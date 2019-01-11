@@ -119,16 +119,29 @@ public class RightPanel : EditorWindow {
         }
     }
 
-    public void DrawNodes(List<BaseModel> entities) {
+
+    /// <summary>
+    /// Sets the local list of windows so that all entities have a window
+    /// </summary>
+    /// <param name="entities">List of entities.</param>
+    public void CreateWindowList(List<BaseModel> entities) {
 
         if (entities != null || entities.Count != 0) {
             drawNodes = true;
             foreach (BaseModel entity in entities) {
+                // Draw Classes
                 if (entity.IsClass()) {
                     ClassNode classNode = (ClassNode)CreateInstance("ClassNode");
                     classNode.Init((ClassModel)entity);
                     classNode.windowRect = new Rect(100f + begginingOfRightPanel, 100f, 150f, 150f);
                     windows.Add(classNode);
+                }
+                else {
+                    // Draw Interfaces
+                    InterfaceNode interfaceNode = (InterfaceNode)CreateInstance("InterfaceNode");
+                    interfaceNode.Init((InterfaceModel)entity);
+                    interfaceNode.windowRect = new Rect(100f + begginingOfRightPanel, 100f, 170f, 150f);
+                    windows.Add(interfaceNode);
                 }
             }
         }
