@@ -44,7 +44,7 @@ public class LeftPanel : EditorWindow{
                     GUILayout.Label("Add some scripts and reopen the window");
                 }
                 else {
-                    GUILayout.Label("Found Classe/Interfaces: ", EditorStyles.boldLabel);
+                    GUILayout.Label("Found Classe/Interfaces (" + selectedEntities.Count + "): ", EditorStyles.boldLabel);
                     scrollPos = EditorGUILayout.BeginScrollView(scrollPos);
                     foreach (var entity in selectedEntities) {
                         string type = entity.IsClass() ? "(C) " : "(I)  ";
@@ -82,25 +82,25 @@ public class LeftPanel : EditorWindow{
     /// <returns>The selected entities.</returns>
     public List<BaseModel> GetSelectedEntities() {
 
-        foreach (var entity in selectedEntities) {
+        //foreach (var entity in selectedEntities) {
 
-            Debug.Log("-------------------------------------");
-            Debug.Log(entity.GetName());
-            if (entity.IsClass()) {
-                ClassModel classModel = entity as ClassModel;
-                if (classModel.GetSuperClassName() != "") {
-                    Debug.Log("Superclass: ");
-                    Debug.Log(classModel.GetSuperClassName());
-                }
-            }
-            if (entity.GetInterfaceNames() != null) {
-                Debug.Log("Interfaces: ");
-                foreach (string interfaceModel in entity.GetInterfaceNames()) {
-                    Debug.Log(interfaceModel);
-                }
-            }
-            Debug.Log("-------------------------------------");
-        }
+        //    Debug.Log("-------------------------------------");
+        //    Debug.Log(entity.GetName());
+        //    if (entity.IsClass()) {
+        //        ClassModel classModel = entity as ClassModel;
+        //        if (classModel.GetSuperClassName() != "") {
+        //            Debug.Log("Superclass: ");
+        //            Debug.Log(classModel.GetSuperClassName());
+        //        }
+        //    }
+        //    if (entity.GetInterfaceNames() != null) {
+        //        Debug.Log("Interfaces: ");
+        //        foreach (string interfaceModel in entity.GetInterfaceNames()) {
+        //            Debug.Log(interfaceModel);
+        //        }
+        //    }
+        //    Debug.Log("-------------------------------------");
+        //}
 
         return selectedEntities;
     }

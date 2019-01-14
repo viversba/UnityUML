@@ -16,7 +16,6 @@ namespace DEngine {
         public void Start() {
 
             try {
-
                 //Debug.Log("Ola k ase");
                 string[] files = Directory.GetFiles("./Assets/Antlr4/Grammar", "*.cs");
                 foreach (string file in files) {

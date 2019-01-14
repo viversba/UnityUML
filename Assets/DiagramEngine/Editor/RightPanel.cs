@@ -133,26 +133,12 @@ public class RightPanel : EditorWindow {
     /// <param name="selectedEntities">List of entities.</param>
     public void CreateWindowList(List<BaseModel> selectedEntities) {
 
+        Debug.Log("Right Panel");
+        Debug.Log(rightPanelRect.ToString());
 
-        //foreach (var entity in selectedEntities) {
-
-        //    Debug.Log("-------------------------------------");
-        //    Debug.Log(entity.GetName());
-        //    if (entity.IsClass()) {
-        //        ClassModel classModel = entity as ClassModel;
-        //        if (classModel.GetSuperClass() != null) {
-        //            Debug.Log("Superclass: ");
-        //            Debug.Log(classModel.GetSuperClass().GetName()); 
-        //        }
-        //    }
-        //    if (entity.GetInterfaces() != null) {
-        //        Debug.Log("Interfaces: ");
-        //        foreach (InterfaceModel interfaceModel in entity.GetInterfaces()) {
-        //            Debug.Log(interfaceModel.GetName());
-        //        }
-        //    }
-        //    Debug.Log("-------------------------------------");
-        //}
+        float separationX = (rightPanelRect.width - begginingOfRightPanel - 50) / selectedEntities.Count;
+        float separationY = (rightPanelRect.height - 50) / selectedEntities.Count;
+        float startX = begginingOfRightPanel +  50, startY = 50;
 
         if (selectedEntities != null || selectedEntities.Count != 0) {
             drawNodes = true;
@@ -162,16 +148,18 @@ public class RightPanel : EditorWindow {
                     ClassNode classNode = (ClassNode)CreateInstance("ClassNode");
                     ClassModel classModel = (ClassModel)entity;
                     classNode.Init((ClassModel)entity);
-                    classNode.windowRect = new Rect(100f + begginingOfRightPanel, 100f, 150f, 150f);
+                    classNode.windowRect = new Rect(startX, startY, 150f, 150f);
                     windows.Add(classNode);
                 }
                 else {
                     // Draw Interfaces
                     InterfaceNode interfaceNode = (InterfaceNode)CreateInstance("InterfaceNode");
                     interfaceNode.Init((InterfaceModel)entity);
-                    interfaceNode.windowRect = new Rect(100f + begginingOfRightPanel, 100f, 170f, 150f);
+                    interfaceNode.windowRect = new Rect(startX, startY, 170f, 150f);
                     windows.Add(interfaceNode);
                 }
+                startX += separationX;
+                startY += separationY;
             }
 
             foreach(BaseNode window in windows) {
@@ -196,11 +184,13 @@ public class RightPanel : EditorWindow {
                 catch(Exception e) {
                     // Or an interface?
                     // Assign Interface Windows
-                    //Debug.Log(window.windowTitle);
                     InterfaceNode interfaceNode = window as InterfaceNode;
                     if (interfaceNode.GetInterfaceNames() != null) {
                         List<InterfaceNode> interfacesToAdd = new List<InterfaceNode>();
                         foreach (string interface_ in interfaceNode.GetInterfaceNames()) {
+                            if(GetWindowWithTitle(interface_) == null) {
+                                Debug.Log(interface_ + " Es nulo");
+                            }
                             interfacesToAdd.Add(GetWindowWithTitle(interface_) as InterfaceNode);
                         }
                         interfaceNode.SetInterfaceNodes(interfacesToAdd);
@@ -300,7 +290,7 @@ public class RightPanel : EditorWindow {
     /// <param name="end">End rect.</param>
     public static void DrawInheritanceCurve(Rect start, Rect end) {
 
-        DrawBezier(start, end);
+        DrawBezier(start, end, Color.red);
 
         // Draw the handle for Inheritance type
         float triangleHeight = 5f * 2/3;
@@ -319,12 +309,24 @@ public class RightPanel : EditorWindow {
     /// </summary>
     /// <param name="start">Start rect.</param>
     /// <param name="end">End rect.</param>
-    public static void DrawImplementationCurve(Rect start, Rect end) { 
-    
+    public static void DrawImplementationCurve(Rect start, Rect end) {
+
+        DrawBezier(start, end, Color.cyan);
+
+        // Draw the handle for Inheritance type
+        float triangleHeight = 5f * 2 / 3;
+        float positionX = end.x - 5;
+        float positionY = end.y;
+        Vector3[] positions = {
+            new Vector3(triangleHeight + positionX, positionY),
+            new Vector3(-triangleHeight + positionX, triangleHeight + positionY),
+            new Vector3(-triangleHeight + positionX, -triangleHeight + positionY),
+            new Vector3(triangleHeight + positionX, positionY)};
+        Handles.DrawPolyLine(positions);
     }
 
     // Draw the node curve from the middle of the start Rect to the middle of the end rect 
-    public static void DrawBezier(Rect start, Rect end) {
+    public static void DrawBezier(Rect start, Rect end, Color mainColor) {
 
         Vector3 startPos = new Vector3(start.x + start.width / 2, start.y + start.height / 2, 0);
         Vector3 endPos = new Vector3(end.x + end.width / 2, end.y + end.height / 2, 0);
@@ -335,20 +337,27 @@ public class RightPanel : EditorWindow {
         for (int i = 0; i < 3; i++) {// Draw a shadow
             Handles.DrawBezier(startPos, endPos, startTan, endTan, shadowCol, null, (i + 1) * 5);
         }
-        Handles.DrawBezier(startPos, endPos, startTan, endTan, Color.red, null, 1);
+        Handles.DrawBezier(startPos, endPos, startTan, endTan, mainColor, null, 1);
     }
 
-    private BaseNode GetWindowWithTitle(string title) { 
+    private BaseNode GetWindowWithTitle(string windowTitle) { 
         
         foreach(BaseNode window in windows) {
+            //if(window.windowTitle == windowTitle) {
+            //    return window;
+            //}
+            //Debug.Log(window.windowTitle);
             try {
                 ClassNode classNode = (ClassNode)window;
-                if (classNode.windowTitle == title) {
+                if (classNode.windowTitle == windowTitle) {
                     return classNode;
                 }
             }
             catch {
-
+                InterfaceNode interfaceNode = (InterfaceNode)window;
+                if(interfaceNode.windowTitle == ("<<" + windowTitle + ">>")) { 
+                    return interfaceNode;
+                }
             }
         }
         return null;

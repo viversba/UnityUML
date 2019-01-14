@@ -56,7 +56,7 @@ public class DiagramEngineGUI : EditorWindow {
     private void Run() {
 
         window = GetWindow<DiagramEngineGUI>();
-        window.position = new Rect(200, 200, 800, 400);
+        window.position = new Rect(200, 200, 1200, 800);
         window.minSize = new Vector2(200, 200);
 
 

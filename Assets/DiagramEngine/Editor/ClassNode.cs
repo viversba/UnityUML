@@ -178,7 +178,7 @@ namespace DEngine.View {
                     interfaceRect.y = interfaceNode.windowRect.y + interfaceNode.windowRect.height / 2;
                     interfaceRect.height = 1;
                     interfaceRect.width = 1;
-                    RightPanel.DrawInheritanceCurve(windowRect, interfaceRect);
+                    RightPanel.DrawImplementationCurve(windowRect, interfaceRect);
                 }
             }
         }

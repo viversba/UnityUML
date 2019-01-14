@@ -100,6 +100,17 @@ namespace DEngine.View {
         }
 
         public override void DrawCurves() {
+
+            if (interfaces != null) {
+                //Debug.Log(windowTitle);
+                foreach (InterfaceNode interfaceNode in interfaces) {
+                    Rect interfaceRect = interfaceNode.windowRect;
+                    interfaceRect.y = interfaceNode.windowRect.y + interfaceNode.windowRect.height / 2;
+                    interfaceRect.height = 1;
+                    interfaceRect.width = 1;
+                    RightPanel.DrawImplementationCurve(windowRect, interfaceRect);
+                }
+            }
         }
     }
 }
