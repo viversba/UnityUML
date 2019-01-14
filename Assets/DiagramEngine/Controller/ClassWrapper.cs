@@ -52,6 +52,7 @@ namespace DEngine.Controller {
             if (numberOfEntities > 1) {
                 entities[numberOfEntities - 1].SetContainer(entities[numberOfEntities - 2]);
             }
+            currentEntity.SetTypeOfEntity(false);
             isClass = false;
         }
 
@@ -65,7 +66,7 @@ namespace DEngine.Controller {
 
         public void FinishEntity() {
 
-            if(entities.Count == 1) {
+            if (entities.Count == 1) {
                 allEntities.Add(entities[entities.Count - 1]);
             }
             entities.RemoveAt(entities.Count - 1);
@@ -85,11 +86,16 @@ namespace DEngine.Controller {
             currentEntity.AddAttribute(attribute);
         }
 
-        public void AddInterface(InterfaceModel interface_) {
+        public void AddInterfaceToEntity(string interface_) {
             if (currentEntity == null)
                 return;
-            currentEntity.AddInterface(interface_);
-            currentEntity.SetTypeOfEntity(false);
+            currentEntity.AddInterfaceName(interface_);
+        }
+
+        public void SetInterfaceBase(string interface_) {
+
+            if (currentEntity == null)
+                return;
         }
 
         public ClassModel GetClass() {
@@ -165,8 +171,8 @@ namespace DEngine.Controller {
                     ClassModel classModel = (ClassModel)selectedEntities[i];
                     // The class has a super class
                     if (classModel.GetSuperClassName() != "") {
-                        // Check for the Super Class to existe
-                        int index = FindEnttyWithName(ref selectedEntities, classModel.GetSuperClassName());
+                        // Check for the Super Class to exist on a local file
+                        int index = FindEntityWithName(ref selectedEntities, classModel.GetSuperClassName());
                         // The fact that the entity was not found doesn't mean it is a class.
                         // But if it is not in the files, the screw it, i'll say it is a class
                         if(index == -1) {
@@ -182,9 +188,58 @@ namespace DEngine.Controller {
                                 classModel.SetSuperClass((ClassModel)selectedEntities[index]);
                             }
                             else {
-                                InterfaceModel interfaceModel = new InterfaceModel(classModel.GetSuperClassName());
+                                //InterfaceModel interfaceModel = new InterfaceModel(classModel.GetSuperClassName());
+                                //interfaceModel.SetTypeOfEntity(false);
+                                classModel.AddInterfaceName(selectedEntities[index].GetName());
+                                classModel.AddInterface(selectedEntities[index] as InterfaceModel);
+                                classModel.DeleteSuperClass();
+                            }
+                        }
+                    }
+
+                    // Check if the class implements interfaces
+                    if(classModel.GetInterfaceNames() != null) { 
+
+                        foreach(string interface_ in classModel.GetInterfaceNames()) {
+                            // Check for the Interface to exist on a local file
+                            int index = FindEntityWithName(ref selectedEntities, interface_);
+
+                            // The interface is not defined in a loca file
+                            if(index == -1) {
+                                InterfaceModel interfaceModel = new InterfaceModel(interface_);
                                 interfaceModel.SetTypeOfEntity(false);
-                                classModel.AddInterface(interfaceModel);
+
+                                selectedEntities[i].AddInterface(interfaceModel);
+                                selectedEntities.Add(interfaceModel);    
+                            }
+                            else {
+                                //The interface is found on index
+                                selectedEntities[i].AddInterface(selectedEntities[index] as InterfaceModel);
+                            }
+                        }
+                    }
+                }
+                else {
+                    InterfaceModel interfaceModel = (InterfaceModel)selectedEntities[i];
+
+                    // Check if the class implements interfaces
+                    if (interfaceModel.GetInterfaceNames() != null) {
+
+                        foreach (string interface_ in interfaceModel.GetInterfaceNames()) {
+                            // Check for the Interface to exist on a local file
+                            int index = FindEntityWithName(ref selectedEntities, interface_);
+
+                            //Debug.Log(interfaceModel.GetName() + " implements " + interface_);
+                            // The interface is not defined in a loca file
+                            if (index == -1) {
+                                InterfaceModel newInterfaceToAdd = new InterfaceModel(interface_);
+                                newInterfaceToAdd.SetTypeOfEntity(false);
+                                selectedEntities[i].AddInterface(newInterfaceToAdd);
+                                selectedEntities.Add(newInterfaceToAdd);
+                            }
+                            else {
+                                //The interface is found on index
+                                selectedEntities[i].AddInterface(selectedEntities[index] as InterfaceModel);
                             }
                         }
                     }
@@ -198,7 +253,7 @@ namespace DEngine.Controller {
         /// <returns>The class with name.</returns>
         /// <param name="entities">List of entities.</param>
         /// <param name="entityName">Class name.</param>
-        public static int FindEnttyWithName(ref List<BaseModel> entities, string entityName) {
+        public static int FindEntityWithName(ref List<BaseModel> entities, string entityName) {
 
             // Iterate trough all the models to find class with name "className"
             for (int i=0; i<entities.Count; i++) { 

@@ -47,7 +47,8 @@ public class LeftPanel : EditorWindow{
                     GUILayout.Label("Found Classe/Interfaces: ", EditorStyles.boldLabel);
                     scrollPos = EditorGUILayout.BeginScrollView(scrollPos);
                     foreach (var entity in selectedEntities) {
-                        GUILayout.Label(entity.GetName());
+                        string type = entity.IsClass() ? "(C) " : "(I)  ";
+                        GUILayout.Label(type + entity.GetName());
                     }
                     EditorGUILayout.EndScrollView();
                     generateDiagramButton = GUILayout.Button("Generate!");
@@ -80,6 +81,27 @@ public class LeftPanel : EditorWindow{
     /// </summary>
     /// <returns>The selected entities.</returns>
     public List<BaseModel> GetSelectedEntities() {
+
+        foreach (var entity in selectedEntities) {
+
+            Debug.Log("-------------------------------------");
+            Debug.Log(entity.GetName());
+            if (entity.IsClass()) {
+                ClassModel classModel = entity as ClassModel;
+                if (classModel.GetSuperClassName() != "") {
+                    Debug.Log("Superclass: ");
+                    Debug.Log(classModel.GetSuperClassName());
+                }
+            }
+            if (entity.GetInterfaceNames() != null) {
+                Debug.Log("Interfaces: ");
+                foreach (string interfaceModel in entity.GetInterfaceNames()) {
+                    Debug.Log(interfaceModel);
+                }
+            }
+            Debug.Log("-------------------------------------");
+        }
+
         return selectedEntities;
     }
 

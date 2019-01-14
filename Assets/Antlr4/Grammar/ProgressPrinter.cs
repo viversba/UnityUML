@@ -23,6 +23,7 @@ namespace DEngine.Model {
         private List<string[]> classParameters;
         private string interfaceName;
         private string superClassName;
+        private string interfaceBase;
         
         /// <summary>
         /// The entities.
@@ -46,6 +47,7 @@ namespace DEngine.Model {
             classParameters = new List<string[]>();
             interfaceName = "";
             superClassName = "";
+            interfaceBase = "";
 
             entities = new List<string>();
 
@@ -65,6 +67,7 @@ namespace DEngine.Model {
             // Class parameters handling
             try {
                 var paramList = context.type_parameter_list().type_parameter();
+                className += context.type_parameter_list().GetText();
                 foreach (var param in paramList) {
                     try {
                         params_[0] = param.attributes().GetText();
@@ -91,6 +94,36 @@ namespace DEngine.Model {
 
             entities.Add(className);
             wrapper.AddClass(className);
+
+            // Interface handling
+            try {
+                foreach(var interface_ in context.class_base().namespace_or_type_name()) {
+                    try {
+                        foreach (var identifier in interface_.identifier()) {
+                            //Debug.Log(className + " implements " + identifier.GetText());
+                            if (!string.IsNullOrEmpty(identifier.GetText())) {
+                                interfaceBase = identifier.GetText();
+                                try { 
+                                    foreach(var argument in interface_.type_argument_list()) {
+                                        interfaceBase += argument.GetText();
+                                    }
+                                }
+                                catch(Exception e) {
+                                    ItDoesNothing("Interface argument list in Class:" + e);
+                                }
+                                wrapper.AddInterfaceToEntity(interfaceBase);
+                                break;
+                            }
+                        }
+                    }
+                    catch (Exception e) {
+                        ItDoesNothing("Nested interface handling in Class " + e);
+                    }
+                }
+            }
+            catch(Exception e) {
+                ItDoesNothing(e.ToString());
+            }
             if(superClassName != "")
                 wrapper.SetSuperClassName(superClassName);
         }
@@ -324,12 +357,65 @@ namespace DEngine.Model {
         #region Interface Handling
 
         public override void EnterInterface_definition([NotNull] CSharpParser.Interface_definitionContext context) {
-            base.EnterInterface_definition(context);
 
             interfaceName = context.identifier().GetText();
 
+            // Parameters list
+            try {
+                interfaceName += context.variant_type_parameter_list().GetText();
+            }
+            catch(Exception e) {
+                ItDoesNothing("Interface declaration parameters " + e);
+            }
+            interfaceBase = "";
+
             entities.Add(interfaceName);
             wrapper.AddInterface(interfaceName);
+
+            // Add each interface implementation
+            try {
+                //foreach(var interface_ in context.interface_base().interface_type_list().namespace_or_type_name()) {
+                //    try {
+                //        foreach (var identifier in interface_.identifier()) {
+                //            if (!string.IsNullOrEmpty(identifier.GetText())) {
+                //                interfaceBase = identifier.GetText();
+                //                wrapper.AddInterfaceToEntity(interfaceBase);
+                //                break;
+                //            }
+                //        }
+                //    }
+                //    catch (Exception e) {
+                //        ItDoesNothing("Nested interface handling in Class " + e);
+                //    }
+                //}
+
+                foreach (var interface_ in context.interface_base().interface_type_list().namespace_or_type_name()) {
+                    try {
+                        foreach (var identifier in interface_.identifier()) {
+                            //Debug.Log(className + " implements " + identifier.GetText());
+                            if (!string.IsNullOrEmpty(identifier.GetText())) {
+                                interfaceBase = identifier.GetText();
+                                try {
+                                    foreach (var argument in interface_.type_argument_list()) {
+                                        interfaceBase += argument.GetText();
+                                    }
+                                }
+                                catch (Exception e) {
+                                    ItDoesNothing("Interface argument list in Interface:" + e);
+                                }
+                                wrapper.AddInterfaceToEntity(interfaceBase);
+                                break;
+                            }
+                        }
+                    }
+                    catch (Exception e) {
+                        ItDoesNothing("Nested interface handling in Interface " + e);
+                    }
+                }
+            }
+            catch(Exception e) {
+                ItDoesNothing(e.ToString());
+            }
         }
 
         public override void ExitInterface_definition([NotNull] CSharpParser.Interface_definitionContext context) {
@@ -340,8 +426,6 @@ namespace DEngine.Model {
         }
 
         public override void EnterInterface_member_declaration([NotNull] CSharpParser.Interface_member_declarationContext context) {
-
-            //Debug.Log(interfaceName);
 
             // Type Handling
             try {

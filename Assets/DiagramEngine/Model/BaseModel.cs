@@ -9,6 +9,7 @@ namespace DEngine.Model {
         protected List<Method> methods;
         protected List<Attribute> attributes;
         protected List<InterfaceModel> interfaces;
+        protected List<string> interfaceNames;
         protected BaseModel container;
         protected bool isClass;
 
@@ -17,7 +18,8 @@ namespace DEngine.Model {
             name = "Generic";
             methods = new List<Method>();
             attributes = new List<Attribute>();
-            interfaces = new List<InterfaceModel>();
+            interfaces = null;
+            interfaceNames = null;
             container = null;
             isClass = false;
         }
@@ -40,6 +42,10 @@ namespace DEngine.Model {
             this.name = name;
         }
 
+        public void SetContainer(BaseModel container) {
+            this.container = container;
+        }
+
         public void ClearAttributes() {
 
             attributes.Clear();
@@ -47,6 +53,11 @@ namespace DEngine.Model {
 
         public void AddAttribute(Attribute newAttribute) {
             attributes.Add(newAttribute);
+        }
+
+        public List<Attribute> GetAttributes() {
+
+            return attributes ?? new List<Attribute>();
         }
 
         public void ClearMethods() {
@@ -63,23 +74,29 @@ namespace DEngine.Model {
             return methods ?? new List<Method>();
         }
 
+        public void AddInterfaceName(string baseName) {
+
+            if (interfaceNames == null) {
+                interfaceNames = new List<string>();
+            }
+            if(!interfaceNames.Contains(baseName))
+                interfaceNames.Add(baseName);
+        }
+
         public void AddInterface(InterfaceModel interface_) {
 
+            if (interfaces == null) {
+                interfaces = new List<InterfaceModel>();
+            }
             interfaces.Add(interface_);
         }
 
-        public List<Attribute> GetAttributes() {
-
-            return attributes ?? new List<Attribute>();
-        }
-
         public List<InterfaceModel> GetInterfaces() {
-
-            return interfaces ?? new List<InterfaceModel>();
+            return interfaces;
         }
 
-        public void SetContainer(BaseModel container) {
-            this.container = container;
+        public List<string> GetInterfaceNames() {
+            return interfaceNames;
         }
 
         public override string ToString() {

@@ -10,10 +10,11 @@ namespace DEngine.View {
     public class ClassNode : BaseNode {
 
         private string superClassName = "";
-        private List<Model :: Attribute> attributes = new List<Model :: Attribute>();
-        private List<Model :: Method> methods = new List<Model :: Method>();
-        private List<Model :: Constructor> constructors = new List<Model :: Constructor>();
+        private List<Model::Attribute> attributes = new List<Model::Attribute>();
+        private List<Model::Method> methods = new List<Model::Method>();
+        private List<Model::Constructor> constructors = new List<Model::Constructor>();
         private List<InterfaceNode> interfaces = new List<InterfaceNode>();
+        private List<string> interfaceNames = new List<string>();
         private ClassNode superClass;
 
         /// <summary>
@@ -31,7 +32,7 @@ namespace DEngine.View {
             superClass = null;
         }
 
-        public ClassNode(Model:: ClassModel classModel) {
+        public ClassNode(Model::ClassModel classModel) {
             windowTitle = classModel.GetName();
             //windowTitle = "Generic Class";
             //hasInputs = false;
@@ -49,7 +50,8 @@ namespace DEngine.View {
             attributes = new List<Model::Attribute>();
             methods = new List<Model::Method>();
             constructors = new List<Model::Constructor>();
-            interfaces = new List<InterfaceNode>();
+            interfaces = null;
+            interfaceNames = new List<string>();
             superClassName = "";
             superClass = null;
 
@@ -59,6 +61,14 @@ namespace DEngine.View {
             methods.AddRange(classModel.GetMethods());
             constructors.AddRange(classModel.GetConstructors());
             superClassName = classModel.GetSuperClassName();
+
+            if (classModel.GetInterfaceNames() != null) {
+                foreach (string interface_ in classModel.GetInterfaceNames()) {
+                    //Debug.Log(interface_);
+                    interfaceNames.Add(interface_);
+                }
+            }
+
             numberOfLines = 0;
         }
 
@@ -70,21 +80,13 @@ namespace DEngine.View {
             this.superClass = superClass;
         }
 
-        /// <summary>
-        /// Assigns windows of other entities
-        /// </summary>
-        public void AssignRelations() {
-
-            Debug.Log(windowTitle);
-        }
-
         public void AddLine() {
             numberOfLines++;
         }
 
         public override void DrawWindow() {
 
-            if(attributes.Count == 0 && methods.Count == 0 && constructors.Count == 0) {
+            if (attributes.Count == 0 && methods.Count == 0 && constructors.Count == 0) {
                 windowRect.height = 50;
                 return;
             }
@@ -101,16 +103,16 @@ namespace DEngine.View {
             scrollPos = EditorGUILayout.BeginScrollView(scrollPos);
 
             // Display attributes
-            if(attributes.Count > 0) {
-                GUILayout.Label("Attributes", header);
+            if (attributes.Count > 0) {
+                GUILayout.Label("Attributes (" + attributes.Count + ")", header);
                 foreach (Model::Attribute attribute in attributes) {
                     GUILayout.Label(attribute.ToString());
                 }
             }
 
             // Display Methods
-            if(methods.Count > 0) {
-                GUILayout.Label("Methods", header);
+            if (methods.Count > 0) {
+                GUILayout.Label("Methods (" + methods.Count + ")", header);
                 foreach (Model::Method method in methods) {
                     GUILayout.BeginHorizontal();
                     if (method.modifier == Model::AccessModifier.PRIVATE) {
@@ -133,8 +135,8 @@ namespace DEngine.View {
             }
 
             //Display Constructors
-            if(constructors.Count > 0) {
-                GUILayout.Label("Constructors", header);
+            if (constructors.Count > 0) {
+                GUILayout.Label("Constructors (" + constructors.Count + ")", header);
                 foreach (Model::Constructor constructor in constructors) {
                     GUILayout.Label(constructor.ToString());
                 }
@@ -144,6 +146,16 @@ namespace DEngine.View {
 
         public string GetSuperClassName() {
             return superClassName;
+        }
+
+        public List<string> GetInterfaceNames() {
+            return interfaceNames;
+        }
+
+        public void SetInterfaceNodes(List<InterfaceNode> interfaceNodes) {
+            if (interfaces == null)
+                interfaces = new List<InterfaceNode>();
+            interfaces.AddRange(interfaceNodes);
         }
 
         public override void Tick(float deltaTime) {
@@ -156,10 +168,19 @@ namespace DEngine.View {
                 superClassRect.y = superClass.windowRect.y + superClass.windowRect.height / 2;
                 superClassRect.height = 1;
                 superClassRect.width = 1;
-                RightPanel.DrawNodeCurve(windowRect, superClassRect);
+                RightPanel.DrawInheritanceCurve(windowRect, superClassRect);
             }
 
+            if (interfaces != null) {
+                //Debug.Log(windowTitle);
+                foreach (InterfaceNode interfaceNode in interfaces) {
+                    Rect interfaceRect = interfaceNode.windowRect;
+                    interfaceRect.y = interfaceNode.windowRect.y + interfaceNode.windowRect.height / 2;
+                    interfaceRect.height = 1;
+                    interfaceRect.width = 1;
+                    RightPanel.DrawInheritanceCurve(windowRect, interfaceRect);
+                }
+            }
         }
     }
-
 }

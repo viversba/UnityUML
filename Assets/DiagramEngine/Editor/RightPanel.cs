@@ -133,6 +133,27 @@ public class RightPanel : EditorWindow {
     /// <param name="selectedEntities">List of entities.</param>
     public void CreateWindowList(List<BaseModel> selectedEntities) {
 
+
+        //foreach (var entity in selectedEntities) {
+
+        //    Debug.Log("-------------------------------------");
+        //    Debug.Log(entity.GetName());
+        //    if (entity.IsClass()) {
+        //        ClassModel classModel = entity as ClassModel;
+        //        if (classModel.GetSuperClass() != null) {
+        //            Debug.Log("Superclass: ");
+        //            Debug.Log(classModel.GetSuperClass().GetName()); 
+        //        }
+        //    }
+        //    if (entity.GetInterfaces() != null) {
+        //        Debug.Log("Interfaces: ");
+        //        foreach (InterfaceModel interfaceModel in entity.GetInterfaces()) {
+        //            Debug.Log(interfaceModel.GetName());
+        //        }
+        //    }
+        //    Debug.Log("-------------------------------------");
+        //}
+
         if (selectedEntities != null || selectedEntities.Count != 0) {
             drawNodes = true;
             foreach (BaseModel entity in selectedEntities) {
@@ -155,12 +176,35 @@ public class RightPanel : EditorWindow {
 
             foreach(BaseNode window in windows) {
 
+                // Assign superclass or interface windows
+                // Is it a class?
                 try {
                     ClassNode classNode = (ClassNode)window;
-                    classNode.SetSuperClassNode(GetWindowWithTitle(classNode.GetSuperClassName()));
+                    ClassNode superClassNode = (ClassNode)GetWindowWithTitle(classNode.GetSuperClassName()); 
+                    classNode.SetSuperClassNode(superClassNode);
+
+                    // Assign Interface Windows
+                    if (classNode.GetInterfaceNames() != null) {
+                        List<InterfaceNode> interfacesToAdd = new List<InterfaceNode>();
+                        foreach (string interface_ in classNode.GetInterfaceNames()) {
+                            interfacesToAdd.Add(GetWindowWithTitle(interface_) as InterfaceNode);
+                        }
+                        //Debug.Log("Adding " + interfacesToAdd.Count + " to " + classNode.windowTitle);
+                        classNode.SetInterfaceNodes(interfacesToAdd);
+                    }
                 }
-                catch(Exception e) { 
-                    
+                catch(Exception e) {
+                    // Or an interface?
+                    // Assign Interface Windows
+                    //Debug.Log(window.windowTitle);
+                    InterfaceNode interfaceNode = window as InterfaceNode;
+                    if (interfaceNode.GetInterfaceNames() != null) {
+                        List<InterfaceNode> interfacesToAdd = new List<InterfaceNode>();
+                        foreach (string interface_ in interfaceNode.GetInterfaceNames()) {
+                            interfacesToAdd.Add(GetWindowWithTitle(interface_) as InterfaceNode);
+                        }
+                        interfaceNode.SetInterfaceNodes(interfacesToAdd);
+                    }
                 }
             }
         }
@@ -249,19 +293,14 @@ public class RightPanel : EditorWindow {
         this.rightPanelRect = rightPanelRect;
     }
 
-    //draw the node curve from the middle of the start Rect to the middle of the end rect 
-    public static void DrawNodeCurve(Rect start, Rect end) {
+    /// <summary>
+    /// Draws the inheritance curve.
+    /// </summary>
+    /// <param name="start">Start rect.</param>
+    /// <param name="end">End rect.</param>
+    public static void DrawInheritanceCurve(Rect start, Rect end) {
 
-        Vector3 startPos = new Vector3(start.x + start.width / 2, start.y + start.height / 2, 0);
-        Vector3 endPos = new Vector3(end.x + end.width / 2, end.y + end.height / 2, 0);
-        Vector3 startTan = startPos + Vector3.right * 50;
-        Vector3 endTan = endPos + Vector3.left * 50;
-        Color shadowCol = new Color(0, 0, 0, 0.06f);
-
-        for (int i = 0; i < 3; i++) {// Draw a shadow
-            Handles.DrawBezier(startPos, endPos, startTan, endTan, shadowCol, null, (i + 1) * 5);
-        }
-        Handles.DrawBezier(startPos, endPos, startTan, endTan, Color.red, null, 1);
+        DrawBezier(start, end);
 
         // Draw the handle for Inheritance type
         float triangleHeight = 5f * 2/3;
@@ -275,7 +314,31 @@ public class RightPanel : EditorWindow {
         Handles.DrawPolyLine(positions);
     }
 
-    private ClassNode GetWindowWithTitle(string title) { 
+    /// <summary>
+    /// Draws the implementation curve.
+    /// </summary>
+    /// <param name="start">Start rect.</param>
+    /// <param name="end">End rect.</param>
+    public static void DrawImplementationCurve(Rect start, Rect end) { 
+    
+    }
+
+    // Draw the node curve from the middle of the start Rect to the middle of the end rect 
+    public static void DrawBezier(Rect start, Rect end) {
+
+        Vector3 startPos = new Vector3(start.x + start.width / 2, start.y + start.height / 2, 0);
+        Vector3 endPos = new Vector3(end.x + end.width / 2, end.y + end.height / 2, 0);
+        Vector3 startTan = startPos + Vector3.right * 50;
+        Vector3 endTan = endPos + Vector3.left * 50;
+        Color shadowCol = new Color(0, 0, 0, 0.06f);
+
+        for (int i = 0; i < 3; i++) {// Draw a shadow
+            Handles.DrawBezier(startPos, endPos, startTan, endTan, shadowCol, null, (i + 1) * 5);
+        }
+        Handles.DrawBezier(startPos, endPos, startTan, endTan, Color.red, null, 1);
+    }
+
+    private BaseNode GetWindowWithTitle(string title) { 
         
         foreach(BaseNode window in windows) {
             try {
@@ -285,6 +348,7 @@ public class RightPanel : EditorWindow {
                 }
             }
             catch {
+
             }
         }
         return null;

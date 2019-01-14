@@ -11,11 +11,15 @@ namespace DEngine.View {
     public class InterfaceNode : BaseNode{
     
         private List<Model::Method> methods = new List<Model::Method>();
-
         /// <summary>
         /// Scroll position of the list of entities to render
         /// </summary>
         private Vector2 scrollPos;
+        /// <summary>
+        /// List of interfaces of windows that it is attached to;
+        /// </summary>
+        private List<InterfaceNode> interfaces = new List<InterfaceNode>();
+        private List<string> interfaceNames = new List<string>();
 
         public InterfaceNode(string title) {
 
@@ -31,6 +35,14 @@ namespace DEngine.View {
         public void Init(Model::InterfaceModel interfaceModel) {
             windowTitle = "<<" + interfaceModel.GetName() + ">>";
             methods = new List<Model::Method>();
+            interfaces = null;
+            interfaceNames = new List<string>();
+
+            if(interfaceModel.GetInterfaceNames() != null) { 
+                foreach(string interface_ in interfaceModel.GetInterfaceNames()) {
+                    interfaceNames.Add(interface_);
+                }
+            }
 
             scrollPos = new Vector2();
 
@@ -50,7 +62,7 @@ namespace DEngine.View {
             protected_.normal.textColor = Color.magenta;
 
             scrollPos = EditorGUILayout.BeginScrollView(scrollPos);
-            GUILayout.Label("Methods", header);
+            GUILayout.Label("Methods (" + methods.Count + ")", header);
             foreach (Model::Method method in methods) {
 
                 GUILayout.BeginHorizontal(header);
@@ -72,6 +84,16 @@ namespace DEngine.View {
                 GUILayout.EndHorizontal();
             }
             EditorGUILayout.EndScrollView();
+        }
+
+        public List<string> GetInterfaceNames() {
+            return interfaceNames;
+        }
+
+        public void SetInterfaceNodes(List<InterfaceNode> interfaceNodes) {
+            if (interfaces == null)
+                interfaces = new List<InterfaceNode>();
+            interfaces.AddRange(interfaceNodes);
         }
 
         public override void Tick(float deltaTime) {

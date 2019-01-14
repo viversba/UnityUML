@@ -22,7 +22,7 @@ namespace DEngine.Model {
         /// </summary>
         private string superClassName;
 
-        public ClassModel(string name){
+        public ClassModel(string name) {
 
             this.name = name;
             constructors = new List<Constructor>();
@@ -31,7 +31,7 @@ namespace DEngine.Model {
             superClassName = "";
         }
 
-        public ClassModel(){
+        public ClassModel() {
 
             constructors = new List<Constructor>();
             superClass = null;
@@ -66,6 +66,11 @@ namespace DEngine.Model {
 
         public string GetSuperClassName() {
             return superClassName;
+        }
+
+        public void DeleteSuperClass() {
+            superClass = null;
+            superClassName = "";
         }
 
         public List<Constructor> GetConstructors() {
