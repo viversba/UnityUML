@@ -290,17 +290,17 @@ public class RightPanel : EditorWindow {
     /// <param name="end">End rect.</param>
     public static void DrawInheritanceCurve(Rect start, Rect end) {
 
-        DrawBezier(start, end, Color.red);
+        DrawVerticalBezier(start, end, Color.red);
 
         // Draw the handle for Inheritance type
         float triangleHeight = 5f * 2/3;
-        float positionX = end.x - 5;
-        float positionY = end.y;
+        float positionX = end.x;
+        float positionY = end.y + 5;
         Vector3[] positions = {
-            new Vector3(triangleHeight + positionX, positionY),
-            new Vector3(-triangleHeight + positionX, triangleHeight + positionY),
-            new Vector3(-triangleHeight + positionX, -triangleHeight + positionY),
-            new Vector3(triangleHeight + positionX, positionY)};
+            new Vector3(positionX, positionY - triangleHeight),
+            new Vector3(positionX - triangleHeight, positionY + triangleHeight),
+            new Vector3(positionX + triangleHeight, positionY + triangleHeight),
+            new Vector3(positionX, positionY - triangleHeight)};
         Handles.DrawPolyLine(positions);
     }
 
@@ -311,7 +311,7 @@ public class RightPanel : EditorWindow {
     /// <param name="end">End rect.</param>
     public static void DrawImplementationCurve(Rect start, Rect end) {
 
-        DrawBezier(start, end, Color.cyan);
+        DrawHorizontalBezier(start, end, Color.cyan);
 
         // Draw the handle for Inheritance type
         float triangleHeight = 5f * 2 / 3;
@@ -326,7 +326,22 @@ public class RightPanel : EditorWindow {
     }
 
     // Draw the node curve from the middle of the start Rect to the middle of the end rect 
-    public static void DrawBezier(Rect start, Rect end, Color mainColor) {
+    public static void DrawVerticalBezier(Rect start, Rect end, Color mainColor) {
+
+        Vector3 startPos = new Vector3(start.x + start.width / 2, start.y + start.height / 2, 0);
+        Vector3 endPos = new Vector3(end.x + end.width / 2, end.y + end.height / 2, 0);
+        Vector3 startTan = startPos + Vector3.down * 50;
+        Vector3 endTan = endPos + Vector3.up * 50;
+        Color shadowCol = new Color(0, 0, 0, 0.06f);
+
+        for (int i = 0; i < 3; i++) {// Draw a shadow
+            Handles.DrawBezier(startPos, endPos, startTan, endTan, shadowCol, null, (i + 1) * 5);
+        }
+        Handles.DrawBezier(startPos, endPos, startTan, endTan, mainColor, null, 1);
+    }
+
+    // Draw the node curve from the middle of the start Rect to the middle of the end rect 
+    public static void DrawHorizontalBezier(Rect start, Rect end, Color mainColor) {
 
         Vector3 startPos = new Vector3(start.x + start.width / 2, start.y + start.height / 2, 0);
         Vector3 endPos = new Vector3(end.x + end.width / 2, end.y + end.height / 2, 0);

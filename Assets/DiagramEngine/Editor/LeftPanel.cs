@@ -65,7 +65,6 @@ public class LeftPanel : EditorWindow{
                     if (reloadEntities) {
                         Debug.Log("Reloading entities...");
                         LoadAllEntities();
-                        DiagramEngine.SaveEntitiesOnDisk(selectedEntities);
                     }
                 }
                 break;
@@ -95,9 +94,11 @@ public class LeftPanel : EditorWindow{
             reloadTexture.Apply();
         }
 
+        // Try to load already existent entities from disk
+        selectedEntities = DiagramEngine.LoadEntitiesFromDisk();
+        if (selectedEntities != null)
+            return;
         LoadAllEntities();
-        DiagramEngine.SaveEntitiesOnDisk(selectedEntities);
-        ClassWrapper.RelateEntities(ref selectedEntities);
     }
 
     /// <summary>
@@ -109,11 +110,6 @@ public class LeftPanel : EditorWindow{
     }
 
     private void LoadAllEntities() {
-
-        // Try to load already existent entities from disk
-        selectedEntities = DiagramEngine.LoadEntitiesFromDisk();
-        if (selectedEntities != null)
-            return;
 
         selectedEntities = new List<BaseModel>();
         switch (selected) {
@@ -130,6 +126,8 @@ public class LeftPanel : EditorWindow{
             default:
                 break;
         }
+        ClassWrapper.RelateEntities(ref selectedEntities);
+        DiagramEngine.SaveEntitiesOnDisk(selectedEntities);
     }
 
     private List<string> SearchAllFilesInDirectory(string directory) {

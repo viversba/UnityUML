@@ -25,7 +25,7 @@ namespace DEngine.View {
         public int numberOfLines;
 
         public ClassNode(string title) {
-
+        
             windowTitle = title;
             hasInputs = false;
             numberOfLines = 0;
@@ -102,11 +102,52 @@ namespace DEngine.View {
 
             scrollPos = EditorGUILayout.BeginScrollView(scrollPos);
 
+            //Display Constructors
+            if (constructors.Count > 0) {
+                GUILayout.Label("Constructors (" + constructors.Count + ")", header);
+                foreach (Model::Constructor constructor in constructors) {
+                    GUILayout.BeginHorizontal();
+                    if (constructor.modifier == Model::AccessModifier.PRIVATE) {
+                        GUILayout.Label("- ", private_, GUILayout.Width(5));
+                        GUILayout.Label(constructor.ToString() + "()");
+                    }
+                    else if (constructor.modifier == Model::AccessModifier.PUBLIC) {
+                        GUILayout.Label("+ ", public_, GUILayout.Width(5));
+                        GUILayout.Label(constructor.ToString() + "()");
+                    }
+                    else if (constructor.modifier == Model::AccessModifier.PROTECTED) {
+                        GUILayout.Label("# ", protected_, GUILayout.Width(5));
+                        GUILayout.Label(constructor.ToString() + "()");
+                    }
+                    else {
+                        GUILayout.Label(constructor.ToString() + "()");
+                    }
+                    GUILayout.EndHorizontal();
+                    //GUILayout.Label(constructor.ToString());
+                }
+            }
+
             // Display attributes
             if (attributes.Count > 0) {
                 GUILayout.Label("Attributes (" + attributes.Count + ")", header);
                 foreach (Model::Attribute attribute in attributes) {
-                    GUILayout.Label(attribute.ToString());
+                    GUILayout.BeginHorizontal();
+                    if (attribute.modifier == Model::AccessModifier.PRIVATE) {
+                        GUILayout.Label("- ", private_, GUILayout.Width(5));
+                        GUILayout.Label(attribute.ToString());
+                    }
+                    else if (attribute.modifier == Model::AccessModifier.PUBLIC) {
+                        GUILayout.Label("+ ", public_, GUILayout.Width(5));
+                        GUILayout.Label(attribute.ToString());
+                    }
+                    else if (attribute.modifier == Model::AccessModifier.PROTECTED) {
+                        GUILayout.Label("# ", protected_, GUILayout.Width(5));
+                        GUILayout.Label(attribute.ToString());
+                    }
+                    else {
+                        GUILayout.Label(attribute.ToString());
+                    }
+                    GUILayout.EndHorizontal();
                 }
             }
 
@@ -133,14 +174,6 @@ namespace DEngine.View {
                     GUILayout.EndHorizontal();
                 }
             }
-
-            //Display Constructors
-            if (constructors.Count > 0) {
-                GUILayout.Label("Constructors (" + constructors.Count + ")", header);
-                foreach (Model::Constructor constructor in constructors) {
-                    GUILayout.Label(constructor.ToString());
-                }
-            }
             EditorGUILayout.EndScrollView();
         }
 
@@ -165,7 +198,9 @@ namespace DEngine.View {
 
             if (superClass != null) {
                 Rect superClassRect = superClass.windowRect;
-                superClassRect.y = superClass.windowRect.y + superClass.windowRect.height / 2;
+                superClassRect.x = superClass.windowRect.x + superClass.windowRect.width / 2;
+                //superClassRect.y = superClass.windowRect.y + superClass.windowRect.height / 2;
+                superClassRect.y = superClassRect.y + superClassRect.height;
                 superClassRect.height = 1;
                 superClassRect.width = 1;
                 RightPanel.DrawInheritanceCurve(windowRect, superClassRect);
@@ -174,6 +209,10 @@ namespace DEngine.View {
             if (interfaces != null) {
                 //Debug.Log(windowTitle);
                 foreach (InterfaceNode interfaceNode in interfaces) {
+                    //Rect windowRect = this.windowRect;
+                    //windowRect.y = this.windowRect.y + this.windowRect.height / 2;
+                    //windowRect.height = 1;
+                    //windowRect.width = 1;
                     Rect interfaceRect = interfaceNode.windowRect;
                     interfaceRect.y = interfaceNode.windowRect.y + interfaceNode.windowRect.height / 2;
                     interfaceRect.height = 1;

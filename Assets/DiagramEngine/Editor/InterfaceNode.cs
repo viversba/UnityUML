@@ -37,8 +37,7 @@ namespace DEngine.View {
             methods = new List<Model::Method>();
             interfaces = null;
             interfaceNames = new List<string>();
-
-            if(interfaceModel.GetInterfaceNames() != null) { 
+            if (interfaceModel.GetInterfaceNames() != null) { 
                 foreach(string interface_ in interfaceModel.GetInterfaceNames()) {
                     interfaceNames.Add(interface_);
                 }
@@ -104,6 +103,10 @@ namespace DEngine.View {
             if (interfaces != null) {
                 //Debug.Log(windowTitle);
                 foreach (InterfaceNode interfaceNode in interfaces) {
+                    //Rect windowRect = this.windowRect;
+                    //windowRect.y = this.windowRect.y + this.windowRect.height / 2;
+                    //windowRect.height = 1;
+                    //windowRect.width = 1;
                     Rect interfaceRect = interfaceNode.windowRect;
                     interfaceRect.y = interfaceNode.windowRect.y + interfaceNode.windowRect.height / 2;
                     interfaceRect.height = 1;
