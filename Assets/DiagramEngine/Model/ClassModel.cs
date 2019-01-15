@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 namespace DEngine.Model {
 
+    [Serializable]
     public class ClassModel : BaseModel {
 
         /// <summary>
@@ -22,20 +23,20 @@ namespace DEngine.Model {
         /// </summary>
         private string superClassName;
 
-        public ClassModel(string name) {
+        public ClassModel(string name): base() {
 
             this.name = name;
-            constructors = new List<Constructor>();
+            constructors = null;
             superClass = null;
-            subClasses = new List<ClassModel>();
+            subClasses = null;
             superClassName = "";
         }
 
-        public ClassModel() {
+        public ClassModel(): base(){
 
-            constructors = new List<Constructor>();
+            constructors = null;
             superClass = null;
-            subClasses = new List<ClassModel>();
+            subClasses = null;
             superClassName = "";
         }
 
@@ -45,12 +46,14 @@ namespace DEngine.Model {
         }
 
         public void SetSuperClass(ClassModel superClass) {
-
+            if (superClass == null)
+                superClass = new ClassModel();
             this.superClass = superClass;
         }
 
         public void AddConstructor(Constructor constructor) {
-
+            if (constructors == null)
+                constructors = new List<Constructor>();
             constructors.Add(constructor);
         }
 
@@ -87,20 +90,22 @@ namespace DEngine.Model {
 
             string description = name;
             description += container != null ? "<-" + container.GetName() + "\n" : "\n";
-            foreach (Constructor constructor in constructors) {
-                description += constructor.ToString() + "\n";
+            if(constructors != null) {
+                foreach (Constructor constructor in constructors) {
+                    description += constructor.ToString() + "\n";
+                }
             }
-            foreach(Method method in methods) {
-                description += method.ToString() + "()\n";
+            if (methods != null) {
+                foreach (Method method in methods) {
+                    description += method.ToString() + "()\n";
+                }
             }
-            foreach(Attribute attribute in attributes) {
-                description += attribute.ToString() + "\n";
+            if (attributes != null) {
+                foreach (Attribute attribute in attributes) {
+                    description += attribute.ToString() + "\n";
+                }
             }
             return description;
-        }
-
-        ~ClassModel(){
-            constructors.Clear();
         }
     }
 }

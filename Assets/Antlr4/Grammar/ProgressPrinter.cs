@@ -374,21 +374,6 @@ namespace DEngine.Model {
 
             // Add each interface implementation
             try {
-                //foreach(var interface_ in context.interface_base().interface_type_list().namespace_or_type_name()) {
-                //    try {
-                //        foreach (var identifier in interface_.identifier()) {
-                //            if (!string.IsNullOrEmpty(identifier.GetText())) {
-                //                interfaceBase = identifier.GetText();
-                //                wrapper.AddInterfaceToEntity(interfaceBase);
-                //                break;
-                //            }
-                //        }
-                //    }
-                //    catch (Exception e) {
-                //        ItDoesNothing("Nested interface handling in Class " + e);
-                //    }
-                //}
-
                 foreach (var interface_ in context.interface_base().interface_type_list().namespace_or_type_name()) {
                     try {
                         foreach (var identifier in interface_.identifier()) {

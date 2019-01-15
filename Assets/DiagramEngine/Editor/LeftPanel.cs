@@ -1,10 +1,10 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-//using UnityEngine.
 using UnityEditor;
 using DEngine.Model;
 using DEngine.Controller;
+using DEngine;
 using System;
 using System.IO;
 
@@ -22,6 +22,14 @@ public class LeftPanel : EditorWindow{
     /// Selected option of file selection (All, Drag & Drop, Checklist)
     /// </summary>
     private int selected = 0;
+    /// <summary>
+    /// Reload texture path
+    /// </summary>
+    string texturePath = "./Assets/DiagramEngine/Textures/reload.png";
+    /// <summary>
+    /// The reload texture.
+    /// </summary>
+    Texture2D reloadTexture;
 
 
     /// <summary>
@@ -30,7 +38,7 @@ public class LeftPanel : EditorWindow{
     /// <returns><c>true</c>, if the GenerateDiagram button was pressed, <c>false</c> otherwise.</returns>
     public bool DrawLeftPanel() {
 
-        bool generateDiagramButton = false;
+        bool generateDiagramButton = false, reloadEntities = false;
         string[] options = { "All!", "Drag & Drop", "CheckBox" };
         selected = GUILayout.Toolbar(selected, options, GUILayout.MinWidth(240));
 
@@ -44,6 +52,7 @@ public class LeftPanel : EditorWindow{
                     GUILayout.Label("Add some scripts and reopen the window");
                 }
                 else {
+                    reloadEntities = GUILayout.Button(reloadTexture, GUILayout.Width(50));
                     GUILayout.Label("Found Classe/Interfaces (" + selectedEntities.Count + "): ", EditorStyles.boldLabel);
                     scrollPos = EditorGUILayout.BeginScrollView(scrollPos);
                     foreach (var entity in selectedEntities) {
@@ -52,6 +61,12 @@ public class LeftPanel : EditorWindow{
                     }
                     EditorGUILayout.EndScrollView();
                     generateDiagramButton = GUILayout.Button("Generate!");
+
+                    if (reloadEntities) {
+                        Debug.Log("Reloading entities...");
+                        LoadAllEntities();
+                        DiagramEngine.SaveEntitiesOnDisk(selectedEntities);
+                    }
                 }
                 break;
             case 1:
@@ -71,8 +86,17 @@ public class LeftPanel : EditorWindow{
 
         selected = 0;
         selectedEntities = new List<BaseModel>();
-        
+
+        if (File.Exists(texturePath)) {
+            byte[] fileData;
+            fileData = File.ReadAllBytes(texturePath);
+            reloadTexture = new Texture2D(2, 2);
+            reloadTexture.LoadImage(fileData);
+            reloadTexture.Apply();
+        }
+
         LoadAllEntities();
+        DiagramEngine.SaveEntitiesOnDisk(selectedEntities);
         ClassWrapper.RelateEntities(ref selectedEntities);
     }
 
@@ -81,32 +105,17 @@ public class LeftPanel : EditorWindow{
     /// </summary>
     /// <returns>The selected entities.</returns>
     public List<BaseModel> GetSelectedEntities() {
-
-        //foreach (var entity in selectedEntities) {
-
-        //    Debug.Log("-------------------------------------");
-        //    Debug.Log(entity.GetName());
-        //    if (entity.IsClass()) {
-        //        ClassModel classModel = entity as ClassModel;
-        //        if (classModel.GetSuperClassName() != "") {
-        //            Debug.Log("Superclass: ");
-        //            Debug.Log(classModel.GetSuperClassName());
-        //        }
-        //    }
-        //    if (entity.GetInterfaceNames() != null) {
-        //        Debug.Log("Interfaces: ");
-        //        foreach (string interfaceModel in entity.GetInterfaceNames()) {
-        //            Debug.Log(interfaceModel);
-        //        }
-        //    }
-        //    Debug.Log("-------------------------------------");
-        //}
-
         return selectedEntities;
     }
 
     private void LoadAllEntities() {
 
+        // Try to load already existent entities from disk
+        selectedEntities = DiagramEngine.LoadEntitiesFromDisk();
+        if (selectedEntities != null)
+            return;
+
+        selectedEntities = new List<BaseModel>();
         switch (selected) {
             case 0:
                 foreach (string file in SearchAllFilesInDirectory("./Assets/")) {

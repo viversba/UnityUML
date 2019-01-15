@@ -3,10 +3,8 @@ using System.Collections.Generic;
 
 namespace DEngine.Model {
 
+    [Serializable]
     public class InterfaceModel: BaseModel {
-
-        private List<InterfaceModel> bases;
-        private List<string> baseNames;
 
         public InterfaceModel() {
 

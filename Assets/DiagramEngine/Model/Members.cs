@@ -1,8 +1,11 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System;
 
 namespace DEngine.Model {
 
+
+    [Serializable]
     /// <summary>
     /// Enum providing all access modifier types on C#
     /// </summary>
@@ -15,6 +18,7 @@ namespace DEngine.Model {
         NONE
     }
 
+    [Serializable]
     /// <summary>
     /// Enum providing all method types in C#
     /// </summary>
@@ -26,6 +30,7 @@ namespace DEngine.Model {
         NONE
     }
 
+    [Serializable]
     /// <summary>
     /// Enum providing all class types in C#
     /// </summary>
@@ -37,6 +42,7 @@ namespace DEngine.Model {
         NONE
     }
 
+    [Serializable]
     /// <summary>
     /// Enum providing all constructor types in C#
     /// </summary>
@@ -47,11 +53,13 @@ namespace DEngine.Model {
         OTHER
     }
 
+    [Serializable]
     public enum AttributeType { 
         STATIC,
         NONE
     }
 
+    [Serializable]
     /// <summary>
     /// Attribute struct used to represent a declared attribute inside a class;
     /// </summary>
@@ -83,6 +91,7 @@ namespace DEngine.Model {
         }
     }
 
+    [Serializable]
     /// <summary>
     /// Method struct used to represent a declared method iside a class
     /// </summary>
@@ -110,6 +119,7 @@ namespace DEngine.Model {
         }
     }
 
+    [Serializable]
     /// <summary>
     /// Constructor struct used to represent a declated constructor list inside a class
     /// </summary>

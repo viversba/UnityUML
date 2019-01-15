@@ -40,7 +40,7 @@ public class RightPanel : EditorWindow {
 
     public void Awake() {
 
-        string filePath = "./Assets/DiagramEngine/Textures/grid_texture.jpg";
+        string texturePath = "./Assets/DiagramEngine/Textures/grid_texture.jpg";
         byte[] fileData;
         drawNodes = false;
         selectedWindow = null;
@@ -48,8 +48,8 @@ public class RightPanel : EditorWindow {
         resizeType = ResizeType.None;
         cursor = MouseCursor.Arrow;
 
-        if (File.Exists(filePath)) {
-            fileData = File.ReadAllBytes(filePath);
+        if (File.Exists(texturePath)) {
+            fileData = File.ReadAllBytes(texturePath);
             backgroundTexture = new Texture2D(2, 2);
             backgroundTexture.LoadImage(fileData);
             backgroundTexture.Apply();

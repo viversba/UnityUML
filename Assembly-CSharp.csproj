@@ -84,6 +84,7 @@
     <Compile Include="Assets\DiagramEngine\Model\ClassModel.cs" />
     <Compile Include="Assets\DiagramEngine\Model\InterfaceModel.cs" />
     <Compile Include="Assets\DiagramEngine\Model\Members.cs" />
+    <Compile Include="Assets\DiagramEngine\Model\StructModel.cs" />
     <None Include="Assets\Antlr4\Packages\Antlr4.Runtime.4.6.5\lib\net20\Antlr4.Runtime.Standard.xml" />
     <Reference Include="Unity.TextMeshPro.Editor">
       <HintPath>/Users/nicolasviveros/UnityProjects/UML/Library/ScriptAssemblies/Unity.TextMeshPro.Editor.dll</HintPath>

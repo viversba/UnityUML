@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 namespace DEngine.Model {
 
+    [Serializable]
     public class BaseModel {
 
         protected string name;
@@ -16,8 +17,8 @@ namespace DEngine.Model {
         public BaseModel() {
 
             name = "Generic";
-            methods = new List<Method>();
-            attributes = new List<Attribute>();
+            methods = null;
+            attributes = null;
             interfaces = null;
             interfaceNames = null;
             container = null;
@@ -52,6 +53,8 @@ namespace DEngine.Model {
         }
 
         public void AddAttribute(Attribute newAttribute) {
+            if (attributes == null)
+                attributes = new List<Attribute>();
             attributes.Add(newAttribute);
         }
 
@@ -66,6 +69,8 @@ namespace DEngine.Model {
         }
 
         public void AddMethod(Method newMethod) {
+            if (methods == null)
+                methods = new List<Method>();
             methods.Add(newMethod);
         }
 
@@ -103,22 +108,21 @@ namespace DEngine.Model {
 
             string description = name;
             description += container != null?  "<-" + container.name + "\n": "\n";
-            foreach (Method method in methods) {
-                description += method.ToString() + "()\n";
+            if(methods != null) {
+                foreach (Method method in methods) {
+                    description += method.ToString() + "()\n";
+                }
             }
-            foreach (Attribute attribute in attributes) {
-                description += attribute.ToString() + "\n";
+            if(attributes != null) {
+                foreach (Attribute attribute in attributes) {
+                    description += attribute.ToString() + "\n";
+                }
             }
             return description;
         }
 
         public bool IsClass() {
             return isClass;
-        }
-
-        ~BaseModel() {
-            methods.Clear();
-            attributes.Clear();
         }
     }
 }

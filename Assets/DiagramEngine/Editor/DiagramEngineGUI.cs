@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEditor;
 using DEngine.Model;
 using DEngine.Controller;
+using DEngine;
 using System;
 
 public class DiagramEngineGUI : EditorWindow {
@@ -76,6 +77,7 @@ public class DiagramEngineGUI : EditorWindow {
         rightPanel.SetBegginingOfRightPanel(begginingOfRightPanel);
         if (drawNodes) {
             selectedEntities = leftPanel.GetSelectedEntities();
+            DiagramEngine.SaveEntitiesOnDisk(selectedEntities);
             rightPanel.CreateWindowList(selectedEntities);
             drawNodes = false;
         }
