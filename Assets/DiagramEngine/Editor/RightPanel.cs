@@ -208,20 +208,20 @@ public class RightPanel : EditorWindow {
 
         Event e = Event.current;
         mousePos = e.mousePosition;
-        float minDistance = 2;
+        float minDistance = 5;
 
         if (selectedWindow != null) {
             Rect windowRect = selectedWindow.windowRect;
             //Check if mouse is in edge or corner
             // Left corner
-            if (Mathf.Abs(windowRect.position.x - mousePos.x) <= minDistance) {
+            if (mousePos.x >= windowRect.position.x && mousePos.x - windowRect.position.x <= minDistance) {
                 // Top left corner
-                if (Mathf.Abs(windowRect.position.y - mousePos.y) <= minDistance) {
+                if (mousePos.y >= windowRect.position.y && mousePos.y - windowRect.position.y <= minDistance) {
                     cursor = MouseCursor.ResizeUpLeft;
                     EditorGUIUtility.AddCursorRect(rightPanelRect, MouseCursor.ResizeUpLeft);
                     resizeType = ResizeType.Top_Left;
                 }
-                else if (Mathf.Abs((windowRect.position.y + windowRect.height) - mousePos.y) <= minDistance) {
+                else if ((windowRect.position.y + windowRect.height) <= mousePos.y && (windowRect.position.y + windowRect.height) - mousePos.y <= minDistance) {
                     // Bottom left corner
                     cursor = MouseCursor.ResizeUpRight;
                     EditorGUIUtility.AddCursorRect(rightPanelRect, MouseCursor.ResizeUpRight);
@@ -233,14 +233,14 @@ public class RightPanel : EditorWindow {
                     resizeType = ResizeType.Left;
                 }
             }// Right corner
-            else if (Mathf.Abs((windowRect.position.x + windowRect.width) - mousePos.x) <= minDistance) {
+            else if ((windowRect.position.x + windowRect.width) >= mousePos.x && (windowRect.position.x + windowRect.width) - mousePos.x <= minDistance) {
                 // Top right corner
-                if (Mathf.Abs(windowRect.position.y - mousePos.y) <= minDistance) {
+                if (windowRect.position.y <= mousePos.y && mousePos.y - windowRect.position.y <= minDistance) {
                     cursor = MouseCursor.ResizeUpRight;
                     resizeType = ResizeType.Top_Right;
                     EditorGUIUtility.AddCursorRect(rightPanelRect, MouseCursor.ResizeUpRight);
                 }
-                else if (Mathf.Abs((windowRect.position.y + windowRect.height) - mousePos.y) <= minDistance) {
+                else if ((windowRect.position.y + windowRect.height) >= mousePos.y && (windowRect.position.y + windowRect.height) - mousePos.y <= minDistance) {
                     // Bottom right corner
                     cursor = MouseCursor.ResizeUpLeft;
                     resizeType = ResizeType.Bottom_Right;
@@ -252,13 +252,13 @@ public class RightPanel : EditorWindow {
                     EditorGUIUtility.AddCursorRect(rightPanelRect, MouseCursor.ResizeHorizontal);
                 }
             }// Top edge
-            else if (Mathf.Abs(windowRect.position.y - mousePos.y) <= minDistance) {
+            else if (windowRect.position.y <= mousePos.y && mousePos.y - windowRect.position.y <= minDistance) {
                 cursor = MouseCursor.ResizeVertical;
                 resizeType = ResizeType.Top;
                 EditorGUIUtility.AddCursorRect(rightPanelRect, MouseCursor.ResizeVertical);
             }
             // Bottom edge
-            else if (Mathf.Abs((windowRect.position.y + windowRect.height) - mousePos.y) <= minDistance) {
+            else if ((windowRect.position.y + windowRect.height) > mousePos.y && (windowRect.position.y + windowRect.height) - mousePos.y <= minDistance) {
                 cursor = MouseCursor.ResizeVertical;
                 resizeType = ResizeType.Bottom;
                 EditorGUIUtility.AddCursorRect(rightPanelRect, MouseCursor.ResizeVertical);
