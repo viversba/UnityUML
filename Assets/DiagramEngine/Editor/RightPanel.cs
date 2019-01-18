@@ -123,6 +123,8 @@ public class RightPanel : EditorWindow {
             }
 
             EndWindows();
+
+            DrawConventions();
         }
     }
 
@@ -137,7 +139,7 @@ public class RightPanel : EditorWindow {
         float separationY = (rightPanelRect.height - 50) / selectedEntities.Count;
 
         float startX = begginingOfRightPanel + 50; 
-        float startY = 50;
+        float startY = 70;
 
         float availableWidth = rightPanelRect.width - begginingOfRightPanel;
         float availableHeight = rightPanelRect.height;
@@ -327,12 +329,15 @@ public class RightPanel : EditorWindow {
         float triangleHeight = 5f * 2/3;
         float positionX = end.x;
         float positionY = end.y + 5;
+
+        Handles.color = new Color(0.8f,0.8f,0.8f,1);
         Vector3[] positions = {
             new Vector3(positionX, positionY - triangleHeight),
             new Vector3(positionX - triangleHeight, positionY + triangleHeight),
             new Vector3(positionX + triangleHeight, positionY + triangleHeight),
             new Vector3(positionX, positionY - triangleHeight)};
         Handles.DrawPolyLine(positions);
+        Handles.color = Color.white;
     }
 
     /// <summary>
@@ -348,12 +353,15 @@ public class RightPanel : EditorWindow {
         float triangleHeight = 5f * 2 / 3;
         float positionX = end.x - 5;
         float positionY = end.y;
+
+        Handles.color = new Color(0.8f, 0.8f, 0.8f, 1);
         Vector3[] positions = {
             new Vector3(triangleHeight + positionX, positionY),
             new Vector3(-triangleHeight + positionX, triangleHeight + positionY),
             new Vector3(-triangleHeight + positionX, -triangleHeight + positionY),
             new Vector3(triangleHeight + positionX, positionY)};
         Handles.DrawPolyLine(positions);
+        Handles.color = Color.white;
     }
 
     // Draw the node curve from the middle of the start Rect to the middle of the end rect 
@@ -386,13 +394,38 @@ public class RightPanel : EditorWindow {
         Handles.DrawBezier(startPos, endPos, startTan, endTan, mainColor, null, 1);
     }
 
+    private void DrawConventions() {
+
+        //Color for the 'Conventions' title
+        var whiteText = new GUIStyle();
+        var header = new GUIStyle();
+        whiteText.normal.textColor = Color.white;
+        header.fontSize = 20;
+        header.normal.textColor = Color.white;
+
+        GUILayout.BeginArea(new Rect(begginingOfRightPanel + 30, 10, 200, 100));
+
+        GUILayout.Label("Conventions:",  header);
+        GUILayout.BeginHorizontal();
+        GUILayout.Label("Imlpementation  ", whiteText);
+        Handles.color = Color.cyan;
+        Handles.DrawLine(new Vector3(100f, 30f, 0f), new Vector3(130f, 30f, 0f));
+        GUILayout.EndHorizontal();
+
+        GUILayout.BeginHorizontal();
+        GUILayout.Label("Inheritance  ", whiteText);
+        Handles.color = Color.red;
+        Handles.DrawLine(new Vector3(100f, 45f, 0f), new Vector3(130f, 45f, 0f));
+        GUILayout.EndHorizontal();
+
+        GUILayout.EndArea();
+
+        Handles.color = Color.white;
+    }
+
     private BaseNode GetWindowWithTitle(string windowTitle) { 
         
         foreach(BaseNode window in windows) {
-            //if(window.windowTitle == windowTitle) {
-            //    return window;
-            //}
-            //Debug.Log(window.windowTitle);
             try {
                 ClassNode classNode = (ClassNode)window;
                 if (classNode.windowTitle == windowTitle) {
