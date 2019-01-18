@@ -133,12 +133,17 @@ public class RightPanel : EditorWindow {
     /// <param name="selectedEntities">List of entities.</param>
     public void CreateWindowList(List<BaseModel> selectedEntities) {
 
-        Debug.Log("Right Panel");
-        Debug.Log(rightPanelRect.ToString());
-
         float separationX = (rightPanelRect.width - begginingOfRightPanel - 50) / selectedEntities.Count;
         float separationY = (rightPanelRect.height - 50) / selectedEntities.Count;
-        float startX = begginingOfRightPanel +  50, startY = 50;
+
+        float startX = begginingOfRightPanel + 50; 
+        float startY = 50;
+
+        float availableWidth = rightPanelRect.width - begginingOfRightPanel;
+        float availableHeight = rightPanelRect.height;
+
+        float windowXPosition = startX;
+        float windowYPosition = startY;
 
         if (selectedEntities != null || selectedEntities.Count != 0) {
             drawNodes = true;
@@ -148,18 +153,44 @@ public class RightPanel : EditorWindow {
                     ClassNode classNode = (ClassNode)CreateInstance("ClassNode");
                     ClassModel classModel = (ClassModel)entity;
                     classNode.Init((ClassModel)entity);
-                    classNode.windowRect = new Rect(startX, startY, 150f, 150f);
+                    classNode.windowRect = new Rect(windowXPosition, windowYPosition, 150f, 150f);
                     windows.Add(classNode);
+
+                    // Validate limits
+                    if (windowXPosition + 155f <= rightPanelRect.width - 150f) {
+                        windowXPosition += 155f;
+                    }
+                    else {
+                        windowXPosition = startX;
+                        if(windowYPosition + 155f < availableHeight - 150f) {
+                            windowYPosition += 155f;
+                        }
+                        else {
+                            windowYPosition = startY;
+                        }
+                    }
                 }
                 else {
                     // Draw Interfaces
                     InterfaceNode interfaceNode = (InterfaceNode)CreateInstance("InterfaceNode");
                     interfaceNode.Init((InterfaceModel)entity);
-                    interfaceNode.windowRect = new Rect(startX, startY, 170f, 150f);
+                    interfaceNode.windowRect = new Rect(windowXPosition, windowYPosition, 170f, 150f);
                     windows.Add(interfaceNode);
+
+                    // Validate limits
+                    if (windowXPosition + 175f <= rightPanelRect.width - 170f) {
+                        windowXPosition += 175f;
+                    }
+                    else {
+                        windowXPosition = startX;
+                        if (windowYPosition + 155f < availableHeight - 150f) {
+                            windowYPosition += 155f;
+                        }
+                        else {
+                            windowYPosition = startY;
+                        }
+                    }
                 }
-                startX += separationX;
-                startY += separationY;
             }
 
             foreach(BaseNode window in windows) {

@@ -15,9 +15,16 @@ namespace DEngine.Controller {
         /// </summary>
         public List<BaseModel> allEntities;
 
+        /// <summary>
+        /// Temporal variable that will indicate if an entity is a struct in order to dump it
+        /// Will be removed when support for structs is available
+        /// </summary>
+        private bool isStruct;
+
         public ClassWrapper() {
 
             isClass = false;
+            isStruct = false;
             entities = new List<BaseModel>();
             allEntities = new List<BaseModel>();
             currentEntity = null;
@@ -56,6 +63,19 @@ namespace DEngine.Controller {
             isClass = false;
         }
 
+        public void AddStruct(string name) {
+
+            entities.Add(new StructModel(name));
+            currentEntity = entities[entities.Count - 1];
+            int numberOfEntities = entities.Count;
+            if (numberOfEntities > 1) {
+                entities[numberOfEntities - 1].SetContainer(entities[numberOfEntities - 2]);
+            }
+            currentEntity.SetTypeOfEntity(false);
+            isClass = false;
+            isStruct = true;
+        }
+
         public void SetContainer() {
 
             if (entities.Count > 1) {
@@ -66,12 +86,14 @@ namespace DEngine.Controller {
 
         public void FinishEntity() {
 
-            if (entities.Count == 1) {
+            //Check if the last entity is a struct
+            if (entities.Count == 1 && !isStruct) {
                 allEntities.Add(entities[entities.Count - 1]);
             }
             entities.RemoveAt(entities.Count - 1);
             currentEntity = entities.Count > 0 ? entities[entities.Count - 1] : null;
             isClass = false;
+            isStruct = false;
         }
 
         public void AddMethodTo(Method method) {
@@ -106,9 +128,17 @@ namespace DEngine.Controller {
         public void AddConstructor(Constructor constructor) {
             if (currentEntity == null)
                 return;
-            var currentClass = (ClassModel)currentEntity;
-            currentClass.AddConstructor(constructor);
-            currentEntity = currentClass;
+
+            if (!isStruct) {
+                var currentClass = (ClassModel)currentEntity;
+                currentClass.AddConstructor(constructor);
+                currentEntity = currentClass;
+            }
+            else {
+                var currentStruct = (StructModel)currentEntity;
+                currentStruct.AddConstructor(constructor);
+                currentEntity = currentStruct;
+            }
         }
 
         public static T ParseEnum<T>(string value) {

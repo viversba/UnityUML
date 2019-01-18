@@ -61,22 +61,13 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\DiagramEngine\Editor\BaseInputNode.cs" />
     <Compile Include="Assets\DiagramEngine\Editor\BaseNode.cs" />
-    <Compile Include="Assets\DiagramEngine\Editor\CalcNode.cs" />
     <Compile Include="Assets\DiagramEngine\Editor\ClassNode.cs" />
-    <Compile Include="Assets\DiagramEngine\Editor\ComparisonNode.cs" />
     <Compile Include="Assets\DiagramEngine\Editor\DiagramEngineGUI.cs" />
     <Compile Include="Assets\DiagramEngine\Editor\EditorGUISplitView.cs" />
-    <Compile Include="Assets\DiagramEngine\Editor\GameObjectActive.cs" />
-    <Compile Include="Assets\DiagramEngine\Editor\GameObjectDistance.cs" />
-    <Compile Include="Assets\DiagramEngine\Editor\InputNode.cs" />
     <Compile Include="Assets\DiagramEngine\Editor\InterfaceNode.cs" />
     <Compile Include="Assets\DiagramEngine\Editor\LeftPanel.cs" />
-    <Compile Include="Assets\DiagramEngine\Editor\NodeEditor.cs" />
-    <Compile Include="Assets\DiagramEngine\Editor\OutputNode.cs" />
     <Compile Include="Assets\DiagramEngine\Editor\RightPanel.cs" />
-    <Compile Include="Assets\DiagramEngine\Editor\TimerNode.cs" />
     <Reference Include="Unity.TextMeshPro.Editor">
       <HintPath>/Users/nicolasviveros/UnityProjects/UML/Library/ScriptAssemblies/Unity.TextMeshPro.Editor.dll</HintPath>
     </Reference>
@@ -332,9 +323,6 @@
     <Reference Include="SyntaxTree.VisualStudio.Unity.Bridge">
       <HintPath>/Applications/Visual Studio.app/Contents/Resources/lib/monodevelop/AddIns/MonoDevelop.Unity/Editor/SyntaxTree.VisualStudio.Unity.Bridge.dll</HintPath>
     </Reference>
-    <Reference Include="Antlr4.Runtime.Standard">
-      <HintPath>/Users/nicolasviveros/UnityProjects/UML/Assets/Antlr4/Packages/Antlr4.Runtime.4.6.5/lib/net20/Antlr4.Runtime.Standard.dll</HintPath>
-    </Reference>
     <Reference Include="UnityEngine.Advertisements.Editor">
       <HintPath>/Users/nicolasviveros/UnityProjects/UML/Library/PackageCache/com.unity.ads@2.3.1/Runtime/UnityEngine.Advertisements.Editor.dll</HintPath>
     </Reference>
@@ -355,6 +343,9 @@
     </Reference>
     <Reference Include="UnityEditor.Purchasing">
       <HintPath>/Users/nicolasviveros/UnityProjects/UML/Library/PackageCache/com.unity.purchasing@2.0.3/Editor/UnityEditor.Purchasing.dll</HintPath>
+    </Reference>
+    <Reference Include="Antlr4.Runtime.Standard">
+      <HintPath>/Users/nicolasviveros/UnityProjects/UML/Assets/Antlr4/Packages/Antlr4.Runtime.4.6.5/lib/net20/Antlr4.Runtime.Standard.dll</HintPath>
     </Reference>
     <Reference Include="UnityEditor.iOS.Extensions.Xcode">
       <HintPath>/Applications/Unity/PlaybackEngines/iOSSupport/UnityEditor.iOS.Extensions.Xcode.dll</HintPath>

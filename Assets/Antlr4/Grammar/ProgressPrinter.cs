@@ -11,6 +11,7 @@ namespace DEngine.Model {
 
         private string className;
         private string methodName;
+        private string structName;
         private List<string> modifiers;
         private string type;
         private string propertyName;
@@ -35,6 +36,7 @@ namespace DEngine.Model {
 
             propertyName = "";
             methodName = "";
+            structName = "";
             modifiers = new List<string>();
             type = "";
             className = "";
@@ -50,7 +52,6 @@ namespace DEngine.Model {
             interfaceBase = "";
 
             entities = new List<string>();
-
             wrapper = new ClassWrapper();
         }
 
@@ -129,14 +130,12 @@ namespace DEngine.Model {
         }
 
         public override void ExitClass_definition([NotNull] CSharpParser.Class_definitionContext context) {
-            base.ExitClass_definition(context);
 
             entities.RemoveAt(entities.Count - 1);
             wrapper.FinishEntity();
         }
 
         public override void EnterType_declaration([NotNull] CSharpParser.Type_declarationContext context) {
-            base.EnterType_declaration(context);
             classModifiers.Clear();
 
             // Get the attributes
@@ -190,7 +189,6 @@ namespace DEngine.Model {
         }
 
         public override void ExitConstructor_declaration([NotNull] CSharpParser.Constructor_declarationContext context) {
-            base.ExitConstructor_declaration(context);
 
             AccessModifier mod = AccessModifier.INTERNAL;
             MethodType methodType = MethodType.NONE;
@@ -206,7 +204,7 @@ namespace DEngine.Model {
         }
 
         public override void EnterMethod_declaration([NotNull] CSharpParser.Method_declarationContext context) {
-            base.EnterMethod_declaration(context);
+
             parameters.Clear();
             methodName = context.method_member_name().GetText();
 
@@ -452,6 +450,23 @@ namespace DEngine.Model {
         public override void ExitInterface_member_declaration([NotNull] CSharpParser.Interface_member_declarationContext context) {
 
             wrapper.AddMethodTo(new Method(methodName, AccessModifier.NONE, type, MethodType.NONE));
+        }
+
+        #endregion
+
+        #region Struct handling
+
+        public override void EnterStruct_definition([NotNull] CSharpParser.Struct_definitionContext context) {
+
+            structName = context.identifier().GetText();
+            entities.Add(structName);
+            wrapper.AddStruct(structName);
+        }
+
+        public override void ExitStruct_definition([NotNull] CSharpParser.Struct_definitionContext context) {
+
+            entities.RemoveAt(entities.Count - 1);
+            wrapper.FinishEntity();
         }
 
         #endregion

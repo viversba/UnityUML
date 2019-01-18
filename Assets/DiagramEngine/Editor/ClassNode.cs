@@ -191,9 +191,6 @@ namespace DEngine.View {
             interfaces.AddRange(interfaceNodes);
         }
 
-        public override void Tick(float deltaTime) {
-        }
-
         public override void DrawCurves() {
 
             if (superClass != null) {

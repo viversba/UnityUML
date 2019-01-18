@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 
+#pragma warning disable 
+
 namespace DEngine.Model {
 
     [Serializable]
@@ -126,3 +128,5 @@ namespace DEngine.Model {
         }
     }
 }
+
+#pragma warning restore

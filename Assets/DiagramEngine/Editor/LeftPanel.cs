@@ -52,7 +52,12 @@ public class LeftPanel : EditorWindow{
                     GUILayout.Label("Add some scripts and reopen the window");
                 }
                 else {
+
+                    GUILayout.BeginHorizontal();
                     reloadEntities = GUILayout.Button(reloadTexture, GUILayout.Width(50));
+                    GUILayout.Label("Reload Entities");
+                    GUILayout.EndHorizontal();
+
                     GUILayout.Label("Found Classe/Interfaces (" + selectedEntities.Count + "): ", EditorStyles.boldLabel);
                     scrollPos = EditorGUILayout.BeginScrollView(scrollPos);
                     foreach (var entity in selectedEntities) {

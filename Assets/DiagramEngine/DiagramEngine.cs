@@ -4,6 +4,7 @@ using UnityEngine;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using DEngine.Model;
+using System;
 
 namespace DEngine {
 
@@ -43,14 +44,17 @@ namespace DEngine {
         public static void SaveEntitiesOnDisk(List<BaseModel> entities, string path = "") {
 
             BinaryFormatter bf = new BinaryFormatter();
-            Debug.Log(path);
             FileStream file = File.Open(storagePath + path, FileMode.Create);
-
+            
             if(entities.Count > 0) {
                 bf.Serialize(file, entities);
             }
 
             file.Close();
+
+            if(File.Exists(storagePath + path)) {
+                Debug.Log("Saved entities at " + storagePath + path);
+            }
         }
 
         public static List<BaseModel> LoadEntitiesFromDisk(string path="") {
@@ -58,11 +62,18 @@ namespace DEngine {
             List<BaseModel> entities = null;
             if (File.Exists(storagePath) && (new FileInfo(storagePath).Length != 0)) {
 
-                BinaryFormatter bf = new BinaryFormatter();
-                FileStream file = File.Open(storagePath, FileMode.Open);
+                try {
+                    BinaryFormatter bf = new BinaryFormatter();
+                    FileStream file = File.Open(storagePath, FileMode.Open);
 
-                entities = bf.Deserialize(file) as List<BaseModel>;
-                file.Close();
+                    entities = bf.Deserialize(file) as List<BaseModel>;
+                    file.Close();
+                }
+                catch (Exception e) {
+
+                    Debug.LogWarning("Error (DiagramEngine.cs : LoadEntitiesFromDisk): " + e);
+                    File.Delete(storagePath);
+                }
             }
             else {
                 Debug.LogWarning("No entities to load");

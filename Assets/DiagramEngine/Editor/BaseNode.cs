@@ -26,21 +26,9 @@ public abstract class BaseNode: ScriptableObject {
 	//Draws the curves from the inputs of this nodes, this is abstract because it must be implemented by each subclass of this baseNode
 	public abstract void DrawCurves();
 
-	//Is used by the subclasses nodes that has inputs and is called when the window is clicked during a transition
-	//we make it virtual because it's optional for nodes that don't have inputs
-	//it is passed in the metho the node to be used as input and the click position of the mouse
-	public virtual void SetInput(BaseInputNode input, Vector2 clickPos) {
-
-	}
-
 	//is called to all nodes when a node is deleted so that it is removed if it used as an input
 	public virtual void NodeDeleted(BaseNode node) {
 
-	}
-
-	//is called when a click happens on a window and returns the input that was clicked or null otherwise
-	public virtual BaseInputNode ClickedOnInput(Vector2 pos) {
-		return null;
 	}
 
     public string GetWindowTitle() {
@@ -110,8 +98,6 @@ public abstract class BaseNode: ScriptableObject {
                 break;
         }
     }
-
-    public abstract void Tick (float deltaTime);
 }
 
 public enum ResizeType{

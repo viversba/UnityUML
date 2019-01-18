@@ -50,6 +50,11 @@ namespace DEngine.View {
 
         public override void DrawWindow() {
 
+            if (methods.Count == 0) {
+                windowRect.height = 50;
+                return;
+            }
+
             var header = new GUIStyle();
             var white = new GUIStyle();
             var public_ = new GUIStyle();
@@ -93,9 +98,6 @@ namespace DEngine.View {
             if (interfaces == null)
                 interfaces = new List<InterfaceNode>();
             interfaces.AddRange(interfaceNodes);
-        }
-
-        public override void Tick(float deltaTime) {
         }
 
         public override void DrawCurves() {
