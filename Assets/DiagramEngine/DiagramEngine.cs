@@ -52,9 +52,9 @@ namespace DEngine {
 
             file.Close();
 
-            if(File.Exists(storagePath + path)) {
-                Debug.Log("Saved entities at " + storagePath + path);
-            }
+            //if(File.Exists(storagePath + path)) {
+            //    Debug.Log("Saved entities at " + storagePath + path);
+            //}
         }
 
         public static List<BaseModel> LoadEntitiesFromDisk(string path="") {

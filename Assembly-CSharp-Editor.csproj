@@ -64,7 +64,9 @@
     <Compile Include="Assets\DiagramEngine\Editor\BaseNode.cs" />
     <Compile Include="Assets\DiagramEngine\Editor\ClassNode.cs" />
     <Compile Include="Assets\DiagramEngine\Editor\DiagramEngineGUI.cs" />
+    <Compile Include="Assets\DiagramEngine\Editor\DraggableEntitiesPanel.cs" />
     <Compile Include="Assets\DiagramEngine\Editor\EditorGUISplitView.cs" />
+    <Compile Include="Assets\DiagramEngine\Editor\GUIDraggableObject.cs" />
     <Compile Include="Assets\DiagramEngine\Editor\InterfaceNode.cs" />
     <Compile Include="Assets\DiagramEngine\Editor\LeftPanel.cs" />
     <Compile Include="Assets\DiagramEngine\Editor\RightPanel.cs" />
