@@ -121,7 +121,7 @@ namespace DEngine.View {
                 // Drag And Drop
                 case 1:
                     if (Event.current.type == EventType.DragExited) {
-                        Debug.Log("DragExit event, mousePos:" + Event.current.mousePosition + "window pos:" + position);
+                        //Debug.Log("DragExit event, mousePos:" + Event.current.mousePosition + "window pos:" + position);
 
                         foreach (UnityEngine.Object obj in DragAndDrop.objectReferences) {
                             if (obj.GetType() == typeof(MonoScript)) {
@@ -138,6 +138,8 @@ namespace DEngine.View {
                                 Debug.LogWarning("Object " + obj.name + " cannot be processed in the diagram. Please be sure to use scripts only");
                             }
                         }
+
+                        Event.current.Use();
                     }
 
                     scrollPos_DD = EditorGUILayout.BeginScrollView(scrollPos_DD);
@@ -175,11 +177,10 @@ namespace DEngine.View {
             List<BaseModel> entities = EntityWrapper.GetEntitiesFromText(text);
             if(entities != null || entities.Count != 0) {
                 foreach (var entity in entities) {
-                    if (ClassWrapper.FindEntityWithName(ref entities, entity.GetName()) == -1) {
+                    if (ClassWrapper.FindEntityWithName(ref selectedEntities_DD, entity.GetName()) == -1) {
                         selectedEntities_DD.Add(entity);
                     }
                 }
-                selectedEntities_DD.AddRange(EntityWrapper.GetEntitiesFromText(text));
                 ClassWrapper.RelateEntities(ref selectedEntities_DD);
             }
         }
