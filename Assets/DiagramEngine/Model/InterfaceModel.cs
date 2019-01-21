@@ -6,10 +6,6 @@ namespace DEngine.Model {
     [Serializable]
     public class InterfaceModel: BaseModel {
 
-        public InterfaceModel() {
-
-        }
-
         public InterfaceModel(string name) {
 
             this.name = name;

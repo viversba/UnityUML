@@ -414,7 +414,7 @@ namespace DEngine.Model {
             try {
                 type = context.type().GetText();
             }
-            catch(Exception e) {
+            catch {
                 type = context.VOID().GetText();
             }
 

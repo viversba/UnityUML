@@ -1,19 +1,27 @@
 ﻿using System;
 using System.Collections.Generic;
+using UnityEngine;
 
-#pragma warning disable 
+#pragma warning disable
 
 namespace DEngine.Model {
 
     [Serializable]
     public class BaseModel {
 
+        //[SerializeField]
         protected string name;
+        [SerializeField]
         protected List<Method> methods;
+        [SerializeField]
         protected List<Attribute> attributes;
+        [NonSerialized]
         protected List<InterfaceModel> interfaces;
+        [SerializeField]
         protected List<string> interfaceNames;
+        [NonSerialized]
         protected BaseModel container;
+        [SerializeField]
         protected bool isClass;
 
         public BaseModel() {

@@ -16,10 +16,16 @@ namespace DEngine.View{
         /// Current instance of the window;
         /// </summary>
         private static EditorWindow window;
+
+#pragma warning disable 0649
+
         /// <summary>
         /// Instance of itself
         /// </summary>
         private static DiagramEngineGUI engineGUI;
+
+#pragma warning restore 0649
+
         /// <summary>
         /// This is the current list of entities that is going to be rendered;
         /// </summary>
@@ -38,7 +44,12 @@ namespace DEngine.View{
         private bool drawNodes;
 
         EditorGUISplitView horizontalSplitView = new EditorGUISplitView(EditorGUISplitView.Direction.Horizontal);
+
+#pragma warning disable 0414
+
         EditorGUISplitView verticalSplitView = new EditorGUISplitView(EditorGUISplitView.Direction.Vertical);
+
+#pragma warning restore 0414
 
         [MenuItem("UML/Open Window")]
         public static void Init() {
@@ -50,10 +61,6 @@ namespace DEngine.View{
 
             DiagramEngineGUI engine = engineGUI ?? (DiagramEngineGUI)CreateInstance("DiagramEngineGUI");
             return engine;
-        }
-
-        private void Awake() {
-            //engineGUI = (DiagramEngineGUI)CreateInstance(typeof(DiagramEngineGUI));
         }
 
         private void Run() {

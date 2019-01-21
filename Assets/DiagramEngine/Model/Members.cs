@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System;
+using UnityEngine;
 
 namespace DEngine.Model {
 
@@ -97,6 +98,7 @@ namespace DEngine.Model {
     /// </summary>
     public struct Method {
 
+        [SerializeField]
         public AccessModifier modifier;
         public MethodType type;
         public string returnType;

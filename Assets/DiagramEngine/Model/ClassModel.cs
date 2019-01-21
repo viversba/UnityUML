@@ -13,10 +13,12 @@ namespace DEngine.Model {
         /// <summary>
         /// List of nested classes of the current class
         /// </summary>
+        [NonSerialized]
         private List<ClassModel> subClasses;
         /// <summary>
         /// Super Class
         /// </summary>
+        [NonSerialized]
         private ClassModel superClass;
         /// <summary>
         /// Name of the super class

@@ -56,7 +56,6 @@ namespace DEngine.View {
             }
 
             var header = new GUIStyle();
-            var white = new GUIStyle();
             var public_ = new GUIStyle();
             var private_ = new GUIStyle();
             var protected_ = new GUIStyle();

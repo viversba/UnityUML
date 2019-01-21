@@ -76,7 +76,7 @@ namespace DEngine {
                 }
             }
             else {
-                Debug.LogWarning("No entities to load");
+                //Debug.LogWarning("No entities to load");
             }
             return entities;
         }

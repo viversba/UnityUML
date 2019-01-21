@@ -49,8 +49,6 @@ namespace DEngine.View {
         /// The draggable panel.
         /// </summary>
 
-        Rect dropTargetRect = new Rect(10.0f, 10.0f, 30.0f, 30.0f);
-
 
         private void Awake() {
 
@@ -80,7 +78,7 @@ namespace DEngine.View {
         /// <returns><c>true</c>, if the GenerateDiagram button was pressed, <c>false</c> otherwise.</returns>
         public bool DrawLeftPanel() {
 
-            bool generateDiagramButton = false, reloadEntities = false;
+            bool generateDiagramButton = false, reloadEntities = false, resetEntitiesButton = false;
             string[] options = { "All!", "Drag & Drop", "CheckBox" };
             selected = GUILayout.Toolbar(selected, options, GUILayout.MinWidth(240));
 
@@ -89,17 +87,17 @@ namespace DEngine.View {
                 // All entities
                 case 0:
 
+                    GUILayout.BeginHorizontal();
+                    reloadEntities = GUILayout.Button(reloadTexture, GUILayout.Width(50));
+                    GUILayout.Label("Reload Entities");
+                    GUILayout.EndHorizontal();
+
                     // Render entities only if there are
                     if (selectedEntities_ALL.Count == 0) {
                         GUILayout.Label("There's nothing to render here :(");
                         GUILayout.Label("Add some scripts to the project and reopen the window");
                     }
                     else {
-
-                        GUILayout.BeginHorizontal();
-                        reloadEntities = GUILayout.Button(reloadTexture, GUILayout.Width(50));
-                        GUILayout.Label("Reload Entities");
-                        GUILayout.EndHorizontal();
 
                         GUILayout.Label("Found Classe/Interfaces (" + selectedEntities_ALL.Count + "): ", EditorStyles.boldLabel);
                         scrollPos_ALL = EditorGUILayout.BeginScrollView(scrollPos_ALL);
@@ -108,12 +106,19 @@ namespace DEngine.View {
                             GUILayout.Label(type + entity.GetName());
                         }
                         EditorGUILayout.EndScrollView();
-                        generateDiagramButton = GUILayout.Button("Generate!");
 
-                        if (reloadEntities) {
-                            Debug.Log("Reloading entities...");
-                            LoadAllEntities();
+                        GUILayout.BeginHorizontal();
+                        generateDiagramButton = GUILayout.Button("Generate!");
+                        resetEntitiesButton = GUILayout.Button("Reset List");
+                        GUILayout.EndHorizontal();
+
+                        if (resetEntitiesButton) {
+                            selectedEntities_ALL.Clear();
                         }
+                    }
+
+                    if (reloadEntities) {
+                        LoadAllEntities();
                     }
                     selectedEntities = selectedEntities_ALL;
                     break;
@@ -149,9 +154,16 @@ namespace DEngine.View {
                     }
                     EditorGUILayout.EndScrollView();
 
+                    GUILayout.BeginHorizontal();
                     generateDiagramButton = GUILayout.Button("Generate!");
+                    resetEntitiesButton = GUILayout.Button("Reset List");
+                    GUILayout.EndHorizontal();
 
                     selectedEntities = selectedEntities_DD;
+
+                    if (resetEntitiesButton) {
+                        selectedEntities_DD.Clear();
+                    }
 
                     break;
                 case 2:

@@ -8,7 +8,7 @@ namespace DEngine.Controller {
     public class ClassWrapper {
 
         private List<BaseModel> entities;
-        private bool isClass;
+        //private bool isClass;
         public BaseModel currentEntity;
         /// <summary>
         /// This will be written to disk
@@ -23,7 +23,7 @@ namespace DEngine.Controller {
 
         public ClassWrapper() {
 
-            isClass = false;
+            //isClass = false;
             isStruct = false;
             entities = new List<BaseModel>();
             allEntities = new List<BaseModel>();
@@ -39,7 +39,7 @@ namespace DEngine.Controller {
                 currentEntity.SetContainer(entities[numberOfEntities - 2]);
             }
             currentEntity.SetTypeOfEntity(true);
-            isClass = true;
+            //isClass = true;
         }
 
         public void SetSuperClassName(string superClassName) {
@@ -60,7 +60,7 @@ namespace DEngine.Controller {
                 entities[numberOfEntities - 1].SetContainer(entities[numberOfEntities - 2]);
             }
             currentEntity.SetTypeOfEntity(false);
-            isClass = false;
+            //isClass = false;
         }
 
         public void AddStruct(string name) {
@@ -72,7 +72,7 @@ namespace DEngine.Controller {
                 entities[numberOfEntities - 1].SetContainer(entities[numberOfEntities - 2]);
             }
             currentEntity.SetTypeOfEntity(false);
-            isClass = false;
+            //isClass = false;
             isStruct = true;
         }
 
@@ -92,7 +92,7 @@ namespace DEngine.Controller {
             }
             entities.RemoveAt(entities.Count - 1);
             currentEntity = entities.Count > 0 ? entities[entities.Count - 1] : null;
-            isClass = false;
+            //isClass = false;
             isStruct = false;
         }
 

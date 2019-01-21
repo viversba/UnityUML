@@ -33,13 +33,7 @@ namespace DEngine.View {
         private ResizeType resizeType;
         // Current mouse cursor
         MouseCursor cursor;
-
-        float PanY;
-        float PanX;
-
-        private bool scrollWindow = false;
-        private Vector2 scrollStartMousePos;
-
+        
         public void Awake() {
 
             string texturePath = "./Assets/DiagramEngine/Textures/grid_texture.jpg";
@@ -138,13 +132,10 @@ namespace DEngine.View {
         public void CreateWindowList(List<BaseModel> selectedEntities) {
 
             windows.Clear();
-            float separationX = (rightPanelRect.width - begginingOfRightPanel - 50) / selectedEntities.Count;
-            float separationY = (rightPanelRect.height - 50) / selectedEntities.Count;
 
             float startX = begginingOfRightPanel + 50;
             float startY = 70;
 
-            float availableWidth = rightPanelRect.width - begginingOfRightPanel;
             float availableHeight = rightPanelRect.height;
 
             float windowXPosition = startX;
@@ -156,7 +147,6 @@ namespace DEngine.View {
                     // Draw Classes
                     if (entity.IsClass()) {
                         ClassNode classNode = (ClassNode)CreateInstance("ClassNode");
-                        ClassModel classModel = (ClassModel)entity;
                         classNode.Init((ClassModel)entity);
                         classNode.windowRect = new Rect(windowXPosition, windowYPosition, 150f, 150f);
                         windows.Add(classNode);
@@ -217,7 +207,7 @@ namespace DEngine.View {
                             classNode.SetInterfaceNodes(interfacesToAdd);
                         }
                     }
-                    catch (Exception e) {
+                    catch {
                         // Or an interface?
                         // Assign Interface Windows
                         InterfaceNode interfaceNode = window as InterfaceNode;
