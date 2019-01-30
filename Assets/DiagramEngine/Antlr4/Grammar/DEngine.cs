@@ -1,18 +1,18 @@
 ﻿
 namespace DEngine {
 
-    public class UMLEngine {
+    public class DEngine {
 
-        private static UMLEngine engine = new UMLEngine();
+        private static DEngine engine = new DEngine();
 
         private Program program;
 
-        private UMLEngine() {
+        private DEngine() {
 
             program = new Program();
         }
 
-        public static UMLEngine getInstance() {
+        public static DEngine getInstance() {
             return engine;
         }
 

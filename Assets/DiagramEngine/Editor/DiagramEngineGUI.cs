@@ -51,7 +51,7 @@ namespace DEngine.View{
 
 #pragma warning restore 0414
 
-        [MenuItem("UML/Open Window")]
+        [MenuItem("DEngine/Open Window")]
         public static void Init() {
 
             GetInstance().Run();
