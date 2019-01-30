@@ -69,6 +69,12 @@ namespace DEngine.View {
                 }
             }
 
+            // Initially set the minimum size for all windows without content
+            if (attributes.Count == 0 && methods.Count == 0 && constructors.Count == 0) {
+                windowRect.height = 50;
+                return;
+            }
+
             numberOfLines = 0;
         }
 
@@ -85,11 +91,6 @@ namespace DEngine.View {
         }
 
         public override void DrawWindow() {
-
-            if (attributes.Count == 0 && methods.Count == 0 && constructors.Count == 0) {
-                windowRect.height = 50;
-                return;
-            }
 
             var header = new GUIStyle();
             var public_ = new GUIStyle();

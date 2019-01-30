@@ -147,8 +147,8 @@ namespace DEngine.View {
                     // Draw Classes
                     if (entity.IsClass()) {
                         ClassNode classNode = (ClassNode)CreateInstance("ClassNode");
-                        classNode.Init((ClassModel)entity);
                         classNode.windowRect = new Rect(windowXPosition, windowYPosition, 150f, 150f);
+                        classNode.Init((ClassModel)entity);
                         windows.Add(classNode);
 
                         // Validate limits
@@ -168,8 +168,8 @@ namespace DEngine.View {
                     else {
                         // Draw Interfaces
                         InterfaceNode interfaceNode = (InterfaceNode)CreateInstance("InterfaceNode");
-                        interfaceNode.Init((InterfaceModel)entity);
                         interfaceNode.windowRect = new Rect(windowXPosition, windowYPosition, 170f, 150f);
+                        interfaceNode.Init((InterfaceModel)entity);
                         windows.Add(interfaceNode);
 
                         // Validate limits
@@ -214,9 +214,6 @@ namespace DEngine.View {
                         if (interfaceNode.GetInterfaceNames() != null) {
                             List<InterfaceNode> interfacesToAdd = new List<InterfaceNode>();
                             foreach (string interface_ in interfaceNode.GetInterfaceNames()) {
-                                if (GetWindowWithTitle(interface_) == null) {
-                                    Debug.Log(interface_ + " Es nulo");
-                                }
                                 interfacesToAdd.Add(GetWindowWithTitle(interface_) as InterfaceNode);
                             }
                             interfaceNode.SetInterfaceNodes(interfacesToAdd);
