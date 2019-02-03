@@ -33,7 +33,12 @@ namespace DEngine.View {
         private ResizeType resizeType;
         // Current mouse cursor
         MouseCursor cursor;
-        
+
+        /*
+         * THESE ARE THE BOOLEANS FOR THE OPTIONS DISPLAYED AT RIGHT CLICK      
+         */
+        private bool DisplayEmpty { get; set; }
+
         public void Awake() {
 
             string texturePath = "./Assets/DiagramEngine/Textures/grid_texture.jpg";
@@ -43,6 +48,7 @@ namespace DEngine.View {
             resizeMode = false;
             resizeType = ResizeType.None;
             cursor = MouseCursor.Arrow;
+            DisplayEmpty = true;
 
             if (File.Exists(texturePath)) {
                 fileData = File.ReadAllBytes(texturePath);
@@ -102,6 +108,9 @@ namespace DEngine.View {
 
                 for (int i = 0; i < windows.Count; i++) {
 
+                    if (windows[i].IsEmpty() && !DisplayEmpty)
+                        continue;
+
                     //Make sure the window is within the borders
                     //Take care of x axis
                     windows[i].windowRect.x = windows[i].windowRect.x < begginingOfRightPanel ? begginingOfRightPanel : windows[i].windowRect.x;
@@ -121,9 +130,38 @@ namespace DEngine.View {
                 EndWindows();
 
                 DrawConventions();
+
+            }
+
+            DrawOptionsPanel();
+        }
+
+        public void DrawOptionsPanel() {
+
+            Event e = Event.current;
+
+            string displayEmptyState = DisplayEmpty ? "" : "√ ";
+
+            if(e.type == EventType.MouseDown && e.button == 1 && rightPanelRect.Contains(e.mousePosition)) {
+
+                GenericMenu menu = new GenericMenu();
+                menu.AddItem(new GUIContent($"{displayEmptyState}Ignore Empty Windows"), false, OptionsCallback, "ignoreEmpty");
+
+                menu.ShowAsContext();
+
+                e.Use();
             }
         }
 
+        public void OptionsCallback(object opt) {
+
+            string option = opt.ToString();
+            switch (option) {
+                case "ignoreEmpty":
+                    DisplayEmpty = !DisplayEmpty;
+                    break;
+            }
+        }
 
         /// <summary>
         /// Sets the local list of windows so that all entities have a window

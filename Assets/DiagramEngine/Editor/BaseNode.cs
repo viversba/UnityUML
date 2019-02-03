@@ -8,8 +8,8 @@ public abstract class BaseNode: ScriptableObject {
     
 	// Store the Rect of the window, location and size
 	public Rect windowRect;
-	// Indicates if the decendant of the baseNode has inputs or can only be used as an input to another node
-	public bool hasInputs = false;
+	// Indicates if the window has no attributes, methods and constructors
+	protected bool isEmpty;
 	// The title of our window
 	public string windowTitle = "";
     // Minimun values for width and height;
@@ -30,6 +30,10 @@ public abstract class BaseNode: ScriptableObject {
 	public virtual void NodeDeleted(BaseNode node) {
 
 	}
+
+    public bool IsEmpty() {
+        return isEmpty;
+    }
 
     public string GetWindowTitle() {
         return windowTitle;

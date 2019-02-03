@@ -27,7 +27,6 @@ namespace DEngine.View {
         public ClassNode(string title) {
         
             windowTitle = title;
-            hasInputs = false;
             numberOfLines = 0;
             superClass = null;
         }
@@ -45,8 +44,7 @@ namespace DEngine.View {
 
         public void Init(Model::ClassModel classModel) {
             windowTitle = classModel.GetName();
-            //windowTitle = "Generic Class";
-            //hasInputs = false;
+            isEmpty = false;
             attributes = new List<Model::Attribute>();
             methods = new List<Model::Method>();
             constructors = new List<Model::Constructor>();
@@ -64,13 +62,13 @@ namespace DEngine.View {
 
             if (classModel.GetInterfaceNames() != null) {
                 foreach (string interface_ in classModel.GetInterfaceNames()) {
-                    //Debug.Log(interface_);
                     interfaceNames.Add(interface_);
                 }
             }
 
             // Initially set the minimum size for all windows without content
             if (attributes.Count == 0 && methods.Count == 0 && constructors.Count == 0) {
+                isEmpty = true;
                 windowRect.height = 50;
                 return;
             }

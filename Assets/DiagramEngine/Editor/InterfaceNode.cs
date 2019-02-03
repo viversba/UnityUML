@@ -24,7 +24,6 @@ namespace DEngine.View {
         public InterfaceNode(string title) {
 
             windowTitle = title;
-            hasInputs = false;
         }
 
         public InterfaceNode(Model::InterfaceModel interfaceModel) {
@@ -33,13 +32,18 @@ namespace DEngine.View {
         }
 
         public void Init(Model::InterfaceModel interfaceModel) {
+            isEmpty = true;
             windowTitle = "<<" + interfaceModel.GetName() + ">>";
             methods = new List<Model::Method>();
             interfaces = null;
             interfaceNames = new List<string>();
+
             if (interfaceModel.GetInterfaceNames() != null) { 
+
                 foreach(string interface_ in interfaceModel.GetInterfaceNames()) {
                     interfaceNames.Add(interface_);
+
+                    isEmpty = false;
                 }
             }
 
