@@ -125,26 +125,41 @@ namespace DEngine.View {
 
                 // Drag And Drop
                 case 1:
+
+                    Debug.Log(Event.current.type);
+
                     if (Event.current.type == EventType.DragExited) {
-                        //Debug.Log("DragExit event, mousePos:" + Event.current.mousePosition + "window pos:" + position);
 
-                        foreach (UnityEngine.Object obj in DragAndDrop.objectReferences) {
-                            if (obj.GetType() == typeof(MonoScript)) {
+                        if (Event.current.type != EventType.Used) {
 
-                                try {
-                                    MonoScript script = (MonoScript)obj;
-                                    LoadDroppedEntity(script.text);
-                                }
-                                catch(Exception e) {
-                                    Debug.Log("Error (LeftPanel: DrawLeftPanel): " + e);
+                            Event.current.Use();
+
+                            // This foreach loop handles loose scripts
+                            foreach (UnityEngine.Object obj in DragAndDrop.objectReferences) {
+                                if (obj.GetType() == typeof(MonoScript)) {
+
+                                    try {
+                                        MonoScript script = (MonoScript)obj;
+                                        LoadDroppedEntity(script.text);
+                                    }
+                                    catch (Exception e) {
+                                        Debug.Log("Error (LeftPanel: DrawLeftPanel): " + e);
+                                    }
                                 }
                             }
-                            else{
-                                Debug.LogWarning("Object " + obj.name + " cannot be processed in the diagram. Please be sure to use scripts only");
+
+                            // This foreach loop handles folders
+                            foreach (string path in DragAndDrop.paths) {
+
+                                if (Directory.Exists(Directory.GetCurrentDirectory() + "/" + path)) {
+                                    LoadAllEntitiesInFolder(Directory.GetCurrentDirectory() + "/" + path);
+                                }
+                            }
+
+                            if (selectedEntities_DD != null) {
+                                ClassWrapper.RelateEntities(ref selectedEntities_DD);
                             }
                         }
-
-                        Event.current.Use();
                     }
 
                     scrollPos_DD = EditorGUILayout.BeginScrollView(scrollPos_DD);
@@ -159,11 +174,11 @@ namespace DEngine.View {
                     resetEntitiesButton = GUILayout.Button("Reset List");
                     GUILayout.EndHorizontal();
 
-                    selectedEntities = selectedEntities_DD;
-
                     if (resetEntitiesButton) {
                         selectedEntities_DD.Clear();
                     }
+
+                    selectedEntities = selectedEntities_DD;
 
                     break;
                 case 2:
@@ -193,27 +208,37 @@ namespace DEngine.View {
                         selectedEntities_DD.Add(entity);
                     }
                 }
-                ClassWrapper.RelateEntities(ref selectedEntities_DD);
+            }
+        }
+
+        private void LoadAllEntitiesInFolder(string folder) {
+
+            switch (selected) {
+                case 1:
+                    foreach (string file in SearchAllFilesInDirectory(folder)) {
+                        selectedEntities_DD.AddRange(EntityWrapper.GetEntitiesFromFile(file));
+                    }
+                    break;
             }
         }
 
         private void LoadAllEntities() {
 
             selectedEntities_ALL = new List<BaseModel>();
-            switch (selected) {
-                case 0:
-                    foreach (string file in SearchAllFilesInDirectory("./Assets/")) {
-                        //var list = EntityWrapper.GetEntitiesFromFile(file);
-                        selectedEntities_ALL.AddRange(EntityWrapper.GetEntitiesFromFile(file));
-                    }
-                    break;
-                case 1:
-                    break;
-                case 2:
-                    break;
-                default:
-                    break;
+            foreach (string file in SearchAllFilesInDirectory("./Assets/")) {
+                selectedEntities_ALL.AddRange(EntityWrapper.GetEntitiesFromFile(file));
             }
+            //switch (selected) {
+            //    case 0:
+
+            //        break;
+            //    case 1:
+            //        break;
+            //    case 2:
+            //        break;
+            //    default:
+            //        break;
+            //}
             ClassWrapper.RelateEntities(ref selectedEntities_ALL);
             DiagramEngine.SaveEntitiesOnDisk(selectedEntities_ALL);
         }

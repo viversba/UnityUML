@@ -9,7 +9,7 @@
     <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <RootNamespace></RootNamespace>
-    <ProjectGuid>{66D173E0-8671-AC8F-CD61-AF197218C996}</ProjectGuid>
+    <ProjectGuid>{1290846B-85D7-BF58-8178-D5107B0FCFF4}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <AssemblyName>Assembly-CSharp</AssemblyName>
@@ -86,19 +86,19 @@
     <Compile Include="Assets\DiagramEngine\Model\StructModel.cs" />
     <None Include="Assets\DiagramEngine\Antlr4\Packages\Antlr4.Runtime.4.6.5\lib\net20\Antlr4.Runtime.Standard.xml" />
     <Reference Include="Unity.TextMeshPro.Editor">
-      <HintPath>/Users/nicolasviveros/UnityProjects/UML/Library/ScriptAssemblies/Unity.TextMeshPro.Editor.dll</HintPath>
+      <HintPath>/Users/nicolasviveros/UnityProjects/UnityUML/Library/ScriptAssemblies/Unity.TextMeshPro.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.PackageManagerUI.Editor">
-      <HintPath>/Users/nicolasviveros/UnityProjects/UML/Library/ScriptAssemblies/Unity.PackageManagerUI.Editor.dll</HintPath>
+      <HintPath>/Users/nicolasviveros/UnityProjects/UnityUML/Library/ScriptAssemblies/Unity.PackageManagerUI.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.CollabProxy.Editor">
-      <HintPath>/Users/nicolasviveros/UnityProjects/UML/Library/ScriptAssemblies/Unity.CollabProxy.Editor.dll</HintPath>
+      <HintPath>/Users/nicolasviveros/UnityProjects/UnityUML/Library/ScriptAssemblies/Unity.CollabProxy.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.TextMeshPro">
-      <HintPath>/Users/nicolasviveros/UnityProjects/UML/Library/ScriptAssemblies/Unity.TextMeshPro.dll</HintPath>
+      <HintPath>/Users/nicolasviveros/UnityProjects/UnityUML/Library/ScriptAssemblies/Unity.TextMeshPro.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Analytics.DataPrivacy">
-      <HintPath>/Users/nicolasviveros/UnityProjects/UML/Library/ScriptAssemblies/Unity.Analytics.DataPrivacy.dll</HintPath>
+      <HintPath>/Users/nicolasviveros/UnityProjects/UnityUML/Library/ScriptAssemblies/Unity.Analytics.DataPrivacy.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.AIModule">
       <HintPath>/Applications/Unity/Unity.app/Contents/Managed/UnityEngine/UnityEngine.AIModule.dll</HintPath>
@@ -305,22 +305,22 @@
       <HintPath>/Applications/Unity/Unity.app/Contents/UnityExtensions/Unity/UnitySpatialTracking/RuntimeEditor/UnityEngine.SpatialTracking.dll</HintPath>
     </Reference>
     <Reference Include="Antlr4.Runtime.Standard">
-      <HintPath>/Users/nicolasviveros/UnityProjects/UML/Assets/DiagramEngine/Antlr4/Packages/Antlr4.Runtime.4.6.5/lib/net20/Antlr4.Runtime.Standard.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEngine.Advertisements.Editor">
-      <HintPath>/Users/nicolasviveros/UnityProjects/UML/Library/PackageCache/com.unity.ads@2.3.1/Runtime/UnityEngine.Advertisements.Editor.dll</HintPath>
+      <HintPath>/Users/nicolasviveros/UnityProjects/UnityUML/Assets/DiagramEngine/Antlr4/Packages/Antlr4.Runtime.4.6.5/lib/net20/Antlr4.Runtime.Standard.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.Advertisements">
-      <HintPath>/Users/nicolasviveros/UnityProjects/UML/Library/PackageCache/com.unity.ads@2.3.1/Runtime/UnityEngine.Advertisements.dll</HintPath>
+      <HintPath>/Users/nicolasviveros/UnityProjects/UnityUML/Library/PackageCache/com.unity.ads@2.3.1/Runtime/UnityEngine.Advertisements.dll</HintPath>
     </Reference>
-    <Reference Include="Unity.Analytics.Tracker">
-      <HintPath>/Users/nicolasviveros/UnityProjects/UML/Library/PackageCache/com.unity.analytics@3.2.2/Unity.Analytics.Tracker.dll</HintPath>
+    <Reference Include="UnityEngine.Advertisements.Editor">
+      <HintPath>/Users/nicolasviveros/UnityProjects/UnityUML/Library/PackageCache/com.unity.ads@2.3.1/Runtime/UnityEngine.Advertisements.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Analytics.Editor">
-      <HintPath>/Users/nicolasviveros/UnityProjects/UML/Library/PackageCache/com.unity.analytics@3.2.2/Unity.Analytics.Editor.dll</HintPath>
+      <HintPath>/Users/nicolasviveros/UnityProjects/UnityUML/Library/PackageCache/com.unity.analytics@3.2.2/Unity.Analytics.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Analytics.StandardEvents">
-      <HintPath>/Users/nicolasviveros/UnityProjects/UML/Library/PackageCache/com.unity.analytics@3.2.2/Unity.Analytics.StandardEvents.dll</HintPath>
+      <HintPath>/Users/nicolasviveros/UnityProjects/UnityUML/Library/PackageCache/com.unity.analytics@3.2.2/Unity.Analytics.StandardEvents.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.Analytics.Tracker">
+      <HintPath>/Users/nicolasviveros/UnityProjects/UnityUML/Library/PackageCache/com.unity.analytics@3.2.2/Unity.Analytics.Tracker.dll</HintPath>
     </Reference>
     <Reference Include="netstandard">
       <HintPath>/Applications/Unity/Unity.app/Contents/NetStandard/ref/2.0.0/netstandard.dll</HintPath>
