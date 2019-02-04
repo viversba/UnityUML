@@ -39,7 +39,6 @@ namespace DEngine.Controller {
                 currentEntity.SetContainer(entities[numberOfEntities - 2]);
             }
             currentEntity.SetTypeOfEntity(true);
-            //isClass = true;
         }
 
         public void SetSuperClassName(string superClassName) {

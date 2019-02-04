@@ -108,6 +108,8 @@ namespace DEngine.View {
 
                 for (int i = 0; i < windows.Count; i++) {
 
+                    // Don't draw the window if:
+                    // * Is empty and empty windows are not being drawn
                     if (windows[i].IsEmpty() && !DisplayEmpty)
                         continue;
 
@@ -133,19 +135,20 @@ namespace DEngine.View {
 
             }
 
-            DrawOptionsPanel();
+            //DrawOptionsPanel();
         }
 
+        /// <summary>
+        /// Draws the options panel, when a Right click is made.
+        /// </summary>
         public void DrawOptionsPanel() {
 
             Event e = Event.current;
 
-            string displayEmptyState = DisplayEmpty ? "" : "√ ";
-
             if(e.type == EventType.MouseDown && e.button == 1 && rightPanelRect.Contains(e.mousePosition)) {
 
                 GenericMenu menu = new GenericMenu();
-                menu.AddItem(new GUIContent($"{displayEmptyState}Ignore Empty Windows"), false, OptionsCallback, "ignoreEmpty");
+                menu.AddItem(new GUIContent($"{(DisplayEmpty? "" : "√  ")}Ignore Empty Windows", "Don't draw the empty windows"), false, MenuOptionsCallback, "ignoreEmpty");
 
                 menu.ShowAsContext();
 
@@ -153,7 +156,7 @@ namespace DEngine.View {
             }
         }
 
-        public void OptionsCallback(object opt) {
+        public void MenuOptionsCallback(object opt) {
 
             string option = opt.ToString();
             switch (option) {
@@ -282,7 +285,7 @@ namespace DEngine.View {
                         EditorGUIUtility.AddCursorRect(rightPanelRect, MouseCursor.ResizeUpLeft);
                         resizeType = ResizeType.Top_Left;
                     }
-                    else if ((windowRect.position.y + windowRect.height) <= mousePos.y && (windowRect.position.y + windowRect.height) - mousePos.y <= minDistance) {
+                    else if ((windowRect.position.y + windowRect.height) >= mousePos.y && (windowRect.position.y + windowRect.height) - mousePos.y <= minDistance) {
                         // Bottom left corner
                         cursor = MouseCursor.ResizeUpRight;
                         EditorGUIUtility.AddCursorRect(rightPanelRect, MouseCursor.ResizeUpRight);

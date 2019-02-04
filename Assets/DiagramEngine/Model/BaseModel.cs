@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-#pragma warning disable
-
 namespace DEngine.Model {
 
     [Serializable]
@@ -23,6 +21,8 @@ namespace DEngine.Model {
         protected BaseModel container;
         [SerializeField]
         protected bool isClass;
+        [SerializeField]
+        protected EntityTypes type;
 
         public BaseModel() {
 
@@ -94,7 +94,7 @@ namespace DEngine.Model {
             if (interfaceNames == null) {
                 interfaceNames = new List<string>();
             }
-            if(!interfaceNames.Contains(baseName))
+            if (!interfaceNames.Contains(baseName))
                 interfaceNames.Add(baseName);
         }
 
@@ -117,13 +117,13 @@ namespace DEngine.Model {
         public override string ToString() {
 
             string description = name;
-            description += container != null?  "<-" + container.name + "\n": "\n";
-            if(methods != null) {
+            description += container != null ? "<-" + container.name + "\n" : "\n";
+            if (methods != null) {
                 foreach (Method method in methods) {
                     description += method.ToString() + "()\n";
                 }
             }
-            if(attributes != null) {
+            if (attributes != null) {
                 foreach (Attribute attribute in attributes) {
                     description += attribute.ToString() + "\n";
                 }
@@ -136,5 +136,3 @@ namespace DEngine.Model {
         }
     }
 }
-
-#pragma warning restore

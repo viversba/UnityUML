@@ -9,6 +9,7 @@ namespace DEngine.Model {
         public InterfaceModel(string name) {
 
             this.name = name;
+            type = EntityTypes.INTERFACE;
         }
     }
 }

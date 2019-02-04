@@ -13,11 +13,13 @@ namespace DEngine.Model {
         public StructModel(): base() {
 
             constructors = null;
+            type = EntityTypes.STRUCT;
         }
 
         public StructModel(string name) : base() {
             this.name = name;
             constructors = null;
+            type = EntityTypes.STRUCT;
         }
 
         public void AddConstructor(Constructor constructor) {

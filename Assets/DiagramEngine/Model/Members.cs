@@ -61,6 +61,15 @@ namespace DEngine.Model {
     }
 
     [Serializable]
+    public enum EntityTypes {
+
+        CLASS = 0,
+        INTERFACE = 1,
+        STRUCT = 2,
+        ENUM = 3
+    }
+
+    [Serializable]
     /// <summary>
     /// Attribute struct used to represent a declared attribute inside a class;
     /// </summary>

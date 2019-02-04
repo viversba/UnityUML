@@ -32,6 +32,7 @@ namespace DEngine.Model {
             superClass = null;
             subClasses = null;
             superClassName = "";
+            type = EntityTypes.CLASS;
         }
 
         public ClassModel(): base(){
@@ -40,6 +41,7 @@ namespace DEngine.Model {
             superClass = null;
             subClasses = null;
             superClassName = "";
+            type = EntityTypes.CLASS;
         }
 
         public ClassModel GetSuperClass() {
