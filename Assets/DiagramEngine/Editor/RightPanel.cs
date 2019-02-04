@@ -121,7 +121,23 @@ namespace DEngine.View {
                     windows[i].windowRect.y = windows[i].windowRect.y < 0 ? 0 : windows[i].windowRect.y;
                     windows[i].windowRect.y = windows[i].windowRect.y > sizeOfMainWindow.y - 20 ? sizeOfMainWindow.y - 20 : windows[i].windowRect.y;
 
-                    windows[i].windowRect = GUI.Window(i, windows[i].windowRect, DrawNodeWindow, windows[i].windowTitle);
+                    GUIStyle style = new GUIStyle(GUI.skin.window);
+                    switch (windows[i].Type) {
+                        case EntityTypes.CLASS:
+                            style.fontStyle = FontStyle.Bold;
+                            style.normal.textColor = new Color(0.168f, 0.552f, 0.003f, 1f);
+                            style.onNormal.textColor = new Color(0.168f, 0.552f, 0.003f, 1f);
+                            windows[i].windowRect = GUI.Window(i, windows[i].windowRect, DrawNodeWindow, windows[i].windowTitle, style);
+                            break;
+                        case EntityTypes.INTERFACE:
+                            style.fontStyle = FontStyle.Italic;
+                            style.normal.textColor = new Color(0.552f, 0.317f, 0.003f, 1f);
+                            style.onNormal.textColor = new Color(0.552f, 0.317f, 0.003f, 1f);
+                            windows[i].windowRect = GUI.Window(i, windows[i].windowRect, DrawNodeWindow, windows[i].windowTitle, style);
+                            break;
+                    }
+
+                   
                 }
 
                 //draw each curve for every node
@@ -186,7 +202,7 @@ namespace DEngine.View {
                 drawNodes = true;
                 foreach (BaseModel entity in selectedEntities) {
                     // Draw Classes
-                    if (entity.IsClass()) {
+                    if (entity.Type == EntityTypes.CLASS) {
                         ClassNode classNode = (ClassNode)CreateInstance("ClassNode");
                         classNode.windowRect = new Rect(windowXPosition, windowYPosition, 150f, 150f);
                         classNode.Init((ClassModel)entity);

@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEditor;
+using DEngine.Model;
 
 //We use scriptable object because in the future we will need the messages that unity calls on scriptable objects
 //such as OnDestroy() OnEnable()
@@ -16,9 +17,11 @@ public abstract class BaseNode: ScriptableObject {
     float minWidth, minHeight;
     // This will tell the initial position of the mouse
     private Vector2 initialResize;
+    // This will tell which type of window is
+    public EntityTypes Type { get; set; }
 
-	//Draw the window of the base node, this is virtual and will be implemented by each subclass of baseNode
-	public virtual void DrawWindow() {
+    //Draw the window of the base node, this is virtual and will be implemented by each subclass of baseNode
+    public virtual void DrawWindow() {
 		//We want each node to have a title which the user can modify
 		windowTitle = EditorGUILayout.TextField("Title", windowTitle);
 	}
@@ -42,7 +45,7 @@ public abstract class BaseNode: ScriptableObject {
     public void ResizeWindow(Vector2 newMousePosition, ResizeType type) {
 
         minWidth = 100f;
-        minHeight = 70f;
+        minHeight = 50f;
         // Store the current dimensions in case we need to use them
         Vector2 initialPosition = windowRect.position;
         switch (type) {

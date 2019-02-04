@@ -7,22 +7,48 @@ namespace DEngine.Model {
     [Serializable]
     public class BaseModel {
 
+        /// <summary>
+        /// Gets or sets the type of entity.
+        /// </summary>
+        /// <value>The type.</value>
+        [SerializeField]
+        public EntityTypes Type { get; set; }
+
+        /// <summary>
+        /// Name of the entity.
+        /// </summary>
         //[SerializeField]
         protected string name;
+
+        /// <summary>
+        /// List of contained methods
+        /// </summary>
         [SerializeField]
         protected List<Method> methods;
+
+        /// <summary>
+        /// List of attributes
+        /// </summary>
         [SerializeField]
         protected List<Attribute> attributes;
+
+        /// <summary>
+        /// List of interfaces implemented
+        /// </summary>
         [NonSerialized]
         protected List<InterfaceModel> interfaces;
+
+        /// <summary>
+        /// List of interface names
+        /// </summary>
         [SerializeField]
         protected List<string> interfaceNames;
+
+        /// <summary>
+        /// Container entity
+        /// </summary>
         [NonSerialized]
         protected BaseModel container;
-        [SerializeField]
-        protected bool isClass;
-        [SerializeField]
-        protected EntityTypes type;
 
         public BaseModel() {
 
@@ -32,15 +58,6 @@ namespace DEngine.Model {
             interfaces = null;
             interfaceNames = null;
             container = null;
-            isClass = false;
-        }
-
-        /// <summary>
-        /// Set the type of entity to an interface or a class
-        /// </summary>
-        /// <param name="isClass"><c>true</c> if the entity is a class and false for an interface.</param>
-        public void SetTypeOfEntity(bool isClass) {
-            this.isClass = isClass;
         }
 
         public string GetName() {
@@ -129,10 +146,6 @@ namespace DEngine.Model {
                 }
             }
             return description;
-        }
-
-        public bool IsClass() {
-            return isClass;
         }
     }
 }

@@ -102,7 +102,7 @@ namespace DEngine.View {
                         GUILayout.Label("Found Classe/Interfaces (" + selectedEntities_ALL.Count + "): ", EditorStyles.boldLabel);
                         scrollPos_ALL = EditorGUILayout.BeginScrollView(scrollPos_ALL);
                         foreach (var entity in selectedEntities_ALL) {
-                            string type = entity.IsClass() ? "(C) " : "(I)  ";
+                            string type = entity.Type == EntityTypes.CLASS ? "(C) " : "(I)  ";
                             GUILayout.Label(type + entity.GetName());
                         }
                         EditorGUILayout.EndScrollView();
@@ -159,7 +159,7 @@ namespace DEngine.View {
 
                     scrollPos_DD = EditorGUILayout.BeginScrollView(scrollPos_DD);
                     foreach (var entity in selectedEntities_DD) {
-                        string type = entity.IsClass() ? "(C) " : "(I)  ";
+                        string type = entity.Type == EntityTypes.CLASS ? "(C) " : "(I)  ";
                         GUILayout.Label(type + entity.GetName());
                     }
                     EditorGUILayout.EndScrollView();

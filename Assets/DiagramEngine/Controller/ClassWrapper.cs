@@ -38,7 +38,6 @@ namespace DEngine.Controller {
             if (numberOfEntities > 1) {
                 currentEntity.SetContainer(entities[numberOfEntities - 2]);
             }
-            currentEntity.SetTypeOfEntity(true);
         }
 
         public void SetSuperClassName(string superClassName) {
@@ -58,8 +57,6 @@ namespace DEngine.Controller {
             if (numberOfEntities > 1) {
                 entities[numberOfEntities - 1].SetContainer(entities[numberOfEntities - 2]);
             }
-            currentEntity.SetTypeOfEntity(false);
-            //isClass = false;
         }
 
         public void AddStruct(string name) {
@@ -70,8 +67,6 @@ namespace DEngine.Controller {
             if (numberOfEntities > 1) {
                 entities[numberOfEntities - 1].SetContainer(entities[numberOfEntities - 2]);
             }
-            currentEntity.SetTypeOfEntity(false);
-            //isClass = false;
             isStruct = true;
         }
 
@@ -196,7 +191,7 @@ namespace DEngine.Controller {
             for (int i = 0; i < selectedEntities.Count; i++) {
 
                 // Checks for class
-                if (selectedEntities[i].IsClass()) {
+                if (selectedEntities[i].Type == EntityTypes.CLASS) {
                     ClassModel classModel = (ClassModel)selectedEntities[i];
                     // The class has a super class
                     if (classModel.GetSuperClassName() != "") {
@@ -207,13 +202,12 @@ namespace DEngine.Controller {
                         if(index == -1) {
                             // If it doesn't exist, then create a new one because a window of it is still needed
                             ClassModel superClass = new ClassModel(classModel.GetSuperClassName());
-                            superClass.SetTypeOfEntity(true);
                             classModel.SetSuperClass(superClass);
                             selectedEntities.Add(superClass);
                         }
                         else {
                             //Check if the entity is a class  or an interface and handle each one
-                            if (selectedEntities[index].IsClass()) {
+                            if (selectedEntities[index].Type == EntityTypes.CLASS) {
                                 classModel.SetSuperClass((ClassModel)selectedEntities[index]);
                             }
                             else {
@@ -236,7 +230,6 @@ namespace DEngine.Controller {
                             // The interface is not defined in a loca file
                             if(index == -1) {
                                 InterfaceModel interfaceModel = new InterfaceModel(interface_);
-                                interfaceModel.SetTypeOfEntity(false);
 
                                 selectedEntities[i].AddInterface(interfaceModel);
                                 selectedEntities.Add(interfaceModel);    
@@ -262,7 +255,6 @@ namespace DEngine.Controller {
                             // The interface is not defined in a loca file
                             if (index == -1) {
                                 InterfaceModel newInterfaceToAdd = new InterfaceModel(interface_);
-                                newInterfaceToAdd.SetTypeOfEntity(false);
                                 selectedEntities[i].AddInterface(newInterfaceToAdd);
                                 selectedEntities.Add(newInterfaceToAdd);
                             }

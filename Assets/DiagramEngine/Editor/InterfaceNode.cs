@@ -5,7 +5,6 @@ using UnityEditor;
 using System.Collections.Generic;
 using Model = DEngine.Model;
 
-
 namespace DEngine.View {
 
     public class InterfaceNode : BaseNode{
@@ -37,6 +36,7 @@ namespace DEngine.View {
             methods = new List<Model::Method>();
             interfaces = null;
             interfaceNames = new List<string>();
+            Type = interfaceModel.Type;
 
             if (interfaceModel.GetInterfaceNames() != null) { 
 
@@ -47,6 +47,13 @@ namespace DEngine.View {
                 }
             }
 
+            // Initially set the minimum size for all windows without content
+            if (methods?.Count == 0) {
+                isEmpty = true;
+                windowRect.height = 50;
+                return;
+            }
+
             scrollPos = new Vector2();
 
             methods.AddRange(interfaceModel.GetMethods());
@@ -54,43 +61,40 @@ namespace DEngine.View {
 
         public override void DrawWindow() {
 
-            if (methods.Count == 0) {
-                windowRect.height = 50;
-                return;
-            }
-
             var header = new GUIStyle();
             var public_ = new GUIStyle();
             var private_ = new GUIStyle();
             var protected_ = new GUIStyle();
-            header.normal.textColor = Color.black;
+            header.normal.textColor = new Color(0.188f, 0.258f, 0.733f, 1f);
             public_.normal.textColor = Color.green;
             private_.normal.textColor = Color.red;
             protected_.normal.textColor = Color.magenta;
 
-            scrollPos = EditorGUILayout.BeginScrollView(scrollPos);
-            GUILayout.Label("Methods (" + methods.Count + ")", header);
-            foreach (Model::Method method in methods) {
+            if(methods?.Count > 0) {
+                scrollPos = EditorGUILayout.BeginScrollView(scrollPos);
+                GUILayout.Label("Methods (" + methods.Count + ")", header);
+                foreach (Model::Method method in methods) {
 
-                GUILayout.BeginHorizontal(header);
-                if (method.modifier == Model::AccessModifier.PRIVATE) {
-                    GUILayout.Label("- ", private_, GUILayout.Width(5));
-                    GUILayout.Label(method.ToString() + "()");
+                    GUILayout.BeginHorizontal(header);
+                    if (method.modifier == Model::AccessModifier.PRIVATE) {
+                        GUILayout.Label("- ", private_, GUILayout.Width(5));
+                        GUILayout.Label(method.ToString() + "()");
+                    }
+                    else if (method.modifier == Model::AccessModifier.PUBLIC) {
+                        GUILayout.Label("+ ", public_, GUILayout.Width(5));
+                        GUILayout.Label(method.ToString() + "()");
+                    }
+                    else if (method.modifier == Model::AccessModifier.PROTECTED) {
+                        GUILayout.Label("# ", protected_, GUILayout.Width(5));
+                        GUILayout.Label(method.ToString() + "()");
+                    }
+                    else {
+                        GUILayout.Label(method.ToString() + "()");
+                    }
+                    GUILayout.EndHorizontal();
                 }
-                else if (method.modifier == Model::AccessModifier.PUBLIC) {
-                    GUILayout.Label("+ ", public_, GUILayout.Width(5));
-                    GUILayout.Label(method.ToString() + "()");
-                }
-                else if (method.modifier == Model::AccessModifier.PROTECTED) {
-                    GUILayout.Label("# ", protected_, GUILayout.Width(5));
-                    GUILayout.Label(method.ToString() + "()");
-                }
-                else {
-                    GUILayout.Label(method.ToString() + "()");
-                }
-                GUILayout.EndHorizontal();
+                EditorGUILayout.EndScrollView();
             }
-            EditorGUILayout.EndScrollView();
         }
 
         public List<string> GetInterfaceNames() {

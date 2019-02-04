@@ -52,6 +52,7 @@ namespace DEngine.View {
             interfaceNames = new List<string>();
             superClassName = "";
             superClass = null;
+            Type = classModel.Type;
 
             scrollPos = new Vector2();
 
