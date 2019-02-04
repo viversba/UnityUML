@@ -47,16 +47,15 @@ namespace DEngine.View {
                 }
             }
 
+            scrollPos = new Vector2();
+
+            methods.AddRange(interfaceModel.GetMethods());
+
             // Initially set the minimum size for all windows without content
             if (methods?.Count == 0) {
                 isEmpty = true;
                 windowRect.height = 50;
-                return;
             }
-
-            scrollPos = new Vector2();
-
-            methods.AddRange(interfaceModel.GetMethods());
         }
 
         public override void DrawWindow() {
