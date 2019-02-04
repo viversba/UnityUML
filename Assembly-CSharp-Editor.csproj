@@ -67,6 +67,7 @@
     <Compile Include="Assets\DiagramEngine\Editor\InterfaceNode.cs" />
     <Compile Include="Assets\DiagramEngine\Editor\LeftPanel.cs" />
     <Compile Include="Assets\DiagramEngine\Editor\RightPanel.cs" />
+    <Compile Include="Assets\DiagramEngine\Editor\StructNode.cs" />
     <Reference Include="Unity.TextMeshPro.Editor">
       <HintPath>/Users/nicolasviveros/UnityProjects/UML/Library/ScriptAssemblies/Unity.TextMeshPro.Editor.dll</HintPath>
     </Reference>

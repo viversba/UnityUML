@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 namespace DEngine.Model {
 
+    [Serializable]
     public class StructModel: BaseModel {
 
         /// <summary>

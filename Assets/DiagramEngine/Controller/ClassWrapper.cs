@@ -81,7 +81,7 @@ namespace DEngine.Controller {
         public void FinishEntity() {
 
             //Check if the last entity is a struct
-            if (entities.Count == 1 && !isStruct) {
+            if (entities.Count == 1) {
                 allEntities.Add(entities[entities.Count - 1]);
             }
             entities.RemoveAt(entities.Count - 1);
@@ -210,7 +210,7 @@ namespace DEngine.Controller {
                             if (selectedEntities[index].Type == EntityTypes.CLASS) {
                                 classModel.SetSuperClass((ClassModel)selectedEntities[index]);
                             }
-                            else {
+                            else if (selectedEntities[index].Type == EntityTypes.INTERFACE) {
                                 //InterfaceModel interfaceModel = new InterfaceModel(classModel.GetSuperClassName());
                                 //interfaceModel.SetTypeOfEntity(false);
                                 classModel.AddInterfaceName(selectedEntities[index].GetName());
@@ -241,7 +241,7 @@ namespace DEngine.Controller {
                         }
                     }
                 }
-                else {
+                else if (selectedEntities[i].Type == EntityTypes.INTERFACE){
                     InterfaceModel interfaceModel = (InterfaceModel)selectedEntities[i];
 
                     // Check if the class implements interfaces

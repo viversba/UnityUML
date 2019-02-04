@@ -135,6 +135,12 @@ namespace DEngine.View {
                             style.onNormal.textColor = new Color(0.552f, 0.317f, 0.003f, 1f);
                             windows[i].windowRect = GUI.Window(i, windows[i].windowRect, DrawNodeWindow, windows[i].windowTitle, style);
                             break;
+                        case EntityTypes.STRUCT:
+                            style.fontStyle = FontStyle.BoldAndItalic;
+                            style.normal.textColor = new Color(0.011f, 0.431f, 0.5883f, 1f);
+                            style.onNormal.textColor = new Color(0.011f, 0.431f, 0.588f, 1f);
+                            windows[i].windowRect = GUI.Window(i, windows[i].windowRect, DrawNodeWindow, windows[i].windowTitle, style);
+                            break;
                     }
 
                    
@@ -222,7 +228,7 @@ namespace DEngine.View {
                             }
                         }
                     }
-                    else {
+                    else if (entity.Type == EntityTypes.INTERFACE){
                         // Draw Interfaces
                         InterfaceNode interfaceNode = (InterfaceNode)CreateInstance("InterfaceNode");
                         interfaceNode.windowRect = new Rect(windowXPosition, windowYPosition, 170f, 150f);
@@ -243,13 +249,34 @@ namespace DEngine.View {
                             }
                         }
                     }
+                    else if (entity.Type == EntityTypes.STRUCT) {
+                        // Draw structs
+                        StructNode structNode = (StructNode)CreateInstance("StructNode");
+                        structNode.windowRect = new Rect(windowXPosition, windowYPosition, 150f, 150f);
+                        structNode.Init((StructModel)entity);
+                        windows.Add(structNode);
+
+                        // Validate limits
+                        if (windowXPosition + 155f <= rightPanelRect.width - 150f) {
+                            windowXPosition += 155f;
+                        }
+                        else {
+                            windowXPosition = startX;
+                            if (windowYPosition + 155f < availableHeight - 150f) {
+                                windowYPosition += 155f;
+                            }
+                            else {
+                                windowYPosition = startY;
+                            }
+                        }
+                    }
                 }
 
                 foreach (BaseNode window in windows) {
 
                     // Assign superclass or interface windows
                     // Is it a class?
-                    try {
+                    if(window.Type == EntityTypes.CLASS) {
                         ClassNode classNode = (ClassNode)window;
                         ClassNode superClassNode = (ClassNode)GetWindowWithTitle(classNode.GetSuperClassName());
                         classNode.SetSuperClassNode(superClassNode);
@@ -264,7 +291,7 @@ namespace DEngine.View {
                             classNode.SetInterfaceNodes(interfacesToAdd);
                         }
                     }
-                    catch {
+                    else if (window.Type == EntityTypes.INTERFACE) {
                         // Or an interface?
                         // Assign Interface Windows
                         InterfaceNode interfaceNode = window as InterfaceNode;
@@ -274,6 +301,18 @@ namespace DEngine.View {
                                 interfacesToAdd.Add(GetWindowWithTitle(interface_) as InterfaceNode);
                             }
                             interfaceNode.SetInterfaceNodes(interfacesToAdd);
+                        }
+                    }
+                    else if (window.Type == EntityTypes.STRUCT) {
+                        // Or an interface?
+                        // Assign Interface Windows
+                        StructNode structNode = window as StructNode;
+                        if (structNode.GetInterfaceNames() != null) {
+                            List<InterfaceNode> interfacesToAdd = new List<InterfaceNode>();
+                            foreach (string interface_ in structNode.GetInterfaceNames()) {
+                                interfacesToAdd.Add(GetWindowWithTitle(interface_) as InterfaceNode);
+                            }
+                            structNode.SetInterfaceNodes(interfacesToAdd);
                         }
                     }
                 }
@@ -473,16 +512,22 @@ namespace DEngine.View {
         private BaseNode GetWindowWithTitle(string windowTitle) {
 
             foreach (BaseNode window in windows) {
-                try {
+                if(window.Type == EntityTypes.CLASS) {
                     ClassNode classNode = (ClassNode)window;
                     if (classNode.windowTitle == windowTitle) {
                         return classNode;
                     }
                 }
-                catch {
+                else if (window.Type == EntityTypes.INTERFACE) {
                     InterfaceNode interfaceNode = (InterfaceNode)window;
                     if (interfaceNode.windowTitle == ("<<" + windowTitle + ">>")) {
                         return interfaceNode;
+                    }
+                }
+                else if (window.Type == EntityTypes.STRUCT) {
+                    StructNode structNode = (StructNode)window;
+                    if (structNode.windowTitle == ("*" + windowTitle + "*")) {
+                        return structNode;
                     }
                 }
             }
