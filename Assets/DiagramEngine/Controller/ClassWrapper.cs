@@ -1,12 +1,16 @@
 ﻿using DEngine.Model;
 using System.Collections.Generic;
 using System;
+using System.Linq;
 using UnityEngine;
 
 namespace DEngine.Controller {
 
     public class ClassWrapper {
 
+        /// <summary>
+        /// List of entities currently being processed
+        /// </summary>
         private List<BaseModel> entities;
         //private bool isClass;
         public BaseModel currentEntity;
@@ -14,6 +18,14 @@ namespace DEngine.Controller {
         /// This will be written to disk
         /// </summary>
         public List<BaseModel> allEntities;
+        /// <summary>
+        /// List of found Namespaces
+        /// </summary>
+        public List<NamespaceModel> namespaces;
+        /// <summary>
+        /// Instance of the current namespace
+        /// </summary>
+        public NamespaceModel currentNamespace;
 
         /// <summary>
         /// Temporal variable that will indicate if an entity is a struct in order to dump it
@@ -27,6 +39,12 @@ namespace DEngine.Controller {
             isStruct = false;
             entities = new List<BaseModel>();
             allEntities = new List<BaseModel>();
+            namespaces = new List<NamespaceModel>();
+
+            // Global namespace will be set to a character that cannot be declared as a real namespace
+            // Just to avoid dumb errors
+            namespaces.Add(new NamespaceModel("$Global"));
+
             currentEntity = null;
         }
 
@@ -70,6 +88,40 @@ namespace DEngine.Controller {
             isStruct = true;
         }
 
+        public void AddNamespace(string[] names) {
+
+            if (names.Length < 0)
+                throw new Exception($"Namespaces cannot have empty names + ({nameof(ClassWrapper)})");
+
+
+            int namespaceIndex = -1;
+            for(int i=0; i < namespaces.Count; i++) {
+                namespaceIndex = namespaces[i].Name == names[0] ? i : namespaceIndex;
+            }
+
+            if(namespaceIndex == -1) {
+                NamespaceModel newNamespace = new NamespaceModel(names[0]);
+                currentNamespace = newNamespace;
+
+                // Global namespace should not have sub-namspaces
+                // Check for sub-namespaces
+                if (names.Length > 1) {
+                    string[] subNames = new string[names.Length - 1];
+                    Array.Copy(names, 1, subNames, 0, subNames.Length);
+                    currentNamespace.AddChilds(subNames);
+                }
+            }
+            else {
+                currentNamespace = namespaces[namespaceIndex];
+            }
+        }
+
+        public void FinishNamespace() {
+
+            // Always return to the global namespace
+            currentNamespace = namespaces[0];
+        }
+
         public void SetContainer() {
 
             if (entities.Count > 1) {
@@ -79,6 +131,9 @@ namespace DEngine.Controller {
         }
 
         public void FinishEntity() {
+
+            // Add the currentEntity to it's corresponding namespace
+            currentNamespace.AddEntity(currentEntity);
 
             //Check if the last entity is a struct
             if (entities.Count == 1) {
@@ -287,4 +342,7 @@ namespace DEngine.Controller {
             return -1;
         }
     }
+}
+
+namespace ola.k.ase { 
 }

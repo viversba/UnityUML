@@ -471,6 +471,27 @@ namespace DEngine.Model {
 
         #endregion
 
+        #region Namespace Handling
+
+        public override void EnterNamespace_declaration([NotNull] CSharpParser.Namespace_declarationContext context) {
+
+            // Namespace identification goes from global to specific.
+            // For example DEngine.Model will be { DEngine , Model }
+            var names = context.qualified_identifier().identifier();
+            string[] name = new string[names.Length];
+            for(int i=0; i < names.Length; i++) {
+                name[i] = names[i].GetText();
+            }
+
+            wrapper.AddNamespace(name);
+        }
+
+        public override void ExitNamespace_declaration([NotNull] CSharpParser.Namespace_declarationContext context) {
+
+            wrapper.FinishNamespace();
+        }
+
+        #endregion
 
         public List<BaseModel> GetAllEntities() {
             return wrapper.allEntities;
