@@ -55,6 +55,12 @@ namespace DEngine.Model {
             if (name.Length <= 0)
                 throw new Exception("empty arrays cannot be passed as arguments");
 
+            if(childNames == null)
+                childNames = new List<string>();
+
+            if (childs == null)
+                childs = new List<NamespaceModel>();
+
             int index = -1;
 
             if (!childNames.Contains(names[0])) {

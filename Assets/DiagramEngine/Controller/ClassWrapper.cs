@@ -44,6 +44,7 @@ namespace DEngine.Controller {
             // Global namespace will be set to a character that cannot be declared as a real namespace
             // Just to avoid dumb errors
             namespaces.Add(new NamespaceModel("$Global"));
+            currentNamespace = namespaces[0];
 
             currentEntity = null;
         }

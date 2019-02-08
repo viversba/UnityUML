@@ -224,8 +224,31 @@ namespace DEngine.View {
             }
         }
 
+        /// <summary>
+        /// Finds files recursively from the /Assets folder and loads all entities in them
+        /// </summary>
         private void LoadAllEntities() {
 
+            selectedEntities_ALL = new List<BaseModel>();
+            foreach (string file in SearchAllFilesInDirectory("./Assets/")) {
+                List<BaseModel> entities = EntityWrapper.GetEntitiesFromFile(file);
+                if (entities != null || entities.Count != 0) {
+                    foreach (var entity in entities) {
+                        if (ClassWrapper.FindEntityWithName(ref selectedEntities_ALL, entity.GetName()) == -1) {
+                            selectedEntities_ALL.Add(entity);
+                        }
+                    }
+                }
+                selectedEntities_ALL.AddRange(EntityWrapper.GetEntitiesFromFile(file));
+            }
+            ClassWrapper.RelateEntities(ref selectedEntities_ALL);
+            DiagramEngine.SaveEntitiesOnDisk(selectedEntities_ALL);
+        }
+
+        /// <summary>
+        /// Async version of <c>LoadAllEntities()</c> method
+        /// </summary>
+        private void ALoadAllEntities() {
             selectedEntities_ALL = new List<BaseModel>();
             foreach (string file in SearchAllFilesInDirectory("./Assets/")) {
                 List<BaseModel> entities = EntityWrapper.GetEntitiesFromFile(file);
