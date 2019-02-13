@@ -8,6 +8,7 @@ using DEngine;
 using System;
 using System.IO;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 
 namespace DEngine.View {
 
@@ -45,10 +46,11 @@ namespace DEngine.View {
         /// The reload texture.
         /// </summary>
         Texture2D reloadTexture;
-        /// <summary>
-        /// The draggable panel.
-        /// </summary>
 
+        /// <summary>
+        /// Indicates if entities are being loaded in order to display label
+        /// </summary>
+        private bool loadingEntities;
 
         private void Awake() {
 
@@ -56,6 +58,7 @@ namespace DEngine.View {
             selectedEntities = new List<BaseModel>();
             selectedEntities_ALL = new List<BaseModel>();
             selectedEntities_DD = new List<BaseModel>();
+            loadingEntities = false;
 
             if (File.Exists(texturePath)) {
                 byte[] fileData;
@@ -69,7 +72,7 @@ namespace DEngine.View {
             selectedEntities_ALL = DiagramEngine.LoadEntitiesFromDisk();
             if (selectedEntities_ALL != null)
                 return;
-            LoadAllEntities();
+            LoadAllEntitiesAsyncCaller();
         }
 
         /// <summary>
@@ -93,7 +96,7 @@ namespace DEngine.View {
                     GUILayout.EndHorizontal();
 
                     // Render entities only if there are
-                    if (selectedEntities_ALL.Count == 0) {
+                    if (selectedEntities_ALL.Count == 0 && !loadingEntities) {
                         GUILayout.Label("There's nothing to render here :(");
                         GUILayout.Label("Add some scripts to the project and reopen the window");
                     }
@@ -105,6 +108,8 @@ namespace DEngine.View {
                             string type = entity.Type == EntityTypes.CLASS ? "(C) " : "(I)  ";
                             GUILayout.Label(type + entity.GetName());
                         }
+                        if(loadingEntities)
+                            GUILayout.Label("Processing entities...");
                         EditorGUILayout.EndScrollView();
 
                         GUILayout.BeginHorizontal();
@@ -118,7 +123,7 @@ namespace DEngine.View {
                     }
 
                     if (reloadEntities) {
-                        LoadAllEntities();
+                        LoadAllEntitiesAsyncCaller();
                     }
                     selectedEntities = selectedEntities_ALL;
                     break;
@@ -136,7 +141,7 @@ namespace DEngine.View {
 
                                 try {
                                     MonoScript script = (MonoScript)obj;
-                                    LoadDroppedEntity(script.text);
+                                    LoadDroppedEntityAsyncCaller(script.text);
                                 }
                                 catch (Exception e) {
                                     Debug.Log("Error (LeftPanel: DrawLeftPanel): " + e);
@@ -148,7 +153,7 @@ namespace DEngine.View {
                         foreach (string path in DragAndDrop.paths) {
 
                             if (Directory.Exists($"{Directory.GetCurrentDirectory()}/{path}")) {
-                                LoadAllEntitiesInFolder($"{Directory.GetCurrentDirectory()}/{path}");
+                                LoadAllEntitiesInFolderAsyncCaller($"{Directory.GetCurrentDirectory()}/{path}");
                             }
                         }
 
@@ -162,6 +167,8 @@ namespace DEngine.View {
                         string type = entity.Type == EntityTypes.CLASS ? "(C) " : "(I)  ";
                         GUILayout.Label(type + entity.GetName());
                     }
+                    if (loadingEntities)
+                        GUILayout.Label("Processing entities...");
                     EditorGUILayout.EndScrollView();
 
                     GUILayout.BeginHorizontal();
@@ -194,24 +201,48 @@ namespace DEngine.View {
             return selectedEntities;
         }
 
-        private void LoadDroppedEntity(string text) {
+        private async void LoadAllEntitiesAsyncCaller() {
+            await LoadAllEntitiesAsync();
+        }
 
-            List<BaseModel> entities = EntityWrapper.GetEntitiesFromText(text);
-            if(entities != null || entities.Count != 0) {
+        private async void LoadAllEntitiesInFolderAsyncCaller(string folder) {
+            await LoadAllEntitiesInFolderAsync(folder);
+        }
+
+        private async void LoadDroppedEntityAsyncCaller(string text) {
+            await LoadDroppedEntityAsync(text);
+        }
+
+        /// <summary>
+        /// Async version of the LoadDroppedEntity method
+        /// </summary>
+        /// <param name="text">text</param>
+        private async Task LoadDroppedEntityAsync(string text) {
+
+            loadingEntities = true;
+            List<BaseModel> entities = await Task.Run(() => EntityWrapper.GetEntitiesFromText(text));
+            if (entities != null || entities.Count != 0) {
                 foreach (var entity in entities) {
                     if (ClassWrapper.FindEntityWithName(ref selectedEntities_DD, entity.GetName()) == -1) {
                         selectedEntities_DD.Add(entity);
                     }
                 }
             }
+            loadingEntities = false;
         }
 
-        private void LoadAllEntitiesInFolder(string folder) {
+        /// <summary>
+        /// Async version of the LoadAllEntitiesInFolder method
+        /// </summary>
+        /// <returns>void</returns>
+        /// <param name="folder">folder.</param>
+        private async Task LoadAllEntitiesInFolderAsync(string folder) {
 
             switch (selected) {
                 case 1:
+                    loadingEntities = true;
                     foreach (string file in SearchAllFilesInDirectory(folder)) {
-                        List<BaseModel> entities = EntityWrapper.GetEntitiesFromFile(file);
+                        List<BaseModel> entities = await Task.Run(() => EntityWrapper.GetEntitiesFromFile(file));
                         if (entities != null || entities.Count != 0) {
                             foreach (var entity in entities) {
                                 if (ClassWrapper.FindEntityWithName(ref selectedEntities_DD, entity.GetName()) == -1) {
@@ -220,38 +251,21 @@ namespace DEngine.View {
                             }
                         }
                     }
+                    loadingEntities = false;
                     break;
             }
         }
 
         /// <summary>
-        /// Finds files recursively from the /Assets folder and loads all entities in them
-        /// </summary>
-        private void LoadAllEntities() {
-
-            selectedEntities_ALL = new List<BaseModel>();
-            foreach (string file in SearchAllFilesInDirectory("./Assets/")) {
-                List<BaseModel> entities = EntityWrapper.GetEntitiesFromFile(file);
-                if (entities != null || entities.Count != 0) {
-                    foreach (var entity in entities) {
-                        if (ClassWrapper.FindEntityWithName(ref selectedEntities_ALL, entity.GetName()) == -1) {
-                            selectedEntities_ALL.Add(entity);
-                        }
-                    }
-                }
-                selectedEntities_ALL.AddRange(EntityWrapper.GetEntitiesFromFile(file));
-            }
-            ClassWrapper.RelateEntities(ref selectedEntities_ALL);
-            DiagramEngine.SaveEntitiesOnDisk(selectedEntities_ALL);
-        }
-
-        /// <summary>
         /// Async version of <c>LoadAllEntities()</c> method
         /// </summary>
-        private void ALoadAllEntities() {
+        private async Task LoadAllEntitiesAsync() {
+
+            loadingEntities = true;
+
             selectedEntities_ALL = new List<BaseModel>();
             foreach (string file in SearchAllFilesInDirectory("./Assets/")) {
-                List<BaseModel> entities = EntityWrapper.GetEntitiesFromFile(file);
+                List<BaseModel> entities = await Task.Run(() => EntityWrapper.GetEntitiesFromFile(file));
                 if (entities != null || entities.Count != 0) {
                     foreach (var entity in entities) {
                         if (ClassWrapper.FindEntityWithName(ref selectedEntities_ALL, entity.GetName()) == -1) {
@@ -259,10 +273,11 @@ namespace DEngine.View {
                         }
                     }
                 }
-                selectedEntities_ALL.AddRange(EntityWrapper.GetEntitiesFromFile(file));
             }
             ClassWrapper.RelateEntities(ref selectedEntities_ALL);
             DiagramEngine.SaveEntitiesOnDisk(selectedEntities_ALL);
+
+            loadingEntities = false;
         }
 
         private List<string> SearchAllFilesInDirectory(string directory) {

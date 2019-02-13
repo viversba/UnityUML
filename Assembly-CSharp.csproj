@@ -60,22 +60,22 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\DiagramEngine\Antlr4\Grammar\CharStream.cs" />
-    <Compile Include="Assets\DiagramEngine\Antlr4\Grammar\CSharpLexer.cs" />
-    <Compile Include="Assets\DiagramEngine\Antlr4\Grammar\CSharpParser.cs" />
-    <Compile Include="Assets\DiagramEngine\Antlr4\Grammar\CSharpParserBaseListener.cs" />
-    <Compile Include="Assets\DiagramEngine\Antlr4\Grammar\CSharpParserBaseVisitor.cs" />
-    <Compile Include="Assets\DiagramEngine\Antlr4\Grammar\CSharpParserListener.cs" />
-    <Compile Include="Assets\DiagramEngine\Antlr4\Grammar\CSharpParserVisitor.cs" />
-    <Compile Include="Assets\DiagramEngine\Antlr4\Grammar\CSharpPreprocessorParser.cs" />
-    <Compile Include="Assets\DiagramEngine\Antlr4\Grammar\CSharpPreprocessorParserBaseListener.cs" />
-    <Compile Include="Assets\DiagramEngine\Antlr4\Grammar\CSharpPreprocessorParserBaseVisitor.cs" />
-    <Compile Include="Assets\DiagramEngine\Antlr4\Grammar\CSharpPreprocessorParserListener.cs" />
-    <Compile Include="Assets\DiagramEngine\Antlr4\Grammar\CSharpPreprocessorParserVisitor.cs" />
-    <Compile Include="Assets\DiagramEngine\Antlr4\Grammar\CSharpTokenValue.cs" />
-    <Compile Include="Assets\DiagramEngine\Antlr4\Grammar\DEngine.cs" />
-    <Compile Include="Assets\DiagramEngine\Antlr4\Grammar\Program.cs" />
-    <Compile Include="Assets\DiagramEngine\Antlr4\Grammar\ProgressPrinter.cs" />
+    <Compile Include="Assets\Antlr4\Grammar\CharStream.cs" />
+    <Compile Include="Assets\Antlr4\Grammar\CSharpLexer.cs" />
+    <Compile Include="Assets\Antlr4\Grammar\CSharpParser.cs" />
+    <Compile Include="Assets\Antlr4\Grammar\CSharpParserBaseListener.cs" />
+    <Compile Include="Assets\Antlr4\Grammar\CSharpParserBaseVisitor.cs" />
+    <Compile Include="Assets\Antlr4\Grammar\CSharpParserListener.cs" />
+    <Compile Include="Assets\Antlr4\Grammar\CSharpParserVisitor.cs" />
+    <Compile Include="Assets\Antlr4\Grammar\CSharpPreprocessorParser.cs" />
+    <Compile Include="Assets\Antlr4\Grammar\CSharpPreprocessorParserBaseListener.cs" />
+    <Compile Include="Assets\Antlr4\Grammar\CSharpPreprocessorParserBaseVisitor.cs" />
+    <Compile Include="Assets\Antlr4\Grammar\CSharpPreprocessorParserListener.cs" />
+    <Compile Include="Assets\Antlr4\Grammar\CSharpPreprocessorParserVisitor.cs" />
+    <Compile Include="Assets\Antlr4\Grammar\CSharpTokenValue.cs" />
+    <Compile Include="Assets\Antlr4\Grammar\DEngine.cs" />
+    <Compile Include="Assets\Antlr4\Grammar\Program.cs" />
+    <Compile Include="Assets\Antlr4\Grammar\ProgressPrinter.cs" />
     <Compile Include="Assets\DiagramEngine\Controller\ClassWrapper.cs" />
     <Compile Include="Assets\DiagramEngine\Controller\EntityWrapper.cs" />
     <Compile Include="Assets\DiagramEngine\DiagramEngine.cs" />
@@ -85,7 +85,7 @@
     <Compile Include="Assets\DiagramEngine\Model\Members.cs" />
     <Compile Include="Assets\DiagramEngine\Model\NamespaceModel.cs" />
     <Compile Include="Assets\DiagramEngine\Model\StructModel.cs" />
-    <None Include="Assets\DiagramEngine\Antlr4\Packages\Antlr4.Runtime.4.6.5\lib\net20\Antlr4.Runtime.Standard.xml" />
+    <None Include="Assets\Antlr4\Packages\Antlr4.Runtime.4.6.5\lib\net20\Antlr4.Runtime.Standard.xml" />
     <Reference Include="Unity.TextMeshPro.Editor">
       <HintPath>/Users/nicolasviveros/UnityProjects/UnityUML/Library/ScriptAssemblies/Unity.TextMeshPro.Editor.dll</HintPath>
     </Reference>
@@ -306,7 +306,7 @@
       <HintPath>/Applications/Unity/Unity.app/Contents/UnityExtensions/Unity/UnitySpatialTracking/RuntimeEditor/UnityEngine.SpatialTracking.dll</HintPath>
     </Reference>
     <Reference Include="Antlr4.Runtime.Standard">
-      <HintPath>/Users/nicolasviveros/UnityProjects/UnityUML/Assets/DiagramEngine/Antlr4/Packages/Antlr4.Runtime.4.6.5/lib/net20/Antlr4.Runtime.Standard.dll</HintPath>
+      <HintPath>/Users/nicolasviveros/UnityProjects/UnityUML/Assets/Antlr4/Packages/Antlr4.Runtime.4.6.5/lib/net20/Antlr4.Runtime.Standard.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.Advertisements">
       <HintPath>/Users/nicolasviveros/UnityProjects/UnityUML/Library/PackageCache/com.unity.ads@2.3.1/Runtime/UnityEngine.Advertisements.dll</HintPath>

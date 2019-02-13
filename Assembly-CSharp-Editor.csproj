@@ -324,7 +324,7 @@
       <HintPath>/Applications/Visual Studio.app/Contents/Resources/lib/monodevelop/AddIns/MonoDevelop.Unity/Editor/SyntaxTree.VisualStudio.Unity.Bridge.dll</HintPath>
     </Reference>
     <Reference Include="Antlr4.Runtime.Standard">
-      <HintPath>/Users/nicolasviveros/UnityProjects/UnityUML/Assets/DiagramEngine/Antlr4/Packages/Antlr4.Runtime.4.6.5/lib/net20/Antlr4.Runtime.Standard.dll</HintPath>
+      <HintPath>/Users/nicolasviveros/UnityProjects/UnityUML/Assets/Antlr4/Packages/Antlr4.Runtime.4.6.5/lib/net20/Antlr4.Runtime.Standard.dll</HintPath>
     </Reference>
     <Reference Include="UnityEditor.Advertisements">
       <HintPath>/Users/nicolasviveros/UnityProjects/UnityUML/Library/PackageCache/com.unity.ads@2.3.1/Editor/UnityEditor.Advertisements.dll</HintPath>
