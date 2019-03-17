@@ -135,6 +135,8 @@ namespace DEngine.View {
 
                         Event.current.Use();
 
+                        selectedEntities = selectedEntities_DD;
+
                         // This foreach loop handles loose scripts
                         foreach (UnityEngine.Object obj in DragAndDrop.objectReferences) {
                             if (obj.GetType() == typeof(MonoScript)) {
@@ -156,10 +158,6 @@ namespace DEngine.View {
                                 LoadAllEntitiesInFolderAsyncCaller($"{Directory.GetCurrentDirectory()}/{path}");
                             }
                         }
-
-                        if (selectedEntities_DD != null) {
-                            ClassWrapper.RelateEntities(ref selectedEntities_DD);
-                        }
                     }
 
                     scrollPos_DD = EditorGUILayout.BeginScrollView(scrollPos_DD);
@@ -179,8 +177,6 @@ namespace DEngine.View {
                     if (resetEntitiesButton) {
                         selectedEntities_DD.Clear();
                     }
-
-                    selectedEntities = selectedEntities_DD;
 
                     break;
                 case 2:
@@ -228,6 +224,7 @@ namespace DEngine.View {
                     }
                 }
             }
+            ClassWrapper.RelateEntities(ref selectedEntities_DD);
             loadingEntities = false;
         }
 
@@ -238,22 +235,19 @@ namespace DEngine.View {
         /// <param name="folder">folder.</param>
         private async Task LoadAllEntitiesInFolderAsync(string folder) {
 
-            switch (selected) {
-                case 1:
-                    loadingEntities = true;
-                    foreach (string file in SearchAllFilesInDirectory(folder)) {
-                        List<BaseModel> entities = await Task.Run(() => EntityWrapper.GetEntitiesFromFile(file));
-                        if (entities != null || entities.Count != 0) {
-                            foreach (var entity in entities) {
-                                if (ClassWrapper.FindEntityWithName(ref selectedEntities_DD, entity.GetName()) == -1) {
-                                    selectedEntities_DD.Add(entity);
-                                }
-                            }
+            loadingEntities = true;
+            foreach (string file in SearchAllFilesInDirectory(folder)) {
+                List<BaseModel> entities = await Task.Run(() => EntityWrapper.GetEntitiesFromFile(file));
+                if (entities != null || entities.Count != 0) {
+                    foreach (var entity in entities) {
+                        if (ClassWrapper.FindEntityWithName(ref selectedEntities_DD, entity.GetName()) == -1) {
+                            selectedEntities_DD.Add(entity);
                         }
                     }
-                    loadingEntities = false;
-                    break;
+                }
             }
+            ClassWrapper.RelateEntities(ref selectedEntities_DD);
+            loadingEntities = false;
         }
 
         /// <summary>

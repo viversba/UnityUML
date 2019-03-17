@@ -294,6 +294,11 @@ namespace DEngine.Model {
         public override void EnterConstant_declaration([NotNull] CSharpParser.Constant_declarationContext context) {
             base.EnterConstant_declaration(context);
 
+            string test = context.type()?.base_type()?.GetText();
+            if (test != null) {
+                Debug.Log(test);
+            }
+
             constants.Clear();
             try {
 
@@ -336,11 +341,17 @@ namespace DEngine.Model {
 
             // Get the return type
             try {
+
+                string test = context.common_member_declaration()?.typed_member_declaration()?.type()?.base_type()?.class_type()?.namespace_or_type_name()?.type_argument_list()?[0].GetText();
+                if(test != null) {
+                    Debug.Log(test);
+                    Debug.Log(context.ToStringTree());
+                }
+
                 try {
                     type = context.common_member_declaration().VOID().GetText();
                 }
-                catch (Exception e) {
-
+                catch (Exception e) { 
                     type = context.common_member_declaration().typed_member_declaration().type().GetText();
                     ItDoesNothing("Nested return type " + e.ToString());
                 }

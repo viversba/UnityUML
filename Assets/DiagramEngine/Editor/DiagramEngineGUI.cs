@@ -67,7 +67,7 @@ namespace DEngine.View{
 
             window = GetWindow<DiagramEngineGUI>();
             window.titleContent.text = "DEngine";
-            window.position = new Rect(200, 100, 1200, 800);
+            window.position = new Rect(200, 100, 900, 600);
             window.minSize = new Vector2(200, 200);
 
 

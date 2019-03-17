@@ -246,6 +246,7 @@ namespace DEngine.Controller {
 
             for (int i = 0; i < selectedEntities.Count; i++) {
 
+
                 // Checks for class
                 if (selectedEntities[i].Type == EntityTypes.CLASS) {
                     ClassModel classModel = (ClassModel)selectedEntities[i];
@@ -256,6 +257,7 @@ namespace DEngine.Controller {
                         // The fact that the entity was not found doesn't mean it is a class.
                         // But if it is not in the files, the screw it, i'll say it is a class
                         if(index == -1) {
+
                             // If it doesn't exist, then create a new one because a window of it is still needed
                             ClassModel superClass = new ClassModel(classModel.GetSuperClassName());
                             classModel.SetSuperClass(superClass);

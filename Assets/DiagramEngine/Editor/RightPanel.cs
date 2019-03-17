@@ -181,11 +181,8 @@ namespace DEngine.View {
         public void MenuOptionsCallback(object opt) {
 
             string option = opt.ToString();
-            switch (option) {
-                case "ignoreEmpty":
-                    DisplayEmpty = !DisplayEmpty;
-                    break;
-            }
+            if (option.Equals("ignoreEmpty"))
+                DisplayEmpty = !DisplayEmpty;
         }
 
         /// <summary>
