@@ -222,7 +222,7 @@ namespace DEngine.Controller {
         /// <param name="modifiers">List containing all the modifiers to check</param>
         /// <param name="mod"><c>out</c> variable that will contain the Access Modifier</param>
         /// <param name="attributeType"><c>out</c> variable that will contain the Method Type</param>
-        public static void ModifierMatch(List<string> modifiers, ref AccessModifier mod, ref AttributeType attributeType) {
+        public static void ModifierMatch(List<string> modifiers, ref AccessModifier mod, ref StaticType attributeType) {
 
             foreach (string modifier in modifiers) {
 
@@ -230,9 +230,9 @@ namespace DEngine.Controller {
                     // It is an access modifier, convert to modifier enum
                     mod = ParseEnum<AccessModifier>(modifier);
                 }
-                else if (Enum.IsDefined(typeof(AttributeType), modifier.ToUpper())) {
+                else if (Enum.IsDefined(typeof(StaticType), modifier.ToUpper())) {
                     // If it is a method type, convert to method type enum
-                    attributeType = ParseEnum<AttributeType>(modifier);
+                    attributeType = ParseEnum<StaticType>(modifier);
                 }
             }
         }

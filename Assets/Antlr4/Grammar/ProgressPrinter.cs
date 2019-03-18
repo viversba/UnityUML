@@ -9,11 +9,15 @@ namespace DEngine.Model {
 
     public class ProgressPrinter : CSharpParserBaseListener {
 
+        #region fields
+
         private string className;
         private string methodName;
         private string structName;
         private List<string> modifiers;
         private string type;
+        private string[] subTypes;
+        private string rankSpecifier;
         private string propertyName;
         private List<string> constants;
         private List<string> variables;
@@ -25,7 +29,9 @@ namespace DEngine.Model {
         private string interfaceName;
         private string superClassName;
         private string interfaceBase;
-        
+
+        #endregion
+
         /// <summary>
         /// The entities.
         /// </summary>
@@ -39,6 +45,8 @@ namespace DEngine.Model {
             structName = "";
             modifiers = new List<string>();
             type = "";
+            subTypes = null;
+            rankSpecifier = null;
             className = "";
             constants = new List<string>();
             variables = new List<string>();
@@ -239,7 +247,7 @@ namespace DEngine.Model {
             MethodType methodType = MethodType.NONE;
             ClassWrapper.ModifierMatch(modifiers, ref mod, ref methodType);
 
-            wrapper.AddMethodTo(new Method(methodName, mod, type, methodType));
+            wrapper.AddMethodTo(new Method(methodName, mod, type, methodType, subTypes));
 
             // TODO: take care of parameters
         }
@@ -254,10 +262,10 @@ namespace DEngine.Model {
             base.ExitProperty_declaration(context);
 
             AccessModifier mod = AccessModifier.PRIVATE;
-            AttributeType attributeType = AttributeType.NONE;
+            StaticType attributeType = StaticType.NONE;
             ClassWrapper.ModifierMatch(modifiers, ref mod, ref attributeType);
 
-            wrapper.AddAttributeTo(new Attribute(propertyName, mod, type, attributeType));
+            wrapper.AddAttributeTo(new Attribute(propertyName, mod, type, attributeType, subTypes));
         }
 
         public override void EnterField_declaration([NotNull] CSharpParser.Field_declarationContext context) {
@@ -283,11 +291,11 @@ namespace DEngine.Model {
 
 
             AccessModifier mod = AccessModifier.PRIVATE;
-            AttributeType attributeType = AttributeType.NONE;
+            StaticType attributeType = StaticType.NONE;
             ClassWrapper.ModifierMatch(modifiers, ref mod, ref attributeType);
 
             foreach (var variable in variables) {
-                wrapper.AddAttributeTo(new Attribute(variable, mod, type, attributeType));
+                wrapper.AddAttributeTo(new Attribute(variable, mod, type, attributeType, subTypes));
             }
         }
 
@@ -317,16 +325,15 @@ namespace DEngine.Model {
             base.ExitConstant_declaration(context);
 
             AccessModifier mod = AccessModifier.PRIVATE;
-            AttributeType attributeType = AttributeType.NONE;
+            StaticType attributeType = StaticType.NONE;
             ClassWrapper.ModifierMatch(modifiers, ref mod, ref attributeType);
 
             foreach (var constant in constants) {
-                wrapper.AddAttributeTo(new Attribute(constant, mod, type, attributeType));
+                wrapper.AddAttributeTo(new Attribute(constant, mod, type, attributeType, subTypes));
             }
         }
 
-        public override void EnterClass_member_declaration([NotNull] CSharpParser.Class_member_declarationContext context) {
-            base.EnterClass_member_declaration(context);
+        public override void EnterStruct_member_declaration([NotNull] CSharpParser.Struct_member_declarationContext context) {
 
             modifiers.Clear();
             // Get the access modifiers
@@ -338,26 +345,69 @@ namespace DEngine.Model {
             catch (Exception e) {
                 ItDoesNothing("Member " + e.ToString());
             }
+        }
 
-            // Get the return type
+        public override void EnterClass_member_declaration([NotNull] CSharpParser.Class_member_declarationContext context) {
+
+            modifiers.Clear();
+            // Get the access modifiers
             try {
-
-                string test = context.common_member_declaration()?.typed_member_declaration()?.type()?.base_type()?.class_type()?.namespace_or_type_name()?.type_argument_list()?[0].GetText();
-                if(test != null) {
-                    Debug.Log(test);
-                    Debug.Log(context.ToStringTree());
-                }
-
-                try {
-                    type = context.common_member_declaration().VOID().GetText();
-                }
-                catch (Exception e) { 
-                    type = context.common_member_declaration().typed_member_declaration().type().GetText();
-                    ItDoesNothing("Nested return type " + e.ToString());
+                foreach (var modifier in context.all_member_modifiers().all_member_modifier()) {
+                    modifiers.Add(modifier.GetText());
                 }
             }
             catch (Exception e) {
-                ItDoesNothing("Return type " + e.ToString());
+                ItDoesNothing("Member " + e.ToString());
+            }
+        }
+
+        public override void EnterCommon_member_declaration([NotNull] CSharpParser.Common_member_declarationContext context) {
+
+            string type;
+            type = context.typed_member_declaration()?.type()?.base_type()?.simple_type()?.GetText();
+            if (type == null) {
+                type = context.VOID()?.GetText();
+                if (type == null) {
+                    var typeNames = context.typed_member_declaration()?.type()?.base_type()?.class_type()?.namespace_or_type_name()?.identifier();
+                    if (typeNames != null) {
+                        foreach (var name in typeNames) {
+                            type = name.GetText();
+                        }
+                        var rawSubTypes = context.typed_member_declaration()?.type()?.base_type()?.class_type()?.namespace_or_type_name()?.type_argument_list();
+                        if (rawSubTypes != null && rawSubTypes.Length != 0) {
+                            var finalSubTypes = context?.typed_member_declaration()?.type()?.base_type()?.class_type()?.namespace_or_type_name()?.type_argument_list()[0].type();
+                            if (finalSubTypes != null && finalSubTypes.Length != 0) {
+                                subTypes = new string[finalSubTypes.Length];
+                                for (int i = 0; i < finalSubTypes.Length; i++) {
+                                    subTypes[i] = finalSubTypes[i].GetText();
+                                }
+                            }
+                            else {
+                                subTypes = null;
+                            }
+                        }
+                        else {
+                            subTypes = null;
+                        }
+                    }
+                    else {
+                        type = context.typed_member_declaration()?.type()?.base_type()?.class_type()?.GetText();
+                    }
+                }
+            }
+
+            this.type = type;
+
+            // Get the rank specifiers
+            var rankSpecifiers = context.typed_member_declaration()?.type()?.rank_specifier();
+            if (rankSpecifiers != null) {
+                rankSpecifier = "";
+                foreach (var specifier in rankSpecifiers) {
+                    rankSpecifier += specifier.GetText();
+                }
+            }
+            else {
+                rankSpecifier = null;
             }
         }
 

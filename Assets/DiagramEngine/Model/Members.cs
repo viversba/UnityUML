@@ -55,7 +55,7 @@ namespace DEngine.Model {
     }
 
     [Serializable]
-    public enum AttributeType { 
+    public enum StaticType { 
         STATIC,
         NONE
     }
@@ -76,27 +76,30 @@ namespace DEngine.Model {
     public struct Attribute {
 
         public AccessModifier modifier;
-        public AttributeType attributeType;
+        public StaticType staticType;
         public string name;
-        public string type;
+        public string returnType;
+        public string[] returnSubTypes; 
 
 
-        public Attribute(string name, string type): this(name, AccessModifier.NONE, type, AttributeType.NONE) {}
+        public Attribute(string name, string type): this(name, AccessModifier.NONE, type, StaticType.NONE, null) {}
 
-        public Attribute(string name, AttributeType attributeType, string type): this(name, AccessModifier.NONE, type, attributeType) {}
+        public Attribute(string name, StaticType staticType, string type): this(name, AccessModifier.NONE, type, staticType, null) {}
 
-        public Attribute(string name, AccessModifier modifier, string type, AttributeType attributeType) {
+        public Attribute(string name, AccessModifier modifier, string type, StaticType staticType) : this(name, modifier, type, staticType, null) {}
+
+        public Attribute(string name, AccessModifier modifier, string returnType, StaticType staticType, string[] returnSubTypes) {
 
             this.name = name;
-            this.type = type;
+            this.returnType = returnType;
             this.modifier = modifier;
-            this.attributeType = attributeType;
+            this.staticType = staticType;
+            this.returnSubTypes = returnSubTypes ?? null;
         }
 
         public override string ToString() {
-            //string description = modifier != AccessModifier.NONE ? (modifier.ToString() + " ") : "";
-            string description = attributeType != AttributeType.NONE ? (attributeType.ToString() + " ") : "";
-            description += type + " " + name;
+            string description = staticType != StaticType.NONE ? (staticType.ToString() + " ") : "";
+            description += returnType + " " + name;
             return description;
         }
     }
@@ -111,19 +114,22 @@ namespace DEngine.Model {
         public AccessModifier modifier;
         public MethodType type;
         public string returnType;
+        public string[] returnSubTypes;
         public string name;
 
-        public Method(string name): this(name, AccessModifier.PROTECTED, "void", MethodType.NONE) {}
+        public Method(string name): this(name, AccessModifier.PROTECTED, "void", MethodType.NONE, null) {}
 
-        public Method(string name, AccessModifier modifier, string returnType, MethodType type) {
+        public Method(string name, AccessModifier modifier, string returnType, MethodType type): this(name, modifier, returnType, type, null) {}
+
+        public Method(string name, AccessModifier modifier, string returnType, MethodType type, string[] returnSubTypes) {
             this.name = name;
             this.modifier = modifier;
             this.returnType = returnType;
             this.type = type;
+            this.returnSubTypes = returnSubTypes ?? null;
         }
 
         public override string ToString() {
-            //string description = modifier != AccessModifier.NONE? (modifier.ToString() + " " ) : "";
             string description = type != MethodType.NONE ? (type.ToString() + " " ) : "";
             description += returnType + " " + name;
             return description;
