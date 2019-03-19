@@ -7,10 +7,11 @@ using DEngine.Controller;
 
 namespace DEngine.Model {
 
-    public class ProgressPrinter : CSharpParserBaseListener {
+    public class DEngineListener : CSharpParserBaseListener {
 
         #region fields
 
+        private bool isPartial;
         private string className;
         private string methodName;
         private string structName;
@@ -25,7 +26,7 @@ namespace DEngine.Model {
         private List<string[]> parameters;
         private string classAttributes;
         private List<string> classModifiers;
-        private List<string[]> classParameters;
+        private List<string> classParameters;
         private string interfaceName;
         private string superClassName;
         private string interfaceBase;
@@ -36,10 +37,11 @@ namespace DEngine.Model {
         /// The entities.
         /// </summary>
         private List<string> entities;
-        private ClassWrapper wrapper;
+        private Wrapper wrapper;
 
-        public ProgressPrinter() {
+        public DEngineListener() {
 
+            isPartial = false;
             propertyName = "";
             methodName = "";
             structName = "";
@@ -54,14 +56,36 @@ namespace DEngine.Model {
             parameters = new List<string[]>();
             classAttributes = "";
             classModifiers = new List<string>();
-            classParameters = new List<string[]>();
+            classParameters = new List<string>();
             interfaceName = "";
             superClassName = "";
             interfaceBase = "";
 
             entities = new List<string>();
-            wrapper = new ClassWrapper();
+            wrapper = new Wrapper();
         }
+
+
+        #region Type handling
+
+        public override void EnterNamespace_member_declaration([NotNull] CSharpParser.Namespace_member_declarationContext context) {
+
+            var typeDeclaration = context.type_declaration();
+            if(typeDeclaration != null) { 
+                if(typeDeclaration.class_definition() != null || typeDeclaration.struct_definition() != null || typeDeclaration.interface_definition() != null) {
+                    var modifiers = typeDeclaration.all_member_modifiers()?.all_member_modifier();
+                    if (modifiers != null) { 
+                        foreach(var modifier in modifiers) { 
+                            if(modifier.PARTIAL() != null) {
+                                isPartial = true;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        #endregion
 
         #region Class Handling
 
@@ -71,38 +95,30 @@ namespace DEngine.Model {
             classParameters.Clear();
             superClassName = "";
             className = context.identifier().GetText();
-            string[] params_ = { "", "" };
 
             // Class parameters handling
-            try {
-                var paramList = context.type_parameter_list().type_parameter();
-                className += context.type_parameter_list().GetText();
+            var paramList = context.type_parameter_list()?.type_parameter();
+            if(paramList != null) {
                 foreach (var param in paramList) {
-                    try {
-                        params_[0] = param.attributes().GetText();
-                    }
-                    catch (Exception e) {
-
-                        ItDoesNothing("Class parameters Nested" + e);
-                    }
-                    params_[1] = param.identifier().GetText();
-                    classParameters.Add(params_);
+                    classParameters.Add(param.identifier().GetText());
                 }
             }
-            catch (Exception e) {
-                ItDoesNothing("Class parameters" + e);
-            }
 
-            // SuperClass Handling
-            try {
-                superClassName = context.class_base().class_type().GetText();
-            }
-            catch(Exception e) {
-                ItDoesNothing(e.ToString());
-            }
+            // Super Class handling
+            var supClassName = context.class_base()?.class_type()?.GetText();
+            superClassName = supClassName ?? "";
 
             entities.Add(className);
             wrapper.AddClass(className);
+            wrapper.AddParametersToModel(classParameters);
+
+
+            var interfaces = context.class_base()?.namespace_or_type_name();
+            if(interfaces != null) {
+                foreach (var interface_ in interfaces) {
+                    Debug.Log(interface_.GetText());
+                }
+            }
 
             // Interface handling
             try {
@@ -200,7 +216,7 @@ namespace DEngine.Model {
 
             AccessModifier mod = AccessModifier.INTERNAL;
             MethodType methodType = MethodType.NONE;
-            ClassWrapper.ModifierMatch(modifiers, ref mod, ref methodType);
+            Wrapper.ModifierMatch(modifiers, ref mod, ref methodType);
 
             wrapper.AddConstructor(new Constructor(constructor, mod, methodType));
 
@@ -245,7 +261,7 @@ namespace DEngine.Model {
 
             AccessModifier mod = AccessModifier.PRIVATE;
             MethodType methodType = MethodType.NONE;
-            ClassWrapper.ModifierMatch(modifiers, ref mod, ref methodType);
+            Wrapper.ModifierMatch(modifiers, ref mod, ref methodType);
 
             wrapper.AddMethodTo(new Method(methodName, mod, type, methodType, subTypes));
 
@@ -263,7 +279,7 @@ namespace DEngine.Model {
 
             AccessModifier mod = AccessModifier.PRIVATE;
             StaticType attributeType = StaticType.NONE;
-            ClassWrapper.ModifierMatch(modifiers, ref mod, ref attributeType);
+            Wrapper.ModifierMatch(modifiers, ref mod, ref attributeType);
 
             wrapper.AddAttributeTo(new Attribute(propertyName, mod, type, attributeType, subTypes));
         }
@@ -292,7 +308,7 @@ namespace DEngine.Model {
 
             AccessModifier mod = AccessModifier.PRIVATE;
             StaticType attributeType = StaticType.NONE;
-            ClassWrapper.ModifierMatch(modifiers, ref mod, ref attributeType);
+            Wrapper.ModifierMatch(modifiers, ref mod, ref attributeType);
 
             foreach (var variable in variables) {
                 wrapper.AddAttributeTo(new Attribute(variable, mod, type, attributeType, subTypes));
@@ -326,7 +342,7 @@ namespace DEngine.Model {
 
             AccessModifier mod = AccessModifier.PRIVATE;
             StaticType attributeType = StaticType.NONE;
-            ClassWrapper.ModifierMatch(modifiers, ref mod, ref attributeType);
+            Wrapper.ModifierMatch(modifiers, ref mod, ref attributeType);
 
             foreach (var constant in constants) {
                 wrapper.AddAttributeTo(new Attribute(constant, mod, type, attributeType, subTypes));

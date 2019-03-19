@@ -219,12 +219,12 @@ namespace DEngine.View {
             List<BaseModel> entities = await Task.Run(() => EntityWrapper.GetEntitiesFromText(text));
             if (entities != null || entities.Count != 0) {
                 foreach (var entity in entities) {
-                    if (ClassWrapper.FindEntityWithName(ref selectedEntities_DD, entity.GetName()) == -1) {
+                    if (Wrapper.FindEntityWithName(ref selectedEntities_DD, entity.GetName()) == -1) {
                         selectedEntities_DD.Add(entity);
                     }
                 }
             }
-            ClassWrapper.RelateEntities(ref selectedEntities_DD);
+            Wrapper.RelateEntities(ref selectedEntities_DD);
             loadingEntities = false;
         }
 
@@ -240,13 +240,13 @@ namespace DEngine.View {
                 List<BaseModel> entities = await Task.Run(() => EntityWrapper.GetEntitiesFromFile(file));
                 if (entities != null || entities.Count != 0) {
                     foreach (var entity in entities) {
-                        if (ClassWrapper.FindEntityWithName(ref selectedEntities_DD, entity.GetName()) == -1) {
+                        if (Wrapper.FindEntityWithName(ref selectedEntities_DD, entity.GetName()) == -1) {
                             selectedEntities_DD.Add(entity);
                         }
                     }
                 }
             }
-            ClassWrapper.RelateEntities(ref selectedEntities_DD);
+            Wrapper.RelateEntities(ref selectedEntities_DD);
             loadingEntities = false;
         }
 
@@ -262,13 +262,13 @@ namespace DEngine.View {
                 List<BaseModel> entities = await Task.Run(() => EntityWrapper.GetEntitiesFromFile(file));
                 if (entities != null || entities.Count != 0) {
                     foreach (var entity in entities) {
-                        if (ClassWrapper.FindEntityWithName(ref selectedEntities_ALL, entity.GetName()) == -1) {
+                        if (Wrapper.FindEntityWithName(ref selectedEntities_ALL, entity.GetName()) == -1) {
                             selectedEntities_ALL.Add(entity);
                         }
                     }
                 }
             }
-            ClassWrapper.RelateEntities(ref selectedEntities_ALL);
+            Wrapper.RelateEntities(ref selectedEntities_ALL);
             DiagramEngine.SaveEntitiesOnDisk(selectedEntities_ALL);
 
             loadingEntities = false;

@@ -14,6 +14,8 @@ namespace DEngine.Model {
         [SerializeField]
         public EntityTypes Type { get; set; }
 
+        public bool Partial { get; set; } 
+
         /// <summary>
         /// Name of the entity.
         /// </summary>
@@ -50,6 +52,9 @@ namespace DEngine.Model {
         [NonSerialized]
         protected BaseModel container;
 
+        [SerializeField]
+        protected List<string> parameters;
+
         public BaseModel() {
 
             name = "Generic";
@@ -58,6 +63,8 @@ namespace DEngine.Model {
             interfaces = null;
             interfaceNames = null;
             container = null;
+            parameters = null;
+            Partial = false;
         }
 
         public string GetName() {
@@ -80,24 +87,24 @@ namespace DEngine.Model {
         }
 
         public void AddAttribute(Attribute newAttribute) {
-            if (attributes == null)
-                attributes = new List<Attribute>();
+            attributes = attributes ?? new List<Attribute>();
             attributes.Add(newAttribute);
         }
 
-        public List<Attribute> GetAttributes() {
+        public void SetParameters(List<string> parameters) {
+            this.parameters = parameters ?? new List<string>();
+        }
 
+        public List<Attribute> GetAttributes() {
             return attributes ?? new List<Attribute>();
         }
 
         public void ClearMethods() {
-
             methods.Clear();
         }
 
         public void AddMethod(Method newMethod) {
-            if (methods == null)
-                methods = new List<Method>();
+            methods = methods ?? new List<Method>();
             methods.Add(newMethod);
         }
 
@@ -108,18 +115,14 @@ namespace DEngine.Model {
 
         public void AddInterfaceName(string baseName) {
 
-            if (interfaceNames == null) {
-                interfaceNames = new List<string>();
-            }
+            interfaceNames = interfaceNames ?? new List<string>();
             if (!interfaceNames.Contains(baseName))
                 interfaceNames.Add(baseName);
         }
 
         public void AddInterface(InterfaceModel interface_) {
 
-            if (interfaces == null) {
-                interfaces = new List<InterfaceModel>();
-            }
+            interfaces = interfaces ?? new List<InterfaceModel>();
             interfaces.Add(interface_);
         }
 

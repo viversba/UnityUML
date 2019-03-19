@@ -26,7 +26,6 @@ namespace DEngine.Model {
     public enum MethodType {
         VIRTUAL,
         ABSTRACT,
-        PARTIAL,
         STATIC,
         NONE
     }
@@ -37,7 +36,6 @@ namespace DEngine.Model {
     /// </summary>
     public enum ClassType {
         ABSTRACT,
-        PARTIAL,
         SEALED,
         STATIC,
         NONE
@@ -50,13 +48,18 @@ namespace DEngine.Model {
     public enum ConstructorType {
         PUBLIC,
         PRIVATE,
-        STATIC,
         OTHER
     }
 
     [Serializable]
     public enum StaticType { 
         STATIC,
+        NONE
+    }
+
+    [Serializable]
+    public enum PartialType {
+        PARTIAL,
         NONE
     }
 
@@ -113,20 +116,25 @@ namespace DEngine.Model {
         [SerializeField]
         public AccessModifier modifier;
         public MethodType type;
-        public string returnType;
-        public string[] returnSubTypes;
+        public StaticType staticType;
+        public PartialType partial;
+        public List<Parameter> parameters;
+        public GenericType returnType;
         public string name;
 
         public Method(string name): this(name, AccessModifier.PROTECTED, "void", MethodType.NONE, null) {}
 
         public Method(string name, AccessModifier modifier, string returnType, MethodType type): this(name, modifier, returnType, type, null) {}
 
-        public Method(string name, AccessModifier modifier, string returnType, MethodType type, string[] returnSubTypes) {
+        public Method(string name, AccessModifier modifier, string returnType, MethodType type, string[] returnSubTypes): this(name, modifier, returnType, type, returnSubTypes, null) {}
+
+        public Method(string name, AccessModifier modifier, string returnType, MethodType type, string[] returnSubTypes, List<Parameter> parameters) {
             this.name = name;
             this.modifier = modifier;
             this.returnType = returnType;
             this.type = type;
             this.returnSubTypes = returnSubTypes ?? null;
+            this.parameters = parameters;
         }
 
         public override string ToString() {
@@ -145,6 +153,7 @@ namespace DEngine.Model {
         public string name;
         public AccessModifier modifier;
         public MethodType type;
+        public List<Parameter> parameters;
 
         public Constructor(string name): this(name, AccessModifier.NONE, MethodType.NONE) {}
 
@@ -152,11 +161,13 @@ namespace DEngine.Model {
 
         public Constructor(string name, MethodType type): this(name, AccessModifier.NONE, type) {}
 
-        public Constructor(string name, AccessModifier modifier, MethodType type) {
+        public Constructor(string name, AccessModifier modifier, MethodType type) : this(name, modifier, type, null){}
 
+        public Constructor(string name, AccessModifier modifier, MethodType type, List<Parameter> parameters) {
             this.name = name;
             this.type = type;
             this.modifier = modifier;
+            this.parameters = parameters;
         }
 
         public override string ToString() {
@@ -164,6 +175,34 @@ namespace DEngine.Model {
             string description = type != MethodType.NONE ? (type.ToString() + " ") : "";
             description += name;
             return description;
+        }
+    }
+
+    [Serializable]
+    public struct Parameter {
+
+        public GenericType type;
+        public string name;
+
+        public Parameter(GenericType type, string name){
+
+            this.type = type;
+            this.name = name;
+        }
+    }
+
+    [Serializable]
+    public class GenericType {
+
+        public string name;
+        [NonSerialized]
+        public GenericType type;
+
+        public GenericType(string name) : this(name, null){}
+
+        public GenericType(string name, GenericType type) {
+            this.name = name;
+            this.type = type;
         }
     }
 }

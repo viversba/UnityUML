@@ -34,8 +34,6 @@ namespace DEngine.View {
 
         public ClassNode(Model::ClassModel classModel) {
             windowTitle = classModel.GetName();
-            //windowTitle = "Generic Class";
-            //hasInputs = false;
             attributes.AddRange(classModel.GetAttributes());
             methods.AddRange(classModel.GetMethods());
             constructors.AddRange(classModel.GetConstructors());

@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace DEngine.Controller {
 
-    public class ClassWrapper {
+    public class Wrapper {
 
         /// <summary>
         /// List of entities currently being processed
@@ -33,17 +33,14 @@ namespace DEngine.Controller {
         /// </summary>
         private bool isStruct;
 
-        public ClassWrapper() {
-
-            //isClass = false;
+        public Wrapper() {
+        
             isStruct = false;
             entities = new List<BaseModel>();
             allEntities = new List<BaseModel>();
-            namespaces = new List<NamespaceModel>();
-
             // Global namespace will be set to a character that cannot be declared as a real namespace
             // Just to avoid dumb errors
-            namespaces.Add(new NamespaceModel("$Global"));
+            namespaces = new List<NamespaceModel> { new NamespaceModel("$Global") };
             currentNamespace = namespaces[0];
 
             currentEntity = null;
@@ -57,15 +54,6 @@ namespace DEngine.Controller {
             if (numberOfEntities > 1) {
                 currentEntity.SetContainer(entities[numberOfEntities - 2]);
             }
-        }
-
-        public void SetSuperClassName(string superClassName) {
-
-            if (currentEntity == null)
-                return;
-            ClassModel currentClass = (ClassModel)currentEntity;
-            currentClass.SetSuperClassName(superClassName);
-            currentEntity = currentClass;
         }
 
         public void AddInterface(string name) {
@@ -92,15 +80,15 @@ namespace DEngine.Controller {
         public void AddNamespace(string[] names) {
 
             if (names.Length < 0)
-                throw new Exception($"Namespaces cannot have empty names + ({nameof(ClassWrapper)})");
+                throw new Exception($"Namespaces cannot have empty names + ({nameof(Wrapper)})");
 
 
             int namespaceIndex = -1;
-            for(int i=0; i < namespaces.Count; i++) {
+            for (int i = 0; i < namespaces.Count; i++) {
                 namespaceIndex = namespaces[i].Name == names[0] ? i : namespaceIndex;
             }
 
-            if(namespaceIndex == -1) {
+            if (namespaceIndex == -1) {
                 NamespaceModel newNamespace = new NamespaceModel(names[0]);
                 currentNamespace = newNamespace;
 
@@ -115,6 +103,20 @@ namespace DEngine.Controller {
             else {
                 currentNamespace = namespaces[namespaceIndex];
             }
+        }
+
+        public void IsPartial(bool partial_) {
+            if (currentEntity == null) return;
+            currentEntity.Partial = partial_;
+        }
+
+        public void SetSuperClassName(string superClassName) {
+
+            if (currentEntity == null)
+                return;
+            ClassModel currentClass = (ClassModel)currentEntity;
+            currentClass.SetSuperClassName(superClassName);
+            currentEntity = currentClass;
         }
 
         public void FinishNamespace() {
@@ -147,27 +149,23 @@ namespace DEngine.Controller {
         }
 
         public void AddMethodTo(Method method) {
-            if (currentEntity == null)
-                return;
+            if (currentEntity == null) return;
             currentEntity.AddMethod(method);
         }
 
         public void AddAttributeTo(Model.Attribute attribute) {
-            if (currentEntity == null)
-                return;
+            if (currentEntity == null || currentEntity.Type == EntityTypes.ENUM || currentEntity.Type == EntityTypes.INTERFACE) return;
             currentEntity.AddAttribute(attribute);
         }
 
         public void AddInterfaceToEntity(string interface_) {
-            if (currentEntity == null)
-                return;
+            if (currentEntity == null) return;
             currentEntity.AddInterfaceName(interface_);
         }
 
-        public void SetInterfaceBase(string interface_) {
-
-            if (currentEntity == null)
-                return;
+        public void AddParametersToModel(List<string> parameters) { 
+            if(currentEntity.Type == EntityTypes.ENUM) return;
+            currentEntity.SetParameters(parameters);
         }
 
         public ClassModel GetClass() {

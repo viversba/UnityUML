@@ -125,7 +125,7 @@ namespace DEngine {
 
                     ////Walk the tree
                     ParseTreeWalker walker = new ParseTreeWalker();
-                    walker.Walk(new ProgressPrinter(), tree);
+                    walker.Walk(new DEngineListener(), tree);
                 }
             }
             catch (Exception e) {

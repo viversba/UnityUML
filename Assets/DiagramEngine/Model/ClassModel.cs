@@ -50,19 +50,15 @@ namespace DEngine.Model {
         }
 
         public void SetSuperClass(ClassModel superClass) {
-            if (superClass == null)
-                superClass = new ClassModel();
-            this.superClass = superClass;
+            this.superClass = superClass ?? new ClassModel();
         }
 
         public void AddConstructor(Constructor constructor) {
-            if (constructors == null)
-                constructors = new List<Constructor>();
+            constructors = constructors ?? new List<Constructor>();
             constructors.Add(constructor);
         }
 
         public void AddClass(ClassModel class_) {
-
             subClasses.Add(class_);
         }
 
@@ -81,7 +77,6 @@ namespace DEngine.Model {
         }
 
         public List<Constructor> GetConstructors() {
-
             return constructors ?? new List<Constructor>();
         }
 

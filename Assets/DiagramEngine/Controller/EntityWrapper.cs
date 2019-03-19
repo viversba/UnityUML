@@ -118,7 +118,7 @@ public class EntityWrapper {
 
             ////Walk the tree
             ParseTreeWalker walker = new ParseTreeWalker();
-            ProgressPrinter progressPrinter = new ProgressPrinter();
+            DEngineListener progressPrinter = new DEngineListener();
             walker.Walk(progressPrinter, tree);
             entities = progressPrinter.GetAllEntities();
         }
@@ -234,7 +234,7 @@ public class EntityWrapper {
 
             ////Walk the tree
             ParseTreeWalker walker = new ParseTreeWalker();
-            ProgressPrinter progressPrinter = new ProgressPrinter();
+            DEngineListener progressPrinter = new DEngineListener();
             walker.Walk(progressPrinter, tree);
             entities = progressPrinter.GetAllEntities();
         }
