@@ -1,4 +1,4 @@
-﻿using System;
+﻿ using System;
 using System.Collections.Generic;
 
 namespace DEngine.Model {
@@ -24,6 +24,8 @@ namespace DEngine.Model {
         /// Name of the super class
         /// </summary>
         private string superClassName;
+
+        static int nico;
 
         public ClassModel(string name) {
 
@@ -116,4 +118,9 @@ namespace DEngine.Model {
             return description;
         }
     }
+}
+
+partial class Nicolas{
+
+
 }

@@ -166,6 +166,7 @@ namespace DEngine.Model {
         public override void EnterType_declaration([NotNull] CSharpParser.Type_declarationContext context) {
             classModifiers.Clear();
 
+
             // Get the attributes
             try {
                 classAttributes = context.attributes().GetText();
@@ -174,16 +175,8 @@ namespace DEngine.Model {
                 ItDoesNothing("Class type " + e);
             }
 
-            // Get the class modifiers
-            try {
-                var members = context.all_member_modifiers().all_member_modifier();
-                foreach (var member in members) {
-                    classModifiers.Add(member.GetText());
-                }
-            }
-            catch (Exception e) {
-                ItDoesNothing("Class modifier " + e);
-            }
+            var modifiers = context.all_member_modifiers();
+            ResolveModifier(modifiers);
         }
 
         #endregion
@@ -312,15 +305,11 @@ namespace DEngine.Model {
 
         public override void EnterClass_member_declaration([NotNull] CSharpParser.Class_member_declarationContext context) {
 
-            modifiers.Clear();
+            this.modifiers.Clear();
             // Get the access modifiers
-            try {
-                foreach (var modifier in context.all_member_modifiers().all_member_modifier()) {
-                    modifiers.Add(modifier.GetText());
-                }
-            }
-            catch (Exception e) {
-                ItDoesNothing("Member " + e.ToString());
+            var modifiers = context.all_member_modifiers();
+            if(modifiers != null) {
+                ResolveModifier(modifiers);
             }
         }
 
@@ -574,6 +563,16 @@ namespace DEngine.Model {
                     GenericType arrayType = ResolveArrayTypes(context.parameter_array()?.array_type());
                     Parameter parameter = new Parameter(arrayType, name, true);
                     this.parameters.Add(parameter);
+                }
+            }
+        }
+
+        public void ResolveModifier(CSharpParser.All_member_modifiersContext context) {
+
+            var modifiers = context.all_member_modifier();
+            if(modifiers != null) {
+                foreach (var modifier in modifiers) {
+                    Debug.Log(modifier.GetText() + "    " + className);
                 }
             }
         }
