@@ -11,8 +11,24 @@ namespace DEngine.Model {
 
         #region fields
 
-        private bool isPartial;
-        private bool isStatic;
+        #region modifiers
+        private bool PARTIAL;
+        private bool STATIC;
+        private bool PUBLIC;
+        private bool PRIVATE;
+        private bool PROTECTED;
+        private bool INTERNAL;
+        private bool READONLY;
+        private bool VOLATILE;
+        private bool VIRTUAL;
+        private bool SEALED;
+        private bool OVERRIDE;
+        private bool ABSTRACT;
+        private bool EXTERN;
+        private bool UNSAFE;
+        private bool ASYNC;
+        #endregion
+
         private string className;
         private string methodName;
         private string structName;
@@ -42,8 +58,8 @@ namespace DEngine.Model {
 
         public DEngineListener() {
 
-            isPartial = false;
-            isStatic = false;
+            PARTIAL = false;
+            STATIC = false;
             propertyName = "";
             methodName = "";
             structName = "";
@@ -66,28 +82,6 @@ namespace DEngine.Model {
             entities = new List<string>();
             wrapper = new Wrapper();
         }
-
-
-        #region Type handling
-
-        public override void EnterNamespace_member_declaration([NotNull] CSharpParser.Namespace_member_declarationContext context) {
-
-            var typeDeclaration = context.type_declaration();
-            if(typeDeclaration != null) { 
-                if(typeDeclaration.class_definition() != null || typeDeclaration.struct_definition() != null || typeDeclaration.interface_definition() != null) {
-                    var modifiers = typeDeclaration.all_member_modifiers()?.all_member_modifier();
-                    if (modifiers != null) { 
-                        foreach(var modifier in modifiers) { 
-                            if(modifier.PARTIAL() != null) {
-                                isPartial = true;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        #endregion
 
         #region Class Handling
 
@@ -115,6 +109,9 @@ namespace DEngine.Model {
             entities.Add(className);
             wrapper.AddClass(className);
             wrapper.AddParametersToModel(classParameters);
+            if (PARTIAL) {
+                wrapper.IsPartial(PARTIAL);
+            }
 
 
             var interfaces = context.class_base()?.namespace_or_type_name();
@@ -164,19 +161,14 @@ namespace DEngine.Model {
         }
 
         public override void EnterType_declaration([NotNull] CSharpParser.Type_declarationContext context) {
-            classModifiers.Clear();
-
-
-            // Get the attributes
-            try {
-                classAttributes = context.attributes().GetText();
-            }
-            catch (Exception e) {
-                ItDoesNothing("Class type " + e);
-            }
-
             var modifiers = context.all_member_modifiers();
-            ResolveModifier(modifiers);
+            if(modifiers != null) {
+                ResolveModifier(modifiers);
+            }
+        }
+
+        public override void ExitType_declaration([NotNull] CSharpParser.Type_declarationContext context) {
+            ResetModifiers();
         }
 
         #endregion
@@ -311,6 +303,10 @@ namespace DEngine.Model {
             if(modifiers != null) {
                 ResolveModifier(modifiers);
             }
+        }
+
+        public override void ExitClass_member_declaration([NotNull] CSharpParser.Class_member_declarationContext context) {
+            ResetModifiers();
         }
 
         #endregion
@@ -570,11 +566,44 @@ namespace DEngine.Model {
         public void ResolveModifier(CSharpParser.All_member_modifiersContext context) {
 
             var modifiers = context.all_member_modifier();
-            if(modifiers != null) {
+            if (modifiers != null) {
                 foreach (var modifier in modifiers) {
-                    Debug.Log(modifier.GetText() + "    " + className);
+                    PARTIAL = modifier.PARTIAL() != null;
+                    STATIC = modifier.STATIC() != null;
+                    PUBLIC = modifier.PUBLIC() != null;
+                    PRIVATE = modifier.PRIVATE() != null;
+                    PROTECTED = modifier.PROTECTED() != null;
+                    INTERNAL = modifier.INTERNAL() != null;
+                    READONLY = modifier.READONLY() != null;
+                    VOLATILE = modifier.VOLATILE() != null;
+                    VIRTUAL = modifier.VIRTUAL() != null;
+                    SEALED = modifier.SEALED() != null;
+                    OVERRIDE = modifier.OVERRIDE() != null;
+                    ABSTRACT = modifier.ABSTRACT() != null;
+                    EXTERN = modifier.EXTERN() != null;
+                    UNSAFE = modifier.UNSAFE() != null;
+                    ASYNC = modifier.ASYNC() != null;
                 }
             }
+        }
+
+        public void ResetModifiers() {
+
+            PARTIAL = false;
+            STATIC = false;
+            PUBLIC = false;
+            PRIVATE = false;
+            PROTECTED = false;
+            INTERNAL = false;
+            READONLY = false;
+            VOLATILE = false;
+            VIRTUAL = false;
+            SEALED = false;
+            OVERRIDE = false;
+            ABSTRACT = false;
+            EXTERN = false;
+            UNSAFE = false;
+            ASYNC = false;
         }
 
         #endregion
