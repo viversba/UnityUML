@@ -207,20 +207,20 @@ namespace DEngine.View {
 
         private void DrawAttribute(Model::Attribute attribute) {
 
-            var red = new GUIStyle();
-            red.normal.textColor = Color.red;
+            //var red = new GUIStyle();
+            //red.normal.textColor = Color.red;
 
-            GUILayout.Label(attribute.returnType);
-            if(attribute.returnSubTypes != null) {
-                GUILayout.Label("<");
-                for(int i = 0; i< attribute.returnSubTypes.Length-1; i++) { 
-                    GUILayout.Label($"{attribute.returnSubTypes[i]}", red);
-                    GUILayout.Label($",");
-                }
-                GUILayout.Label(attribute.returnSubTypes[attribute.returnSubTypes.Length - 1], red);
-                GUILayout.Label(">");
-            }
-            GUILayout.Label(attribute.name);
+            //GUILayout.Label(attribute.returnType);
+            //if(attribute.returnSubTypes != null) {
+            //    GUILayout.Label("<");
+            //    for(int i = 0; i< attribute.returnSubTypes.Length-1; i++) { 
+            //        GUILayout.Label($"{attribute.returnSubTypes[i]}", red);
+            //        GUILayout.Label($",");
+            //    }
+            //    GUILayout.Label(attribute.returnSubTypes[attribute.returnSubTypes.Length - 1], red);
+            //    GUILayout.Label(">");
+            //}
+            //GUILayout.Label(attribute.name);
         }
     }
 }

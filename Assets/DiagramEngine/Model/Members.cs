@@ -54,11 +54,6 @@ namespace DEngine.Model {
     [Serializable]
     public enum StaticType { 
         STATIC,
-        NONE
-    }
-
-    [Serializable]
-    public enum PartialType {
         PARTIAL,
         NONE
     }
@@ -80,24 +75,15 @@ namespace DEngine.Model {
 
         public AccessModifier modifier;
         public StaticType staticType;
+        public GenericType returnType;
         public string name;
-        public string returnType;
-        public string[] returnSubTypes; 
 
-
-        public Attribute(string name, string type): this(name, AccessModifier.NONE, type, StaticType.NONE, null) {}
-
-        public Attribute(string name, StaticType staticType, string type): this(name, AccessModifier.NONE, type, staticType, null) {}
-
-        public Attribute(string name, AccessModifier modifier, string type, StaticType staticType) : this(name, modifier, type, staticType, null) {}
-
-        public Attribute(string name, AccessModifier modifier, string returnType, StaticType staticType, string[] returnSubTypes) {
+        public Attribute(string name, GenericType returnType, AccessModifier modifier = AccessModifier.NONE, StaticType staticType = StaticType.NONE) {
 
             this.name = name;
             this.returnType = returnType;
             this.modifier = modifier;
             this.staticType = staticType;
-            this.returnSubTypes = returnSubTypes ?? null;
         }
 
         public override string ToString() {
@@ -117,23 +103,16 @@ namespace DEngine.Model {
         public AccessModifier modifier;
         public MethodType type;
         public StaticType staticType;
-        public PartialType partial;
         public List<Parameter> parameters;
         public GenericType returnType;
         public string name;
 
-        public Method(string name): this(name, AccessModifier.PROTECTED, "void", MethodType.NONE, null) {}
-
-        public Method(string name, AccessModifier modifier, string returnType, MethodType type): this(name, modifier, returnType, type, null) {}
-
-        public Method(string name, AccessModifier modifier, string returnType, MethodType type, string[] returnSubTypes): this(name, modifier, returnType, type, returnSubTypes, null) {}
-
-        public Method(string name, AccessModifier modifier, string returnType, MethodType type, string[] returnSubTypes, List<Parameter> parameters) {
+        public Method(string name, GenericType returnType, List<Parameter> parameters = null, AccessModifier modifier = AccessModifier.NONE, MethodType type = MethodType.NONE, StaticType staticType = StaticType.NONE) {
             this.name = name;
             this.modifier = modifier;
             this.returnType = returnType;
             this.type = type;
-            this.returnSubTypes = returnSubTypes ?? null;
+            this.staticType = staticType;
             this.parameters = parameters;
         }
 
@@ -152,27 +131,18 @@ namespace DEngine.Model {
 
         public string name;
         public AccessModifier modifier;
-        public MethodType type;
         public List<Parameter> parameters;
+        public StaticType staticType;
 
-        public Constructor(string name): this(name, AccessModifier.NONE, MethodType.NONE) {}
-
-        public Constructor(string name, AccessModifier modifier): this(name, modifier, MethodType.NONE) {}
-
-        public Constructor(string name, MethodType type): this(name, AccessModifier.NONE, type) {}
-
-        public Constructor(string name, AccessModifier modifier, MethodType type) : this(name, modifier, type, null){}
-
-        public Constructor(string name, AccessModifier modifier, MethodType type, List<Parameter> parameters) {
+        public Constructor(string name, List<Parameter> parameters = null, AccessModifier modifier = AccessModifier.NONE, StaticType staticType = StaticType.NONE) {
             this.name = name;
-            this.type = type;
+            this.staticType = staticType;
             this.modifier = modifier;
             this.parameters = parameters;
         }
 
         public override string ToString() {
-            //string description = modifier != AccessModifier.NONE ? (modifier.ToString() + " ") : "";
-            string description = type != MethodType.NONE ? (type.ToString() + " ") : "";
+            string description = staticType != StaticType.NONE ? (staticType.ToString() + " ") : "";
             description += name;
             return description;
         }
@@ -181,13 +151,17 @@ namespace DEngine.Model {
     [Serializable]
     public struct Parameter {
 
+        public bool Params { get; set; }
         public GenericType type;
         public string name;
+        public int arraySize;
 
-        public Parameter(GenericType type, string name){
+        public Parameter(GenericType type, string name, bool Params = false, int arraySize = 0){
 
             this.type = type;
             this.name = name;
+            this.Params = Params;
+            this.arraySize = arraySize;
         }
     }
 
@@ -196,13 +170,18 @@ namespace DEngine.Model {
 
         public string name;
         [NonSerialized]
-        public GenericType type;
+        public List<GenericType> type;
+        public int rankSpecifier;
 
-        public GenericType(string name) : this(name, null){}
-
-        public GenericType(string name, GenericType type) {
+        public GenericType(string name, List<GenericType> type = null, int rankSpecifier = 0) {
             this.name = name;
             this.type = type;
+            this.rankSpecifier = rankSpecifier;
+        }
+
+        public void AddGenericType(GenericType genericType) {
+            type = type ?? new List<GenericType>();
+            type.Add(genericType);
         }
     }
 }

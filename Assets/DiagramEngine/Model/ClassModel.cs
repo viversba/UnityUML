@@ -25,7 +25,7 @@ namespace DEngine.Model {
         /// </summary>
         private string superClassName;
 
-        public ClassModel(string name): base() {
+        public ClassModel(string name) {
 
             this.name = name;
             constructors = null;
@@ -35,7 +35,16 @@ namespace DEngine.Model {
             Type = EntityTypes.CLASS;
         }
 
-        public ClassModel(): base(){
+        public ClassModel() {
+
+            constructors = null;
+            superClass = null;
+            subClasses = null;
+            superClassName = "";
+            Type = EntityTypes.CLASS;
+        }
+
+        public ClassModel(Dictionary<string,int> k,List<Dictionary<string, int>> ola) {
 
             constructors = null;
             superClass = null;
@@ -89,7 +98,7 @@ namespace DEngine.Model {
 
             string description = name;
             description += container != null ? "<-" + container.GetName() + "\n" : "\n";
-            if(constructors != null) {
+            if (constructors != null) {
                 foreach (Constructor constructor in constructors) {
                     description += constructor.ToString() + "\n";
                 }

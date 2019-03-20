@@ -67,6 +67,10 @@ namespace DEngine.Model {
             Partial = false;
         }
 
+        public BaseModel(List<Dictionary<string, int>> ola) {
+       
+        }
+
         public string GetName() {
 
             return name;
