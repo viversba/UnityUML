@@ -19,7 +19,7 @@ namespace DEngine.Model {
         /// <summary>
         /// Name of the entity.
         /// </summary>
-        //[SerializeField]
+        [SerializeField]
         protected string name;
 
         /// <summary>
@@ -55,6 +55,9 @@ namespace DEngine.Model {
         [SerializeField]
         protected List<string> parameters;
 
+        [SerializeField]
+        protected AccessModifier accessModifier;
+
         public BaseModel() {
 
             name = "Generic";
@@ -65,6 +68,7 @@ namespace DEngine.Model {
             container = null;
             parameters = null;
             Partial = false;
+            accessModifier = AccessModifier.NONE;
         }
 
         public BaseModel(List<Dictionary<string, int>> ola) {
@@ -97,6 +101,10 @@ namespace DEngine.Model {
 
         public void SetParameters(List<string> parameters) {
             this.parameters = parameters ?? new List<string>();
+        }
+
+        public void SetAccessModifier(AccessModifier accessModifier) {
+            this.accessModifier = accessModifier;
         }
 
         public List<Attribute> GetAttributes() {

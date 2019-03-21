@@ -16,6 +16,7 @@ namespace DEngine.Model {
         PROTECTED,
         INTERNAL,
         PROTECTED_INTERNAL,
+        PRIVATE_PROTECTED,
         NONE
     }
 
@@ -26,7 +27,6 @@ namespace DEngine.Model {
     public enum MethodType {
         VIRTUAL,
         ABSTRACT,
-        STATIC,
         NONE
     }
 

@@ -25,6 +25,7 @@ namespace DEngine.Model {
         private bool EXTERN;
         private bool UNSAFE;
         private bool ASYNC;
+        private bool NEW;
         #endregion
 
         private string className;
@@ -92,7 +93,18 @@ namespace DEngine.Model {
             entities.Add(className);
             wrapper.AddClass(className);
             wrapper.AddParametersToModel(classParameters);
-            if (PARTIAL) wrapper.IsPartial(PARTIAL);
+
+            // Set class modifiers
+            wrapper.IsPartial(PARTIAL);
+            wrapper.IsStatic(STATIC);
+            wrapper.IsSealed(SEALED);
+            wrapper.IsAbstract(ABSTRACT);
+
+            // Set class access modifiers
+            if (PUBLIC)
+                wrapper.SetAccessModifier(AccessModifier.PUBLIC);
+            else if (INTERNAL)
+                wrapper.SetAccessModifier(AccessModifier.INTERNAL);
 
 
             // Super Class handling
@@ -117,17 +129,6 @@ namespace DEngine.Model {
             wrapper.FinishEntity();
         }
 
-        public override void EnterType_declaration([NotNull] CSharpParser.Type_declarationContext context) {
-            var modifiers = context.all_member_modifiers();
-            if(modifiers != null) {
-                ResolveModifier(modifiers);
-            }
-        }
-
-        public override void ExitType_declaration([NotNull] CSharpParser.Type_declarationContext context) {
-            ResetModifiers();
-        }
-
         #endregion
 
         #region constructor
@@ -143,13 +144,18 @@ namespace DEngine.Model {
             if(parameters != null) {
                 ResolveParameters(parameters);
             }
+
+            AccessModifier accessModifier = GetCurrentAccessModifierForMembers();
+            StaticType staticType = GetCurrentStaticTypeForMembers();
+
+            wrapper.AddConstructor(new Constructor(constructor, this.parameters, accessModifier, staticType));
         }
 
         public override void ExitConstructor_declaration([NotNull] CSharpParser.Constructor_declarationContext context) {
 
             //Wrapper.ModifierMatch(modifiers, ref mod, ref methodType);
 
-            wrapper.AddConstructor(new Constructor(constructor, parameters));
+            //wrapper.AddConstructor(new Constructor(constructor, parameters));
         }
 
         #endregion
@@ -166,13 +172,22 @@ namespace DEngine.Model {
             if (parameters != null) {
                 ResolveParameters(parameters);
             }
+
+            AccessModifier accessModifier = GetCurrentAccessModifierForMembers();
+            StaticType staticType = GetCurrentStaticTypeForMembers();
+
+            MethodType methodType = MethodType.NONE;
+            if (ABSTRACT) methodType = MethodType.ABSTRACT;
+            else if(VIRTUAL) methodType = MethodType.VIRTUAL;
+
+            wrapper.AddMethodTo(new Method(methodName, type, this.parameters, accessModifier, methodType, staticType));
         }
 
         public override void ExitMethod_declaration([NotNull] CSharpParser.Method_declarationContext context) {
         
             //Wrapper.ModifierMatch(modifiers, ref mod, ref methodType);
 
-            wrapper.AddMethodTo(new Method(methodName, type, parameters));
+            //wrapper.AddMethodTo(new Method(methodName, type, parameters));
         }
 
         #endregion
@@ -182,47 +197,54 @@ namespace DEngine.Model {
         public override void EnterProperty_declaration([NotNull] CSharpParser.Property_declarationContext context) {
 
             propertyName = context.member_name().GetText();
+            AccessModifier accessModifier = GetCurrentAccessModifierForMembers();
+            StaticType staticType = STATIC ? StaticType.STATIC : StaticType.NONE;
+
+            wrapper.AddAttributeTo(new Attribute(propertyName, type, accessModifier, staticType));
         }
 
         public override void ExitProperty_declaration([NotNull] CSharpParser.Property_declarationContext context) {
 
-            AccessModifier mod = AccessModifier.PRIVATE;
-            StaticType attributeType = StaticType.NONE;
-
-            wrapper.AddAttributeTo(new Attribute(propertyName, type));
+            //wrapper.AddAttributeTo(new Attribute(propertyName, type));
         }
 
         public override void EnterField_declaration([NotNull] CSharpParser.Field_declarationContext context) {
 
             variables.Clear();
+            AccessModifier accessModifier = GetCurrentAccessModifierForMembers();
+            StaticType staticType = STATIC ? StaticType.STATIC : StaticType.NONE;
 
             var fields = context.variable_declarators()?.variable_declarator();
             if(fields != null) {
                 foreach (var field in fields) {
-                    variables.Add(field.identifier().GetText());
+                    //variables.Add(field.identifier().GetText());
+                    wrapper.AddAttributeTo(new Attribute(field.identifier().GetText(), type, accessModifier, staticType));
                 }
             }
         }
 
         public override void ExitField_declaration([NotNull] CSharpParser.Field_declarationContext context) {
 
-            AccessModifier mod = AccessModifier.PRIVATE;
-            StaticType attributeType = StaticType.NONE;
+            //AccessModifier mod = AccessModifier.PRIVATE;
+            //StaticType attributeType = StaticType.NONE;
 
-            foreach (var variable in variables) {
-                wrapper.AddAttributeTo(new Attribute(variable, type));
-            }
+            //foreach (var variable in variables) {
+            //    wrapper.AddAttributeTo(new Attribute(variable, type));
+            //}
         }
 
         public override void EnterConstant_declaration([NotNull] CSharpParser.Constant_declarationContext context) {
 
             constants.Clear();
             type = ResolveTypes(context.type());
+            AccessModifier accessModifier = GetCurrentAccessModifierForMembers();
+            StaticType staticType = STATIC ? StaticType.STATIC : StaticType.NONE;
 
             var consts = context.constant_declarators()?.constant_declarator();
             if(consts != null) {
                 foreach (var constant in consts) {
                     constants.Add(constant.identifier().GetText());
+                    wrapper.AddAttributeTo(new Attribute(constant.identifier().GetText(), type, accessModifier, staticType));
                 }
             }
         }
@@ -231,9 +253,9 @@ namespace DEngine.Model {
 
             //Wrapper.ModifierMatch(modifiers, ref mod, ref attributeType);
 
-            foreach (var constant in constants) {
-                wrapper.AddAttributeTo(new Attribute(constant, type));
-            }
+            //foreach (var constant in constants) {
+            //    wrapper.AddAttributeTo(new Attribute(constant, type));
+            //}
         }
 
         #endregion
@@ -270,6 +292,12 @@ namespace DEngine.Model {
             entities.Add(interfaceName);
             wrapper.AddInterface(interfaceName);
             wrapper.AddParametersToModel(interfaceParameters);
+
+            // Set class access modifiers
+            if (PUBLIC)
+                wrapper.SetAccessModifier(AccessModifier.PUBLIC);
+            else if (INTERNAL)
+                wrapper.SetAccessModifier(AccessModifier.INTERNAL);
 
             // Base interfaces handling
             var bases = context.interface_base();
@@ -318,6 +346,12 @@ namespace DEngine.Model {
             structName = context.identifier().GetText();
             entities.Add(structName);
             wrapper.AddStruct(structName);
+
+            // Set class access modifiers
+            if (PUBLIC)
+                wrapper.SetAccessModifier(AccessModifier.PUBLIC);
+            else if (INTERNAL)
+                wrapper.SetAccessModifier(AccessModifier.INTERNAL);
         }
 
         public override void ExitStruct_definition([NotNull] CSharpParser.Struct_definitionContext context) {
@@ -338,6 +372,17 @@ namespace DEngine.Model {
         #endregion
 
         #region common
+
+        public override void EnterType_declaration([NotNull] CSharpParser.Type_declarationContext context) {
+            var modifiers = context.all_member_modifiers();
+            if (modifiers != null) {
+                ResolveModifier(modifiers);
+            }
+        }
+
+        public override void ExitType_declaration([NotNull] CSharpParser.Type_declarationContext context) {
+            ResetModifiers();
+        }
 
         public override void EnterCommon_member_declaration([NotNull] CSharpParser.Common_member_declarationContext context) {
 
@@ -475,6 +520,7 @@ namespace DEngine.Model {
                     EXTERN = modifier.EXTERN() != null;
                     UNSAFE = modifier.UNSAFE() != null;
                     ASYNC = modifier.ASYNC() != null;
+                    NEW = modifier.NEW() != null;
                 }
             }
         }
@@ -552,6 +598,30 @@ namespace DEngine.Model {
             return interface_;
         }
 
+        public AccessModifier GetCurrentAccessModifierForMembers() {
+
+            AccessModifier accessModifier = AccessModifier.NONE;
+            if (PUBLIC) accessModifier = AccessModifier.PUBLIC;
+            else if (PROTECTED) {
+                if (PRIVATE) accessModifier = AccessModifier.PRIVATE_PROTECTED;
+                if (INTERNAL) accessModifier = AccessModifier.PROTECTED_INTERNAL;
+                else accessModifier = AccessModifier.PROTECTED;
+            }
+            else if (PRIVATE) accessModifier = AccessModifier.PRIVATE;
+            else if (INTERNAL) accessModifier = AccessModifier.INTERNAL;
+
+            return accessModifier;
+        }
+
+        public StaticType GetCurrentStaticTypeForMembers() {
+
+            StaticType staticType = StaticType.NONE;
+            if (STATIC) staticType = StaticType.STATIC;
+            else if (PARTIAL) staticType = StaticType.PARTIAL;
+
+            return staticType;
+        }
+
         public void ResetModifiers() {
 
             PARTIAL = false;
@@ -569,6 +639,7 @@ namespace DEngine.Model {
             EXTERN = false;
             UNSAFE = false;
             ASYNC = false;
+            NEW = false;
         }
 
         #endregion

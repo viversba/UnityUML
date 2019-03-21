@@ -24,8 +24,13 @@ namespace DEngine.Model {
         /// Name of the super class
         /// </summary>
         private ImplementedType superClassName;
+        /// <summary>
+        /// Tells us if the class is static or not
+        /// </summary>
 
-        static int nico;
+        public bool Static { get; set; }
+        public bool Sealed { get; set; }
+        public bool Abstract { get; set; }
 
         public ClassModel(string name) {
 
@@ -118,9 +123,4 @@ namespace DEngine.Model {
             return description;
         }
     }
-}
-
-partial class Nicolas{
-
-
 }

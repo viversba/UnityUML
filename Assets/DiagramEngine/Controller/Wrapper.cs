@@ -105,11 +105,6 @@ namespace DEngine.Controller {
             }
         }
 
-        public void IsPartial(bool partial_) {
-            if (currentEntity == null) return;
-            currentEntity.Partial = partial_;
-        }
-
         public void SetSuperClassName(ImplementedType superClassName) {
 
             if (currentEntity == null)
@@ -188,6 +183,58 @@ namespace DEngine.Controller {
                 currentEntity = currentStruct;
             }
         }
+
+        #region modifier handling
+
+        public void IsPartial(bool partial_) {
+            if (currentEntity == null) return;
+            currentEntity.Partial = partial_;
+        }
+
+        public void IsStatic(bool static_) {
+            if (currentEntity == null) return;
+
+            try {
+                ClassModel classModel = (ClassModel)currentEntity;
+                classModel.Static = static_;
+                currentEntity = classModel;
+            }
+            catch (Exception e) {
+                throw new InvalidCastException($"Cannot convert cast from BaseModel to ClassModel on {nameof(Wrapper)}");
+            }
+        }
+
+        public void IsSealed(bool sealed_) {
+            if (currentEntity == null) return;
+
+            try {
+                ClassModel classModel = (ClassModel)currentEntity;
+                classModel.Sealed = sealed_;
+                currentEntity = classModel;
+            }
+            catch (Exception e) {
+                throw new InvalidCastException($"Cannot convert cast from BaseModel to ClassModel on {nameof(Wrapper)}");
+            }
+        }
+
+        public void IsAbstract(bool abstract_) {
+            if (currentEntity == null) return;
+
+            try {
+                ClassModel classModel = (ClassModel)currentEntity;
+                classModel.Abstract = abstract_;
+                currentEntity = classModel;
+            }
+            catch (Exception e) {
+                throw new InvalidCastException($"Cannot convert cast from BaseModel to ClassModel on {nameof(Wrapper)}");
+            }
+        }
+
+        public void SetAccessModifier(AccessModifier accessModifier) {
+            currentEntity.SetAccessModifier(accessModifier);
+        }
+
+        #endregion
 
         public static T ParseEnum<T>(string value) {
             return (T)Enum.Parse(typeof(T),value, true);
@@ -343,7 +390,4 @@ namespace DEngine.Controller {
             return -1;
         }
     }
-}
-
-namespace ola.k.ase { 
 }
