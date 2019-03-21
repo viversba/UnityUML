@@ -35,7 +35,6 @@ namespace DEngine.Model {
         private List<string> modifiers;
         private GenericType type;
         private string[] subTypes;
-        private string rankSpecifier;
         private string propertyName;
         private List<string> constants;
         private List<string> variables;
@@ -67,7 +66,6 @@ namespace DEngine.Model {
             modifiers = new List<string>();
             type = new GenericType("");
             subTypes = null;
-            rankSpecifier = null;
             className = "";
             constants = new List<string>();
             variables = new List<string>();
@@ -109,6 +107,7 @@ namespace DEngine.Model {
             wrapper.AddClass(className);
             wrapper.AddParametersToModel(classParameters);
             if (PARTIAL) wrapper.IsPartial(PARTIAL);
+
 
             // Super Class handling
             var classBase = context.class_base();
@@ -195,13 +194,11 @@ namespace DEngine.Model {
         #region properties-fields-constants
 
         public override void EnterProperty_declaration([NotNull] CSharpParser.Property_declarationContext context) {
-            base.EnterProperty_declaration(context);
 
             propertyName = context.member_name().GetText();
         }
 
         public override void ExitProperty_declaration([NotNull] CSharpParser.Property_declarationContext context) {
-            base.ExitProperty_declaration(context);
 
             AccessModifier mod = AccessModifier.PRIVATE;
             StaticType attributeType = StaticType.NONE;
@@ -211,26 +208,18 @@ namespace DEngine.Model {
         }
 
         public override void EnterField_declaration([NotNull] CSharpParser.Field_declarationContext context) {
-            base.EnterField_declaration(context);
 
-            // Clear the current variables array
             variables.Clear();
-            try {
-                //Get the whole variable declarations array
-                var vars = context.variable_declarators().variable_declarator();
-                foreach (var variable in vars) {
-                    // Add all of the one by one to the global variables array
-                    variables.Add(variable.identifier().GetText());
+
+            var fields = context.variable_declarators()?.variable_declarator();
+            if(fields != null) {
+                foreach (var field in fields) {
+                    variables.Add(field.identifier().GetText());
                 }
-            }
-            catch (Exception e) {
-                ItDoesNothing("Field " + e.ToString());
             }
         }
 
         public override void ExitField_declaration([NotNull] CSharpParser.Field_declarationContext context) {
-            base.ExitField_declaration(context);
-
 
             AccessModifier mod = AccessModifier.PRIVATE;
             StaticType attributeType = StaticType.NONE;
@@ -242,7 +231,6 @@ namespace DEngine.Model {
         }
 
         public override void EnterConstant_declaration([NotNull] CSharpParser.Constant_declarationContext context) {
-            base.EnterConstant_declaration(context);
 
             constants.Clear();
             type = ResolveTypes(context.type());
@@ -256,7 +244,6 @@ namespace DEngine.Model {
         }
 
         public override void ExitConstant_declaration([NotNull] CSharpParser.Constant_declarationContext context) {
-            base.ExitConstant_declaration(context);
 
             //Wrapper.ModifierMatch(modifiers, ref mod, ref attributeType);
 
@@ -377,25 +364,14 @@ namespace DEngine.Model {
                 GenericType genericType = ResolveTypes(context.typed_member_declaration()?.type());
                 type = genericType;
             }
-
-            // Get the rank specifiers
-            var rankSpecifiers = context.typed_member_declaration()?.type()?.rank_specifier();
-            if (rankSpecifiers != null) {
-                rankSpecifier = "";
-                //Debug.Log("Rank specifiers length: " + rankSpecifiers.Length);
-                foreach (var specifier in rankSpecifiers) {
-                    rankSpecifier += specifier.GetText();
-                }
-            }
-            else {
-                rankSpecifier = null;
-            }
         }
 
         public GenericType ResolveTypes(CSharpParser.TypeContext context) {
 
             string type;
             GenericType genericType = new GenericType("");
+
+            // Type handling
             type = context.base_type()?.simple_type()?.GetText();
             if(type == null) {
                 type = context.base_type()?.VOID()?.GetText();
@@ -424,6 +400,10 @@ namespace DEngine.Model {
                     }
                 }
             }
+
+            // Rank specifier handling
+            genericType.rankSpecifier = context.rank_specifier() != null ? context.rank_specifier().Length : genericType.rankSpecifier;
+
             return genericType;
         }
 
@@ -431,6 +411,8 @@ namespace DEngine.Model {
 
             string type;
             GenericType genericType = new GenericType("");
+
+            // Type handling
             type = context.base_type()?.simple_type()?.GetText();
             if (type == null) {
                 type = context.base_type()?.VOID()?.GetText();
@@ -459,6 +441,10 @@ namespace DEngine.Model {
                     }
                 }
             }
+
+            // Rank specifier handling
+            genericType.rankSpecifier = context.rank_specifier() != null ? context.rank_specifier().Length : genericType.rankSpecifier;
+
             return genericType;
         }
 
@@ -630,11 +616,6 @@ namespace DEngine.Model {
 
         public List<BaseModel> GetAllEntities() {
             return wrapper.allEntities;
-        }
-
-        private void ItDoesNothing(string e) {
-
-            //Debug.Log(e);
         }
     }
 }
