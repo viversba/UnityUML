@@ -1,9 +1,7 @@
-﻿using System;
+﻿using System.Collections.Generic;
 using Antlr4.Runtime.Misc;
-using UnityEngine;
-using System.Collections.Generic;
-using System.Linq;
 using DEngine.Controller;
+using UnityEngine;
 
 namespace DEngine.Model {
 
@@ -32,21 +30,16 @@ namespace DEngine.Model {
         private string className;
         private string methodName;
         private string structName;
-        private List<string> modifiers;
-        private GenericType type;
-        private string[] subTypes;
+        private string constructor;
         private string propertyName;
+        private string interfaceName;
         private List<string> constants;
         private List<string> variables;
-        private string constructor;
-        private List<Parameter> parameters;
-        private string classAttributes;
-        private List<string> classModifiers;
         private List<string> classParameters;
         private List<string> interfaceParameters;
-        private string interfaceName;
-        private string superClassName;
-        private string interfaceBase;
+        private GenericType type;
+        private List<Parameter> parameters;
+
 
         #endregion
 
@@ -57,27 +50,21 @@ namespace DEngine.Model {
         private Wrapper wrapper;
 
         public DEngineListener() {
-
-            PARTIAL = false;
-            STATIC = false;
+        
             propertyName = "";
             methodName = "";
             structName = "";
-            modifiers = new List<string>();
             type = new GenericType("");
-            subTypes = null;
             className = "";
             constants = new List<string>();
             variables = new List<string>();
             constructor = "";
             parameters = new List<Parameter>();
-            classAttributes = "";
-            classModifiers = new List<string>();
             classParameters = new List<string>();
             interfaceParameters = new List<string>();
             interfaceName = "";
-            superClassName = "";
-            interfaceBase = "";
+
+            ResetModifiers();
 
             entities = new List<string>();
             wrapper = new Wrapper();
@@ -91,7 +78,6 @@ namespace DEngine.Model {
             base.EnterClass_definition(context);
 
             classParameters.Clear();
-            superClassName = "";
             className = context.identifier().GetText();
 
             // Class parameters handling
@@ -202,7 +188,6 @@ namespace DEngine.Model {
 
             AccessModifier mod = AccessModifier.PRIVATE;
             StaticType attributeType = StaticType.NONE;
-            Wrapper.ModifierMatch(modifiers, ref mod, ref attributeType);
 
             wrapper.AddAttributeTo(new Attribute(propertyName, type));
         }
@@ -223,7 +208,6 @@ namespace DEngine.Model {
 
             AccessModifier mod = AccessModifier.PRIVATE;
             StaticType attributeType = StaticType.NONE;
-            Wrapper.ModifierMatch(modifiers, ref mod, ref attributeType);
 
             foreach (var variable in variables) {
                 wrapper.AddAttributeTo(new Attribute(variable, type));
@@ -255,8 +239,7 @@ namespace DEngine.Model {
         #endregion
 
         public override void EnterClass_member_declaration([NotNull] CSharpParser.Class_member_declarationContext context) {
-
-            this.modifiers.Clear();
+        
             // Get the access modifiers
             var modifiers = context.all_member_modifiers();
             if(modifiers != null) {
@@ -273,8 +256,7 @@ namespace DEngine.Model {
         #region Interface Handling
 
         public override void EnterInterface_definition([NotNull] CSharpParser.Interface_definitionContext context) {
-
-            interfaceBase = "";
+        
             interfaceName = context.identifier().GetText();
 
             // Handle Parameters
@@ -347,7 +329,6 @@ namespace DEngine.Model {
         public override void EnterStruct_member_declaration([NotNull] CSharpParser.Struct_member_declarationContext context) {
 
             // Resolve modifiers
-            this.modifiers.Clear();
             var modifiers = context.all_member_modifiers();
             if(modifiers != null) {
                 ResolveModifier(modifiers);
