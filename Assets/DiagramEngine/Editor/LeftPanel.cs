@@ -224,7 +224,7 @@ namespace DEngine.View {
                     }
                 }
             }
-            Wrapper.RelateEntities(ref selectedEntities_DD);
+            //Wrapper.RelateEntities(ref selectedEntities_DD);
             loadingEntities = false;
         }
 
@@ -246,7 +246,7 @@ namespace DEngine.View {
                     }
                 }
             }
-            Wrapper.RelateEntities(ref selectedEntities_DD);
+            //Wrapper.RelateEntities(ref selectedEntities_DD);
             loadingEntities = false;
         }
 
@@ -268,7 +268,7 @@ namespace DEngine.View {
                     }
                 }
             }
-            Wrapper.RelateEntities(ref selectedEntities_ALL);
+            //Wrapper.RelateEntities(ref selectedEntities_ALL);
             DiagramEngine.SaveEntitiesOnDisk(selectedEntities_ALL);
 
             loadingEntities = false;

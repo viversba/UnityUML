@@ -184,4 +184,24 @@ namespace DEngine.Model {
             type.Add(genericType);
         }
     }
+
+    [Serializable]
+    public struct ImplementedType{
+
+        public string name;
+        public List<string> types;
+
+        public ImplementedType(string name, List<string> types = null) {
+            this.name = name;
+            this.types = types;
+        }
+
+        public void AddType(string type) {
+            this.types.Add(type);
+        }
+
+        public string GetName() {
+            return name;
+        }
+    }
 }

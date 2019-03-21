@@ -110,7 +110,7 @@ namespace DEngine.Controller {
             currentEntity.Partial = partial_;
         }
 
-        public void SetSuperClassName(string superClassName) {
+        public void SetSuperClassName(ImplementedType superClassName) {
 
             if (currentEntity == null)
                 return;
@@ -158,7 +158,7 @@ namespace DEngine.Controller {
             currentEntity.AddAttribute(attribute);
         }
 
-        public void AddInterfaceToEntity(string interface_) {
+        public void AddInterfaceToEntity(ImplementedType interface_) {
             if (currentEntity == null) return;
             currentEntity.AddInterfaceName(interface_);
         }
@@ -249,9 +249,9 @@ namespace DEngine.Controller {
                 if (selectedEntities[i].Type == EntityTypes.CLASS) {
                     ClassModel classModel = (ClassModel)selectedEntities[i];
                     // The class has a super class
-                    if (classModel.GetSuperClassName() != "") {
+                    if (classModel.GetSuperClassName().GetName() != "") {
                         // Check for the Super Class to exist on a local file
-                        int index = FindEntityWithName(ref selectedEntities, classModel.GetSuperClassName());
+                        int index = FindEntityWithName(ref selectedEntities, classModel.GetSuperClassName().GetName());
                         // The fact that the entity was not found doesn't mean it is a class.
                         // But if it is not in the files, the screw it, i'll say it is a class
                         if(index == -1) {

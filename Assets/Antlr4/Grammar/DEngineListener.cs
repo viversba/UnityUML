@@ -44,6 +44,7 @@ namespace DEngine.Model {
         private string classAttributes;
         private List<string> classModifiers;
         private List<string> classParameters;
+        private List<string> interfaceParameters;
         private string interfaceName;
         private string superClassName;
         private string interfaceBase;
@@ -75,6 +76,7 @@ namespace DEngine.Model {
             classAttributes = "";
             classModifiers = new List<string>();
             classParameters = new List<string>();
+            interfaceParameters = new List<string>();
             interfaceName = "";
             superClassName = "";
             interfaceBase = "";
@@ -102,56 +104,26 @@ namespace DEngine.Model {
                 }
             }
 
-            // Super Class handling
-            var supClassName = context.class_base()?.class_type()?.GetText();
-            superClassName = supClassName ?? "";
-
+            // Add the class to the List as soon as detected
             entities.Add(className);
             wrapper.AddClass(className);
             wrapper.AddParametersToModel(classParameters);
-            if (PARTIAL) {
-                wrapper.IsPartial(PARTIAL);
-            }
+            if (PARTIAL) wrapper.IsPartial(PARTIAL);
 
+            // Super Class handling
+            var classBase = context.class_base();
+            if(classBase != null) {
+                ImplementedType superClass = ResolveSuperClass(classBase);
+                wrapper.SetSuperClassName(superClass);
+            }
 
             var interfaces = context.class_base()?.namespace_or_type_name();
-            if (interfaces != null) {
-                foreach (var interface_ in interfaces) {
-                    Debug.Log(interface_.GetText());
+            if(interfaces != null && interfaces.Length > 0) {
+                List<ImplementedType> implementedInterfaces = new List<ImplementedType>();
+                foreach(var implementedInterface in interfaces) {
+                    wrapper.AddInterfaceToEntity(ResolveInterface(implementedInterface));
                 }
             }
-
-            // Interface handling
-            try {
-                foreach (var interface_ in context.class_base().namespace_or_type_name()) {
-                    try {
-                        foreach (var identifier in interface_.identifier()) {
-                            //Debug.Log(className + " implements " + identifier.GetText());
-                            if (!string.IsNullOrEmpty(identifier.GetText())) {
-                                interfaceBase = identifier.GetText();
-                                try {
-                                    foreach (var argument in interface_.type_argument_list()) {
-                                        interfaceBase += argument.GetText();
-                                    }
-                                }
-                                catch (Exception e) {
-                                    ItDoesNothing("Interface argument list in Class:" + e);
-                                }
-                                wrapper.AddInterfaceToEntity(interfaceBase);
-                                break;
-                            }
-                        }
-                    }
-                    catch (Exception e) {
-                        ItDoesNothing("Nested interface handling in Class " + e);
-                    }
-                }
-            }
-            catch (Exception e) {
-                ItDoesNothing(e.ToString());
-            }
-            if (superClassName != "")
-                wrapper.SetSuperClassName(superClassName);
         }
 
         public override void ExitClass_definition([NotNull] CSharpParser.Class_definitionContext context) {
@@ -315,54 +287,32 @@ namespace DEngine.Model {
 
         public override void EnterInterface_definition([NotNull] CSharpParser.Interface_definitionContext context) {
 
+            interfaceBase = "";
             interfaceName = context.identifier().GetText();
 
-            // Parameters list
-            try {
-                interfaceName += context.variant_type_parameter_list().GetText();
+            // Handle Parameters
+            var parameters = context.variant_type_parameter_list()?.variant_type_parameter();
+            if(parameters != null) {
+                foreach (var parameter in parameters) {
+                    interfaceParameters.Add(parameter.GetText());
+                }
             }
-            catch(Exception e) {
-                ItDoesNothing("Interface declaration parameters " + e);
-            }
-            interfaceBase = "";
 
             entities.Add(interfaceName);
             wrapper.AddInterface(interfaceName);
+            wrapper.AddParametersToModel(interfaceParameters);
 
-            // Add each interface implementation
-            try {
-                foreach (var interface_ in context.interface_base().interface_type_list().namespace_or_type_name()) {
-                    try {
-                        foreach (var identifier in interface_.identifier()) {
-                            //Debug.Log(className + " implements " + identifier.GetText());
-                            if (!string.IsNullOrEmpty(identifier.GetText())) {
-                                interfaceBase = identifier.GetText();
-                                try {
-                                    foreach (var argument in interface_.type_argument_list()) {
-                                        interfaceBase += argument.GetText();
-                                    }
-                                }
-                                catch (Exception e) {
-                                    ItDoesNothing("Interface argument list in Interface:" + e);
-                                }
-                                wrapper.AddInterfaceToEntity(interfaceBase);
-                                break;
-                            }
-                        }
-                    }
-                    catch (Exception e) {
-                        ItDoesNothing("Nested interface handling in Interface " + e);
-                    }
+            // Base interfaces handling
+            var bases = context.interface_base();
+            if(bases != null) {
+                List<ImplementedType> interfaces = new List<ImplementedType>();
+                foreach(var implementedInterface in context.interface_base().interface_type_list().namespace_or_type_name()) {
+                    wrapper.AddInterfaceToEntity(ResolveInterface(implementedInterface));
                 }
-            }
-            catch(Exception e) {
-                ItDoesNothing(e.ToString());
             }
         }
 
         public override void ExitInterface_definition([NotNull] CSharpParser.Interface_definitionContext context) {
-            base.ExitInterface_definition(context);
-
             entities.RemoveAt(entities.Count - 1);
             wrapper.FinishEntity();
         }
@@ -370,45 +320,24 @@ namespace DEngine.Model {
         public override void EnterInterface_member_declaration([NotNull] CSharpParser.Interface_member_declarationContext context) {
 
             // Type Handling
-            //try {
-            //    type = context.type().GetText();
-            //}
-            //catch {
-            //    type = context.VOID().GetText();
-            //}
+            var type = context.type();
+            if(type != null)
+                this.type = ResolveTypes(context.type());
+            else
+                this.type = new GenericType("void");
 
-            //// Name Handling
-            //methodName = context.identifier().GetText();
+            // Name Handling
+            methodName = context.identifier().GetText();
 
-            //// Parameters Handling
-            //string[] pars = new string[2];
-            //try {
-            //    pars[0] = context.formal_parameter_list().parameter_array().GetText();
-            //    pars[1] = "NONE";
-            //    parameters.Add(pars);
-            //}
-            //catch (Exception e) {
-
-            //    ItDoesNothing("Method " + e);
-            //    try {
-            //        // This is going to hold every parameter of the list of parameters
-            //        var params_ = context.formal_parameter_list().fixed_parameters().fixed_parameter();
-            //        foreach (var param in params_) {
-            //            // For each one, extract the type of parameter and the name
-            //            pars[0] = param.arg_declaration().type().GetText();
-            //            pars[1] = param.arg_declaration().identifier().GetText();
-            //            parameters.Add(pars);
-            //        }
-            //    }
-            //    catch (Exception e1) {
-            //        ItDoesNothing("Nested Method " + e1);
-            //    }
-            //}
+            var parameters = context.formal_parameter_list();
+            if (parameters != null) {
+                ResolveParameters(parameters);
+            }
         }
 
         public override void ExitInterface_member_declaration([NotNull] CSharpParser.Interface_member_declarationContext context) {
 
-            //wrapper.AddMethodTo(new Method(methodName, AccessModifier.NONE, type, MethodType.NONE));
+            wrapper.AddMethodTo(new Method(methodName, type, parameters));
         }
 
         #endregion
@@ -430,15 +359,11 @@ namespace DEngine.Model {
 
         public override void EnterStruct_member_declaration([NotNull] CSharpParser.Struct_member_declarationContext context) {
 
-            modifiers.Clear();
-            // Get the access modifiers
-            try {
-                foreach (var modifier in context.all_member_modifiers().all_member_modifier()) {
-                    modifiers.Add(modifier.GetText());
-                }
-            }
-            catch (Exception e) {
-                ItDoesNothing("Member " + e.ToString());
+            // Resolve modifiers
+            this.modifiers.Clear();
+            var modifiers = context.all_member_modifiers();
+            if(modifiers != null) {
+                ResolveModifier(modifiers);
             }
         }
 
@@ -457,7 +382,7 @@ namespace DEngine.Model {
             var rankSpecifiers = context.typed_member_declaration()?.type()?.rank_specifier();
             if (rankSpecifiers != null) {
                 rankSpecifier = "";
-                Debug.Log("Rank specifiers length: " + rankSpecifiers.Length);
+                //Debug.Log("Rank specifiers length: " + rankSpecifiers.Length);
                 foreach (var specifier in rankSpecifiers) {
                     rankSpecifier += specifier.GetText();
                 }
@@ -585,6 +510,79 @@ namespace DEngine.Model {
                     ASYNC = modifier.ASYNC() != null;
                 }
             }
+        }
+
+        public ImplementedType ResolveSuperClass(CSharpParser.Class_baseContext context) {
+
+            ImplementedType implementedType = new ImplementedType("");
+            string name = "";
+            var genericType = context.class_type()?.namespace_or_type_name();
+            if(genericType != null) {
+                var identifiers = genericType.identifier();
+                if(identifiers != null && identifiers.Length > 0) { 
+                    foreach(var identifier in identifiers) {
+                        if (!string.IsNullOrEmpty(identifier.GetText())) {
+                            name = identifier.GetText();
+                            break;
+                        }
+                    }
+                }
+
+                var argumentsList = genericType.type_argument_list();
+                if(argumentsList != null && argumentsList.Length > 0) { 
+                    foreach(var argumentList in argumentsList) {
+                        var arguments = argumentList.type();
+                        if(arguments != null && arguments.Length > 0) { 
+                            foreach(var argument in arguments) {
+                                implementedType.AddType(argument.GetText());
+                            }
+                        }
+                    }
+                }
+            }
+            else { 
+                if(context.class_type()?.OBJECT() != null) {
+                    implementedType = new ImplementedType(context.class_type().OBJECT().GetText());
+                }
+                else if (context.class_type()?.DYNAMIC() != null) {
+                    implementedType = new ImplementedType(context.class_type().DYNAMIC().GetText());
+                }
+                else if (context.class_type()?.STRING() != null) {
+                    implementedType = new ImplementedType(context.class_type().STRING().GetText());
+                }
+            }
+
+            return implementedType;
+        }
+
+        public ImplementedType ResolveInterface(CSharpParser.Namespace_or_type_nameContext context) {
+
+            ImplementedType interface_ = new ImplementedType();
+            string name = "";
+            var identifiers = context.identifier();
+            if (identifiers != null && identifiers.Length > 0) {
+                foreach (var identifier in identifiers) {
+                    if (!string.IsNullOrEmpty(identifier.GetText())) {
+                        name = identifier.GetText();
+                        Debug.Log(name);
+                        break;
+                    }
+                }
+            }
+
+            var argumentsList = context.type_argument_list();
+            if (argumentsList != null && argumentsList.Length > 0) {
+                foreach (var argumentList in argumentsList) {
+                    var arguments = argumentList.type();
+                    if (arguments != null && arguments.Length > 0) {
+                        foreach (var argument in arguments) {
+                            Debug.Log(argument.GetText());
+                            interface_.AddType(argument.GetText());
+                        }
+                    }
+                }
+            }
+            return interface_;
         }
 
         public void ResetModifiers() {

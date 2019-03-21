@@ -44,7 +44,7 @@ namespace DEngine.Model {
         /// List of interface names
         /// </summary>
         [SerializeField]
-        protected List<string> interfaceNames;
+        protected List<ImplementedType> interfaceNames;
 
         /// <summary>
         /// Container entity
@@ -117,9 +117,9 @@ namespace DEngine.Model {
             return methods ?? new List<Method>();
         }
 
-        public void AddInterfaceName(string baseName) {
+        public void AddInterfaceName(ImplementedType baseName) {
 
-            interfaceNames = interfaceNames ?? new List<string>();
+            interfaceNames = interfaceNames ?? new List<ImplementedType>();
             if (!interfaceNames.Contains(baseName))
                 interfaceNames.Add(baseName);
         }
@@ -134,7 +134,7 @@ namespace DEngine.Model {
             return interfaces;
         }
 
-        public List<string> GetInterfaceNames() {
+        public List<ImplementedType> GetInterfaceNames() {
             return interfaceNames;
         }
 

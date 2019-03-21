@@ -23,7 +23,7 @@ namespace DEngine.Model {
         /// <summary>
         /// Name of the super class
         /// </summary>
-        private string superClassName;
+        private ImplementedType superClassName;
 
         static int nico;
 
@@ -33,7 +33,7 @@ namespace DEngine.Model {
             constructors = null;
             superClass = null;
             subClasses = null;
-            superClassName = "";
+            superClassName = new ImplementedType();
             Type = EntityTypes.CLASS;
         }
 
@@ -42,7 +42,7 @@ namespace DEngine.Model {
             constructors = null;
             superClass = null;
             subClasses = null;
-            superClassName = "";
+            superClassName = new ImplementedType();
             Type = EntityTypes.CLASS;
         }
 
@@ -51,7 +51,7 @@ namespace DEngine.Model {
             constructors = null;
             superClass = null;
             subClasses = null;
-            superClassName = "";
+            superClassName = new ImplementedType();
             Type = EntityTypes.CLASS;
         }
 
@@ -73,18 +73,18 @@ namespace DEngine.Model {
             subClasses.Add(class_);
         }
 
-        public void SetSuperClassName(string superClassName) {
+        public void SetSuperClassName(ImplementedType superClassName) {
 
             this.superClassName = superClassName;
         }
 
-        public string GetSuperClassName() {
+        public ImplementedType GetSuperClassName() {
             return superClassName;
         }
 
         public void DeleteSuperClass() {
             superClass = null;
-            superClassName = "";
+            superClassName = new ImplementedType();
         }
 
         public List<Constructor> GetConstructors() {
