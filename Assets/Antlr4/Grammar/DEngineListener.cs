@@ -151,12 +151,12 @@ namespace DEngine.Model {
             wrapper.AddConstructor(new Constructor(constructor, this.parameters, accessModifier, staticType));
         }
 
-        public override void ExitConstructor_declaration([NotNull] CSharpParser.Constructor_declarationContext context) {
+        //public override void ExitConstructor_declaration([NotNull] CSharpParser.Constructor_declarationContext context) {
 
-            //Wrapper.ModifierMatch(modifiers, ref mod, ref methodType);
+        //    //Wrapper.ModifierMatch(modifiers, ref mod, ref methodType);
 
-            //wrapper.AddConstructor(new Constructor(constructor, parameters));
-        }
+        //    //wrapper.AddConstructor(new Constructor(constructor, parameters));
+        //}
 
         #endregion
 
@@ -183,12 +183,12 @@ namespace DEngine.Model {
             wrapper.AddMethodTo(new Method(methodName, type, this.parameters, accessModifier, methodType, staticType));
         }
 
-        public override void ExitMethod_declaration([NotNull] CSharpParser.Method_declarationContext context) {
+        //public override void ExitMethod_declaration([NotNull] CSharpParser.Method_declarationContext context) {
         
-            //Wrapper.ModifierMatch(modifiers, ref mod, ref methodType);
+        //    //Wrapper.ModifierMatch(modifiers, ref mod, ref methodType);
 
-            //wrapper.AddMethodTo(new Method(methodName, type, parameters));
-        }
+        //    //wrapper.AddMethodTo(new Method(methodName, type, parameters));
+        //}
 
         #endregion
 
@@ -203,10 +203,10 @@ namespace DEngine.Model {
             wrapper.AddAttributeTo(new Attribute(propertyName, type, accessModifier, staticType));
         }
 
-        public override void ExitProperty_declaration([NotNull] CSharpParser.Property_declarationContext context) {
+        //public override void ExitProperty_declaration([NotNull] CSharpParser.Property_declarationContext context) {
 
-            //wrapper.AddAttributeTo(new Attribute(propertyName, type));
-        }
+        //    //wrapper.AddAttributeTo(new Attribute(propertyName, type));
+        //}
 
         public override void EnterField_declaration([NotNull] CSharpParser.Field_declarationContext context) {
 
@@ -223,15 +223,15 @@ namespace DEngine.Model {
             }
         }
 
-        public override void ExitField_declaration([NotNull] CSharpParser.Field_declarationContext context) {
+        //public override void ExitField_declaration([NotNull] CSharpParser.Field_declarationContext context) {
 
-            //AccessModifier mod = AccessModifier.PRIVATE;
-            //StaticType attributeType = StaticType.NONE;
+        //    //AccessModifier mod = AccessModifier.PRIVATE;
+        //    //StaticType attributeType = StaticType.NONE;
 
-            //foreach (var variable in variables) {
-            //    wrapper.AddAttributeTo(new Attribute(variable, type));
-            //}
-        }
+        //    //foreach (var variable in variables) {
+        //    //    wrapper.AddAttributeTo(new Attribute(variable, type));
+        //    //}
+        //}
 
         public override void EnterConstant_declaration([NotNull] CSharpParser.Constant_declarationContext context) {
 
@@ -249,14 +249,14 @@ namespace DEngine.Model {
             }
         }
 
-        public override void ExitConstant_declaration([NotNull] CSharpParser.Constant_declarationContext context) {
+        //public override void ExitConstant_declaration([NotNull] CSharpParser.Constant_declarationContext context) {
 
-            //Wrapper.ModifierMatch(modifiers, ref mod, ref attributeType);
+        //    //Wrapper.ModifierMatch(modifiers, ref mod, ref attributeType);
 
-            //foreach (var constant in constants) {
-            //    wrapper.AddAttributeTo(new Attribute(constant, type));
-            //}
-        }
+        //    //foreach (var constant in constants) {
+        //    //    wrapper.AddAttributeTo(new Attribute(constant, type));
+        //    //}
+        //}
 
         #endregion
 

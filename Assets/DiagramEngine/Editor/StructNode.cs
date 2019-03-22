@@ -40,8 +40,9 @@ namespace DEngine.View {
             constructors.AddRange(structModel.GetConstructors());
 
             if (structModel.GetInterfaceNames() != null) {
-                foreach (string interface_ in structModel.GetInterfaceNames()) {
-                    interfaceNames.Add(interface_);
+                foreach (var interface_ in structModel.GetInterfaceNames()) {
+                    string interfaceName = interface_.name;
+                    interfaceNames.Add(interfaceName);
                 }
             }
 

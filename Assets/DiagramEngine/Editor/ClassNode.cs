@@ -58,11 +58,12 @@ namespace DEngine.View {
             attributes.AddRange(classModel.GetAttributes());
             methods.AddRange(classModel.GetMethods());
             constructors.AddRange(classModel.GetConstructors());
-            superClassName = classModel.GetSuperClassName();
+            superClassName = classModel.GetSuperClassName().name;
 
             if (classModel.GetInterfaceNames() != null) {
-                foreach (string interface_ in classModel.GetInterfaceNames()) {
-                    interfaceNames.Add(interface_);
+                foreach (var interface_ in classModel.GetInterfaceNames()) {
+                    string interfaceName = interface_.name;
+                    interfaceNames.Add(interfaceName);
                 }
             }
 

@@ -199,7 +199,7 @@ namespace DEngine.Controller {
                 classModel.Static = static_;
                 currentEntity = classModel;
             }
-            catch (Exception e) {
+            catch{
                 throw new InvalidCastException($"Cannot convert cast from BaseModel to ClassModel on {nameof(Wrapper)}");
             }
         }
@@ -212,7 +212,7 @@ namespace DEngine.Controller {
                 classModel.Sealed = sealed_;
                 currentEntity = classModel;
             }
-            catch (Exception e) {
+            catch{
                 throw new InvalidCastException($"Cannot convert cast from BaseModel to ClassModel on {nameof(Wrapper)}");
             }
         }
@@ -225,7 +225,7 @@ namespace DEngine.Controller {
                 classModel.Abstract = abstract_;
                 currentEntity = classModel;
             }
-            catch (Exception e) {
+            catch {
                 throw new InvalidCastException($"Cannot convert cast from BaseModel to ClassModel on {nameof(Wrapper)}");
             }
         }
@@ -304,7 +304,7 @@ namespace DEngine.Controller {
                         if(index == -1) {
 
                             // If it doesn't exist, then create a new one because a window of it is still needed
-                            ClassModel superClass = new ClassModel(classModel.GetSuperClassName());
+                            ClassModel superClass = new ClassModel(classModel.GetSuperClassName().GetName());
                             classModel.SetSuperClass(superClass);
                             selectedEntities.Add(superClass);
                         }
@@ -316,7 +316,7 @@ namespace DEngine.Controller {
                             else if (selectedEntities[index].Type == EntityTypes.INTERFACE) {
                                 //InterfaceModel interfaceModel = new InterfaceModel(classModel.GetSuperClassName());
                                 //interfaceModel.SetTypeOfEntity(false);
-                                classModel.AddInterfaceName(selectedEntities[index].GetName());
+                                classModel.AddInterfaceName(new ImplementedType(selectedEntities[index].GetName()));
                                 classModel.AddInterface(selectedEntities[index] as InterfaceModel);
                                 classModel.DeleteSuperClass();
                             }
@@ -326,13 +326,15 @@ namespace DEngine.Controller {
                     // Check if the class implements interfaces
                     if(classModel.GetInterfaceNames() != null) { 
 
-                        foreach(string interface_ in classModel.GetInterfaceNames()) {
+                        foreach(var interface_ in classModel.GetInterfaceNames()) {
+
+                            string interfaceName = interface_.name;
                             // Check for the Interface to exist on a local file
-                            int index = FindEntityWithName(ref selectedEntities, interface_);
+                            int index = FindEntityWithName(ref selectedEntities, interfaceName);
 
                             // The interface is not defined in a loca file
                             if(index == -1) {
-                                InterfaceModel interfaceModel = new InterfaceModel(interface_);
+                                InterfaceModel interfaceModel = new InterfaceModel(interfaceName);
 
                                 selectedEntities[i].AddInterface(interfaceModel);
                                 selectedEntities.Add(interfaceModel);    
@@ -350,14 +352,16 @@ namespace DEngine.Controller {
                     // Check if the class implements interfaces
                     if (interfaceModel.GetInterfaceNames() != null) {
 
-                        foreach (string interface_ in interfaceModel.GetInterfaceNames()) {
+                        foreach (var interface_ in interfaceModel.GetInterfaceNames()) {
+
+                            string interfaceName = interface_.name;
                             // Check for the Interface to exist on a local file
-                            int index = FindEntityWithName(ref selectedEntities, interface_);
+                            int index = FindEntityWithName(ref selectedEntities, interfaceName);
 
                             //Debug.Log(interfaceModel.GetName() + " implements " + interface_);
                             // The interface is not defined in a loca file
                             if (index == -1) {
-                                InterfaceModel newInterfaceToAdd = new InterfaceModel(interface_);
+                                InterfaceModel newInterfaceToAdd = new InterfaceModel(interfaceName);
                                 selectedEntities[i].AddInterface(newInterfaceToAdd);
                                 selectedEntities.Add(newInterfaceToAdd);
                             }

@@ -40,8 +40,9 @@ namespace DEngine.View {
 
             if (interfaceModel.GetInterfaceNames() != null) { 
 
-                foreach(string interface_ in interfaceModel.GetInterfaceNames()) {
-                    interfaceNames.Add(interface_);
+                foreach(var interface_ in interfaceModel.GetInterfaceNames()) {
+                    string interfaceName = interface_.name;
+                    interfaceNames.Add(interfaceName);
 
                     isEmpty = false;
                 }
