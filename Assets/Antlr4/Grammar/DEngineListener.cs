@@ -148,7 +148,9 @@ namespace DEngine.Model {
             AccessModifier accessModifier = GetCurrentAccessModifierForMembers();
             StaticType staticType = GetCurrentStaticTypeForMembers();
 
-            wrapper.AddConstructor(new Constructor(constructor, this.parameters, accessModifier, staticType));
+            Constructor construc = new Constructor(constructor, this.parameters, accessModifier, staticType);
+            Debug.Log(construc.ToString());
+            wrapper.AddConstructor(construc);
         }
 
         //public override void ExitConstructor_declaration([NotNull] CSharpParser.Constructor_declarationContext context) {
@@ -186,7 +188,6 @@ namespace DEngine.Model {
         //public override void ExitMethod_declaration([NotNull] CSharpParser.Method_declarationContext context) {
         
         //    //Wrapper.ModifierMatch(modifiers, ref mod, ref methodType);
-
         //    //wrapper.AddMethodTo(new Method(methodName, type, parameters));
         //}
 
@@ -427,6 +428,7 @@ namespace DEngine.Model {
                 }
             }
 
+            Debug.Log(type);
             // Rank specifier handling
             genericType.rankSpecifier = context.rank_specifier() != null ? context.rank_specifier().Length : genericType.rankSpecifier;
 
@@ -468,6 +470,7 @@ namespace DEngine.Model {
                 }
             }
 
+            Debug.Log(type);
             // Rank specifier handling
             genericType.rankSpecifier = context.rank_specifier() != null ? context.rank_specifier().Length : genericType.rankSpecifier;
 
@@ -480,6 +483,7 @@ namespace DEngine.Model {
             if (params_ != null) {
                 foreach (var param in params_) {
                     string name = param.arg_declaration()?.identifier()?.GetText();
+                    Debug.Log(name);
                     if (!string.IsNullOrEmpty(name)) {
                         GenericType type = ResolveTypes(param.arg_declaration().type());
                         Parameter parameter = new Parameter(type, name, false);
@@ -577,7 +581,6 @@ namespace DEngine.Model {
                 foreach (var identifier in identifiers) {
                     if (!string.IsNullOrEmpty(identifier.GetText())) {
                         name = identifier.GetText();
-                        Debug.Log(name);
                         break;
                     }
                 }
@@ -589,7 +592,6 @@ namespace DEngine.Model {
                     var arguments = argumentList.type();
                     if (arguments != null && arguments.Length > 0) {
                         foreach (var argument in arguments) {
-                            Debug.Log(argument.GetText());
                             interface_.AddType(argument.GetText());
                         }
                     }

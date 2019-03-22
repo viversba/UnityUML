@@ -144,8 +144,17 @@ namespace DEngine.Model {
         public override string ToString() {
             string description = staticType != StaticType.NONE ? (staticType.ToString() + " ") : "";
             description += name;
+            if(parameters != null && parameters.Count > 0) {
+                description += "<";
+                for(int i=0;i<parameters.Count-1; i++) {
+                    description += parameters[i].ToString();
+                    description += ",";
+                }
+                description += parameters[parameters.Count-1].ToString();
+            }
             return description;
         }
+
     }
 
     [Serializable]
@@ -162,6 +171,12 @@ namespace DEngine.Model {
             this.name = name;
             this.Params = Params;
             this.arraySize = arraySize;
+        }
+
+        public override string ToString() {
+            string description = "";
+
+            return description;
         }
     }
 

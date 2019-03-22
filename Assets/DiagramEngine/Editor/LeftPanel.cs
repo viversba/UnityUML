@@ -69,10 +69,10 @@ namespace DEngine.View {
             }
 
             // Try to load already existent entities from disk
-            selectedEntities_ALL = DiagramEngine.LoadEntitiesFromDisk();
-            if (selectedEntities_ALL != null)
-                return;
-            LoadAllEntitiesAsyncCaller();
+            //selectedEntities_ALL = DiagramEngine.LoadEntitiesFromDisk();
+            //if (selectedEntities_ALL != null)
+            //    return;
+            //LoadAllEntitiesAsyncCaller();
         }
 
         /// <summary>
@@ -82,7 +82,7 @@ namespace DEngine.View {
         public bool DrawLeftPanel() {
 
             bool generateDiagramButton = false, reloadEntities = false, resetEntitiesButton = false;
-            string[] options = { "All!", "Drag & Drop", "CheckBox" };
+            string[] options = { "All", "Drag & Drop", "CheckBox" };
             selected = GUILayout.Toolbar(selected, options, GUILayout.MinWidth(240));
 
             switch (selected) {
@@ -224,7 +224,7 @@ namespace DEngine.View {
                     }
                 }
             }
-            //Wrapper.RelateEntities(ref selectedEntities_DD);
+            Wrapper.RelateEntities(ref selectedEntities_DD);
             loadingEntities = false;
         }
 
@@ -246,7 +246,7 @@ namespace DEngine.View {
                     }
                 }
             }
-            //Wrapper.RelateEntities(ref selectedEntities_DD);
+            Wrapper.RelateEntities(ref selectedEntities_DD);
             loadingEntities = false;
         }
 
@@ -268,7 +268,7 @@ namespace DEngine.View {
                     }
                 }
             }
-            //Wrapper.RelateEntities(ref selectedEntities_ALL);
+            Wrapper.RelateEntities(ref selectedEntities_ALL);
             DiagramEngine.SaveEntitiesOnDisk(selectedEntities_ALL);
 
             loadingEntities = false;

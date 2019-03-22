@@ -119,7 +119,7 @@ namespace DEngine.View {
                             GUILayout.Label("# ", protected_, GUILayout.Width(5));
                             break;
                     }
-                    GUILayout.Label(constructor.ToString() + "()");
+                    DrawConstructor(constructor);
                     GUILayout.EndHorizontal();
                 }
             }
@@ -162,7 +162,7 @@ namespace DEngine.View {
                             GUILayout.Label("# ", protected_, GUILayout.Width(5));
                             break;
                     }
-                    GUILayout.Label(method.ToString() + "()");
+                    DrawMethod(method);
                     GUILayout.EndHorizontal();
                 }
             }
@@ -206,6 +206,24 @@ namespace DEngine.View {
             }
         }
 
+        private void DrawConstructor(Model::Constructor constructor)
+        {
+
+            var red = new GUIStyle();
+            red.normal.textColor = Color.red;
+
+            GUILayout.Label(constructor.name);
+            GUILayout.Label("(");
+            if(constructor.parameters != null && constructor.parameters.Count > 0) {
+                for (int i = 0; i< constructor.parameters.Count-1; i++) {
+                    DrawParameter(constructor.parameters[i]);
+                    GUILayout.Label(",");
+                }
+                DrawParameter(constructor.parameters[constructor.parameters.Count - 1]);
+            }
+            GUILayout.Label(")");
+        }
+
         private void DrawAttribute(Model::Attribute attribute) {
 
             //var red = new GUIStyle();
@@ -222,6 +240,54 @@ namespace DEngine.View {
             //    GUILayout.Label(">");
             //}
             //GUILayout.Label(attribute.name);
+        }
+
+        private void DrawMethod(Model::Method method)
+        {
+
+            //var red = new GUIStyle();
+            //red.normal.textColor = Color.red;
+
+            //GUILayout.Label(attribute.returnType);
+            //if(attribute.returnSubTypes != null) {
+            //    GUILayout.Label("<");
+            //    for(int i = 0; i< attribute.returnSubTypes.Length-1; i++) { 
+            //        GUILayout.Label($"{attribute.returnSubTypes[i]}", red);
+            //        GUILayout.Label($",");
+            //    }
+            //    GUILayout.Label(attribute.returnSubTypes[attribute.returnSubTypes.Length - 1], red);
+            //    GUILayout.Label(">");
+            //}
+            //GUILayout.Label(attribute.name);
+        }
+
+        private void DrawParameter(Model::Parameter parameter) {
+
+            GUILayout.Label(parameter.type.name);
+            if(parameter.type.type != null && parameter.type.type.Count > 0) {
+                GUILayout.Label("<");
+                for (int i = 0; i < parameter.type.type.Count - 1; i++){
+                    DrawType(parameter.type.type[i]);
+                    GUILayout.Label(",");
+                }
+                DrawType(parameter.type.type[parameter.type.type.Count - 1]);
+                GUILayout.Label(">");
+            }
+            GUILayout.Label(parameter.name);
+        }
+
+        private void DrawType(Model::GenericType type) {
+
+            GUILayout.Label(type.name);
+            if(type.type != null && type.type.Count > 0) {
+                GUILayout.Label("<");
+                for (int i = 0; i < type.type.Count - 1;i++){
+                    DrawType(type.type[i]);
+                    GUILayout.Label(",");
+                }
+                DrawType(type.type[type.type.Count - 1]);
+                GUILayout.Label(">");
+            }
         }
     }
 }
