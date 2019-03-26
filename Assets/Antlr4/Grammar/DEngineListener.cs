@@ -51,7 +51,7 @@ namespace DEngine.Model {
         private Wrapper wrapper;
 
         public DEngineListener() {
-        
+
             propertyName = "";
             methodName = "";
             structName = "";
@@ -100,7 +100,7 @@ namespace DEngine.Model {
             wrapper.IsSealed(SEALED);
             wrapper.IsAbstract(ABSTRACT);
 
-            // Set class access modifiers
+            // Set class access modifiers. For classes can only be PUBLIC OR INTERNAL
             if (PUBLIC)
                 wrapper.SetAccessModifier(AccessModifier.PUBLIC);
             else if (INTERNAL)
@@ -109,15 +109,15 @@ namespace DEngine.Model {
 
             // Super Class handling
             var classBase = context.class_base();
-            if(classBase != null) {
+            if (classBase != null) {
                 ImplementedType superClass = ResolveSuperClass(classBase);
                 wrapper.SetSuperClassName(superClass);
             }
 
             var interfaces = context.class_base()?.namespace_or_type_name();
-            if(interfaces != null && interfaces.Length > 0) {
+            if (interfaces != null && interfaces.Length > 0) {
                 List<ImplementedType> implementedInterfaces = new List<ImplementedType>();
-                foreach(var implementedInterface in interfaces) {
+                foreach (var implementedInterface in interfaces) {
                     wrapper.AddInterfaceToEntity(ResolveInterface(implementedInterface));
                 }
             }
@@ -141,7 +141,7 @@ namespace DEngine.Model {
 
             // Parameter handling
             var parameters = context.formal_parameter_list();
-            if(parameters != null) {
+            if (parameters != null) {
                 ResolveParameters(parameters);
             }
 
@@ -180,13 +180,13 @@ namespace DEngine.Model {
 
             MethodType methodType = MethodType.NONE;
             if (ABSTRACT) methodType = MethodType.ABSTRACT;
-            else if(VIRTUAL) methodType = MethodType.VIRTUAL;
+            else if (VIRTUAL) methodType = MethodType.VIRTUAL;
 
             wrapper.AddMethodTo(new Method(methodName, type, this.parameters, accessModifier, methodType, staticType));
         }
 
         //public override void ExitMethod_declaration([NotNull] CSharpParser.Method_declarationContext context) {
-        
+
         //    //Wrapper.ModifierMatch(modifiers, ref mod, ref methodType);
         //    //wrapper.AddMethodTo(new Method(methodName, type, parameters));
         //}
@@ -216,10 +216,13 @@ namespace DEngine.Model {
             StaticType staticType = STATIC ? StaticType.STATIC : StaticType.NONE;
 
             var fields = context.variable_declarators()?.variable_declarator();
-            if(fields != null) {
+            if (fields != null) {
                 foreach (var field in fields) {
                     //variables.Add(field.identifier().GetText());
-                    wrapper.AddAttributeTo(new Attribute(field.identifier().GetText(), type, accessModifier, staticType));
+                    //Debug.Log(type + " THIS IS THE TYPE");
+                    Attribute attribute = new Attribute(field.identifier().GetText(), type, accessModifier, staticType);
+                    //Debug.Log(attribute + "  ATTRIBUTE");
+                    wrapper.AddAttributeTo(attribute);
                 }
             }
         }
@@ -242,7 +245,7 @@ namespace DEngine.Model {
             StaticType staticType = STATIC ? StaticType.STATIC : StaticType.NONE;
 
             var consts = context.constant_declarators()?.constant_declarator();
-            if(consts != null) {
+            if (consts != null) {
                 foreach (var constant in consts) {
                     constants.Add(constant.identifier().GetText());
                     wrapper.AddAttributeTo(new Attribute(constant.identifier().GetText(), type, accessModifier, staticType));
@@ -262,10 +265,10 @@ namespace DEngine.Model {
         #endregion
 
         public override void EnterClass_member_declaration([NotNull] CSharpParser.Class_member_declarationContext context) {
-        
+
             // Get the access modifiers
             var modifiers = context.all_member_modifiers();
-            if(modifiers != null) {
+            if (modifiers != null) {
                 ResolveModifier(modifiers);
             }
         }
@@ -279,12 +282,12 @@ namespace DEngine.Model {
         #region Interface Handling
 
         public override void EnterInterface_definition([NotNull] CSharpParser.Interface_definitionContext context) {
-        
+
             interfaceName = context.identifier().GetText();
 
             // Handle Parameters
             var parameters = context.variant_type_parameter_list()?.variant_type_parameter();
-            if(parameters != null) {
+            if (parameters != null) {
                 foreach (var parameter in parameters) {
                     interfaceParameters.Add(parameter.GetText());
                 }
@@ -302,9 +305,9 @@ namespace DEngine.Model {
 
             // Base interfaces handling
             var bases = context.interface_base();
-            if(bases != null) {
+            if (bases != null) {
                 List<ImplementedType> interfaces = new List<ImplementedType>();
-                foreach(var implementedInterface in context.interface_base().interface_type_list().namespace_or_type_name()) {
+                foreach (var implementedInterface in context.interface_base().interface_type_list().namespace_or_type_name()) {
                     wrapper.AddInterfaceToEntity(ResolveInterface(implementedInterface));
                 }
             }
@@ -319,7 +322,7 @@ namespace DEngine.Model {
 
             // Type Handling
             var type = context.type();
-            if(type != null)
+            if (type != null)
                 this.type = ResolveTypes(context.type());
             else
                 this.type = new GenericType("void");
@@ -365,7 +368,7 @@ namespace DEngine.Model {
 
             // Resolve modifiers
             var modifiers = context.all_member_modifiers();
-            if(modifiers != null) {
+            if (modifiers != null) {
                 ResolveModifier(modifiers);
             }
         }
@@ -396,39 +399,54 @@ namespace DEngine.Model {
         public GenericType ResolveTypes(CSharpParser.TypeContext context) {
 
             string type;
-            GenericType genericType = new GenericType("");
+
 
             // Type handling
             type = context.base_type()?.simple_type()?.GetText();
-            if(type == null) {
+            GenericType genericType = new GenericType(type);
+            if (type == null) {
                 type = context.base_type()?.VOID()?.GetText();
                 if (type == null) {
                     var typeNames = context.base_type()?.class_type()?.namespace_or_type_name()?.identifier();
-                    if(typeNames != null) { 
-                        foreach(var name in typeNames) {
+                    var qualifiedName = context.base_type()?.class_type()?.namespace_or_type_name()?.qualified_alias_member();
+                    if (context.base_type()?.class_type()?.namespace_or_type_name()?.qualified_alias_member() != null) {
+                        var qualifiedMember = context.base_type()?.class_type()?.namespace_or_type_name()?.qualified_alias_member();
+                        type = qualifiedMember.identifier()[1].GetText();
+                        genericType = new GenericType(type);
+                        var arguments = qualifiedMember.type_argument_list();
+                        if (arguments != null && arguments.type().Length > 0) {
+                            for (int i = 0; i < arguments.type().Length; i++) {
+                                genericType.AddGenericType(ResolveTypes(arguments.type()[i]));
+                            }
+                        }
+
+                    }
+                    else if (typeNames != null) {
+                        foreach (var name in typeNames) {
                             if (!string.IsNullOrEmpty(name.GetText())) {
                                 type = name.GetText();
                                 genericType = new GenericType(type);
-                                break;
                             }
                         }
                         var rawSubtypes = context.base_type()?.class_type()?.namespace_or_type_name()?.type_argument_list();
-                        if(rawSubtypes != null && rawSubtypes.Length > 0) {
-                            var finalSubTypes = context.base_type()?.class_type()?.namespace_or_type_name()?.type_argument_list()[0].type();
-                            if(finalSubTypes != null && finalSubTypes.Length > 0) { 
-                                for(int i = 0; i < finalSubTypes.Length; i++) {
+                        if (rawSubtypes != null && rawSubtypes.Length > 0) {
+                            var finalSubTypes = context.base_type()?.class_type()?.namespace_or_type_name()?.type_argument_list()[rawSubtypes.Length - 1].type();
+                            if (finalSubTypes != null && finalSubTypes.Length > 0) {
+                                for (int i = 0; i < finalSubTypes.Length; i++) {
                                     genericType.AddGenericType(ResolveTypes(finalSubTypes[i]));
                                 }
                             }
                         }
+
                     }
                     else {
                         type = context.base_type()?.class_type()?.GetText();
+                        genericType = new GenericType(type);
                     }
                 }
             }
 
-            Debug.Log(type);
+            //Debug.Log(genericType);
             // Rank specifier handling
             genericType.rankSpecifier = context.rank_specifier() != null ? context.rank_specifier().Length : genericType.rankSpecifier;
 
@@ -438,39 +456,53 @@ namespace DEngine.Model {
         public GenericType ResolveArrayTypes(CSharpParser.Array_typeContext context) {
 
             string type;
-            GenericType genericType = new GenericType("");
 
             // Type handling
             type = context.base_type()?.simple_type()?.GetText();
+            GenericType genericType = new GenericType(type);
             if (type == null) {
                 type = context.base_type()?.VOID()?.GetText();
                 if (type == null) {
                     var typeNames = context.base_type()?.class_type()?.namespace_or_type_name()?.identifier();
-                    if (typeNames != null) {
+                    var qualifiedName = context.base_type()?.class_type()?.namespace_or_type_name()?.qualified_alias_member();
+                    if (context.base_type()?.class_type()?.namespace_or_type_name()?.qualified_alias_member() != null) {
+                        var qualifiedMember = context.base_type()?.class_type()?.namespace_or_type_name()?.qualified_alias_member();
+                        type = qualifiedMember.identifier()[1].GetText();
+                        genericType = new GenericType(type);
+                        var arguments = qualifiedMember.type_argument_list();
+                        if (arguments != null && arguments.type().Length > 0) {
+                            for (int i = 0; i < arguments.type().Length; i++) {
+                                genericType.AddGenericType(ResolveTypes(arguments.type()[i]));
+                            }
+                        }
+
+                    }
+                    else if (typeNames != null) {
                         foreach (var name in typeNames) {
                             if (!string.IsNullOrEmpty(name.GetText())) {
                                 type = name.GetText();
                                 genericType = new GenericType(type);
-                                break;
                             }
                         }
                         var rawSubtypes = context.base_type()?.class_type()?.namespace_or_type_name()?.type_argument_list();
                         if (rawSubtypes != null && rawSubtypes.Length > 0) {
-                            var finalSubTypes = context.base_type()?.class_type()?.namespace_or_type_name()?.type_argument_list()[0].type();
+                            var finalSubTypes = context.base_type()?.class_type()?.namespace_or_type_name()?.type_argument_list()[rawSubtypes.Length - 1].type();
                             if (finalSubTypes != null && finalSubTypes.Length > 0) {
                                 for (int i = 0; i < finalSubTypes.Length; i++) {
                                     genericType.AddGenericType(ResolveTypes(finalSubTypes[i]));
                                 }
                             }
                         }
+
                     }
                     else {
                         type = context.base_type()?.class_type()?.GetText();
+                        genericType = new GenericType(type);
                     }
                 }
             }
 
-            Debug.Log(type);
+            //Debug.Log(genericType);
             // Rank specifier handling
             genericType.rankSpecifier = context.rank_specifier() != null ? context.rank_specifier().Length : genericType.rankSpecifier;
 
@@ -483,7 +515,7 @@ namespace DEngine.Model {
             if (params_ != null) {
                 foreach (var param in params_) {
                     string name = param.arg_declaration()?.identifier()?.GetText();
-                    Debug.Log(name);
+                    //Debug.Log(name);
                     if (!string.IsNullOrEmpty(name)) {
                         GenericType type = ResolveTypes(param.arg_declaration().type());
                         Parameter parameter = new Parameter(type, name, false);
@@ -534,10 +566,10 @@ namespace DEngine.Model {
             ImplementedType implementedType = new ImplementedType("");
             string name = "";
             var genericType = context.class_type()?.namespace_or_type_name();
-            if(genericType != null) {
+            if (genericType != null) {
                 var identifiers = genericType.identifier();
-                if(identifiers != null && identifiers.Length > 0) { 
-                    foreach(var identifier in identifiers) {
+                if (identifiers != null && identifiers.Length > 0) {
+                    foreach (var identifier in identifiers) {
                         if (!string.IsNullOrEmpty(identifier.GetText())) {
                             name = identifier.GetText();
                             break;
@@ -546,19 +578,19 @@ namespace DEngine.Model {
                 }
 
                 var argumentsList = genericType.type_argument_list();
-                if(argumentsList != null && argumentsList.Length > 0) { 
-                    foreach(var argumentList in argumentsList) {
+                if (argumentsList != null && argumentsList.Length > 0) {
+                    foreach (var argumentList in argumentsList) {
                         var arguments = argumentList.type();
-                        if(arguments != null && arguments.Length > 0) { 
-                            foreach(var argument in arguments) {
+                        if (arguments != null && arguments.Length > 0) {
+                            foreach (var argument in arguments) {
                                 implementedType.AddType(argument.GetText());
                             }
                         }
                     }
                 }
             }
-            else { 
-                if(context.class_type()?.OBJECT() != null) {
+            else {
+                if (context.class_type()?.OBJECT() != null) {
                     implementedType = new ImplementedType(context.class_type().OBJECT().GetText());
                 }
                 else if (context.class_type()?.DYNAMIC() != null) {
@@ -654,7 +686,7 @@ namespace DEngine.Model {
             // For example DEngine.Model will be { DEngine , Model }
             var names = context.qualified_identifier().identifier();
             string[] name = new string[names.Length];
-            for(int i=0; i < names.Length; i++) {
+            for (int i = 0; i < names.Length; i++) {
                 name[i] = names[i].GetText();
             }
 

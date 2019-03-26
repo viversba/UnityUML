@@ -52,7 +52,7 @@ namespace DEngine.Model {
     }
 
     [Serializable]
-    public enum StaticType { 
+    public enum StaticType {
         STATIC,
         PARTIAL,
         NONE
@@ -88,6 +88,7 @@ namespace DEngine.Model {
 
         public override string ToString() {
             string description = staticType != StaticType.NONE ? (staticType.ToString() + " ") : "";
+            description += modifier != AccessModifier.NONE ? (modifier.ToString() + " ") : "";
             description += returnType + " " + name;
             return description;
         }
@@ -117,7 +118,7 @@ namespace DEngine.Model {
         }
 
         public override string ToString() {
-            string description = type != MethodType.NONE ? (type.ToString() + " " ) : "";
+            string description = type != MethodType.NONE ? (type.ToString() + " ") : "";
             description += returnType + " " + name;
             return description;
         }
@@ -144,13 +145,14 @@ namespace DEngine.Model {
         public override string ToString() {
             string description = staticType != StaticType.NONE ? (staticType.ToString() + " ") : "";
             description += name;
-            if(parameters != null && parameters.Count > 0) {
-                description += "<";
-                for(int i=0;i<parameters.Count-1; i++) {
+            if (parameters != null && parameters.Count > 0) {
+                description += "(";
+                for (int i = 0; i < parameters.Count - 1; i++) {
                     description += parameters[i].ToString();
                     description += ",";
                 }
-                description += parameters[parameters.Count-1].ToString();
+                description += parameters[parameters.Count - 1].ToString();
+                description += ")";
             }
             return description;
         }
@@ -165,7 +167,7 @@ namespace DEngine.Model {
         public string name;
         public int arraySize;
 
-        public Parameter(GenericType type, string name, bool Params = false, int arraySize = 0){
+        public Parameter(GenericType type, string name, bool Params = false, int arraySize = 0) {
 
             this.type = type;
             this.name = name;
@@ -175,7 +177,17 @@ namespace DEngine.Model {
 
         public override string ToString() {
             string description = "";
-
+            description += type.name;
+            if (type.type != null && type.type.Count > 0) {
+                description += "<";
+                for (int i = 0; i < type.type.Count - 1; i++) {
+                    description += type.type[i].ToString();
+                    description += ",";
+                }
+                description += type.type[type.type.Count - 1].ToString();
+                description += ">";
+            }
+            description += " " + name;
             return description;
         }
     }
@@ -198,10 +210,24 @@ namespace DEngine.Model {
             type = type ?? new List<GenericType>();
             type.Add(genericType);
         }
+
+        public override string ToString() {
+            string description = name;
+            if (type != null && type.Count > 0) {
+                description += "<";
+                for (int i = 0; i < type.Count - 1; i++) {
+                    description += type[i].name;
+                    description += ",";
+                }
+                description += type[type.Count - 1].name;
+                description += ">";
+            }
+            return description;
+        }
     }
 
     [Serializable]
-    public struct ImplementedType{
+    public struct ImplementedType {
 
         public string name;
         public List<string> types;
@@ -217,6 +243,21 @@ namespace DEngine.Model {
 
         public string GetName() {
             return name;
+        }
+
+        public override string ToString() {
+
+            string description = name;
+            if (types != null && types.Count > 0) {
+                description += "<";
+                for (int i = 0; i < types.Count - 1; i++) {
+                    description += types[i];
+                    description += ",";
+                }
+                description += types[types.Count - 1];
+                description += ">";
+            }
+            return description;
         }
     }
 }
