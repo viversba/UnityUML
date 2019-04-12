@@ -149,7 +149,7 @@ namespace DEngine.Model {
             StaticType staticType = GetCurrentStaticTypeForMembers();
 
             Constructor construc = new Constructor(constructor, this.parameters, accessModifier, staticType);
-            Debug.Log(construc.ToString());
+            Debug.Log(construc.ToString() + " PARS LEN " + this.parameters.Count);
             wrapper.AddConstructor(construc);
         }
 

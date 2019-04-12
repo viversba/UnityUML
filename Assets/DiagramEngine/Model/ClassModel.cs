@@ -105,16 +105,19 @@ namespace DEngine.Model {
 
             string description = name;
             description += container != null ? "<-" + container.GetName() + "\n" : "\n";
+            description += "Constructors: \n";
             if (constructors != null) {
                 foreach (Constructor constructor in constructors) {
                     description += constructor.ToString() + "\n";
                 }
             }
+            description += "Methods: \n";
             if (methods != null) {
                 foreach (Method method in methods) {
-                    description += method.ToString() + "()\n";
+                    description += method.ToString() + "\n";
                 }
             }
+            description += "Attributes: \n";
             if (attributes != null) {
                 foreach (Attribute attribute in attributes) {
                     description += attribute.ToString() + "\n";

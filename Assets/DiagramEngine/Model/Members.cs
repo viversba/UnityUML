@@ -89,7 +89,7 @@ namespace DEngine.Model {
         public override string ToString() {
             string description = staticType != StaticType.NONE ? (staticType.ToString() + " ") : "";
             description += modifier != AccessModifier.NONE ? (modifier.ToString() + " ") : "";
-            description += returnType + " " + name;
+            description += returnType.ToString() + " " + name;
             return description;
         }
     }
@@ -114,12 +114,28 @@ namespace DEngine.Model {
             this.returnType = returnType;
             this.type = type;
             this.staticType = staticType;
-            this.parameters = parameters;
+            if(parameters != null) {
+                this.parameters = new List<Parameter>();
+                this.parameters.AddRange(parameters);
+            }
+            else {
+                this.parameters = parameters;
+            }
         }
 
         public override string ToString() {
             string description = type != MethodType.NONE ? (type.ToString() + " ") : "";
+            description += modifier != AccessModifier.NONE ? (modifier.ToString() + " ") : "";
             description += returnType + " " + name;
+            description += "(";
+            if (parameters != null && parameters.Count > 0) {
+                for (int i = 0; i < parameters.Count - 1; i++) {
+                    description += parameters[i].ToString();
+                    description += ",";
+                }
+                description += parameters[parameters.Count - 1].ToString();
+            }
+            description += ")";
             return description;
         }
     }
@@ -139,21 +155,29 @@ namespace DEngine.Model {
             this.name = name;
             this.staticType = staticType;
             this.modifier = modifier;
-            this.parameters = parameters;
+            if(parameters != null) {
+                this.parameters = new List<Parameter>();
+                this.parameters.AddRange(parameters);
+            }
+            else {
+                this.parameters = parameters;
+            }
+
         }
 
         public override string ToString() {
-            string description = staticType != StaticType.NONE ? (staticType.ToString() + " ") : "";
+            string description = modifier != AccessModifier.NONE ? (modifier.ToString() + " ") : "";
+            description += staticType != StaticType.NONE ? (staticType.ToString() + " ") : "";
             description += name;
+            description += "(";
             if (parameters != null && parameters.Count > 0) {
-                description += "(";
                 for (int i = 0; i < parameters.Count - 1; i++) {
                     description += parameters[i].ToString();
                     description += ",";
                 }
                 description += parameters[parameters.Count - 1].ToString();
-                description += ")";
             }
+            description += ")";
             return description;
         }
 
@@ -202,7 +226,13 @@ namespace DEngine.Model {
 
         public GenericType(string name, List<GenericType> type = null, int rankSpecifier = 0) {
             this.name = name;
-            this.type = type;
+            if (type != null) {
+                this.type = new List<GenericType>();
+                this.type.AddRange(type);
+            }
+            else {
+                this.type = null;
+            }
             this.rankSpecifier = rankSpecifier;
         }
 
@@ -234,7 +264,14 @@ namespace DEngine.Model {
 
         public ImplementedType(string name, List<string> types = null) {
             this.name = name;
-            this.types = types;
+
+            if(types != null) {
+                this.types = new List<string>();
+                this.types.AddRange(types);
+            }
+            else {
+                this.types = types;
+            }
         }
 
         public void AddType(string type) {

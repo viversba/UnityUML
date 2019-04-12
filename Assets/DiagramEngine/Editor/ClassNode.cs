@@ -27,7 +27,7 @@ namespace DEngine.View {
         public int numberOfLines;
 
         public ClassNode(string title) {
-
+        
             windowTitle = title;
             numberOfLines = 0;
             superClass = null;
@@ -100,8 +100,13 @@ namespace DEngine.View {
             public_.normal.textColor = Color.green;
             private_.normal.textColor = Color.red;
             protected_.normal.textColor = Color.magenta;
+            public_.margin = new RectOffset(0, 0, 0, 0);
+            private_.margin = new RectOffset(0, 0, 0, 0);
+            protected_.margin = new RectOffset(0, 0, 0, 0);
 
             scrollPos = EditorGUILayout.BeginScrollView(scrollPos);
+
+            GUILayout.ExpandWidth(false);
 
             //Display Constructors
             if (constructors.Count > 0) {
@@ -210,16 +215,16 @@ namespace DEngine.View {
             var red = new GUIStyle();
             red.normal.textColor = Color.red;
 
-            GUILayout.Label(constructor.name, GUILayout.Width(constructor.name.Length * SPACING));
-            GUILayout.Label("(", GUILayout.Width(1 * SPACING));
+            GUILayout.Label(constructor.name);
+            GUILayout.Label("(");
             if (constructor.parameters != null && constructor.parameters.Count > 0) {
                 for (int i = 0; i < constructor.parameters.Count - 1; i++) {
                     DrawParameter(constructor.parameters[i]);
-                    GUILayout.Label(",", GUILayout.Width(1 * SPACING));
+                    GUILayout.Label(",");
                 }
                 DrawParameter(constructor.parameters[constructor.parameters.Count - 1]);
             }
-            GUILayout.Label(")", GUILayout.Width(1 * SPACING));
+            GUILayout.Label(")");
         }
 
         private void DrawAttribute(Model::Attribute attribute) {
@@ -227,7 +232,7 @@ namespace DEngine.View {
             var red = new GUIStyle();
             red.normal.textColor = Color.red;
             DrawType(attribute.returnType);
-            GUILayout.Label(attribute.name, GUILayout.Width(attribute.name.Length * SPACING));
+            GUILayout.Label(attribute.name);
         }
 
         private void DrawMethod(Model::Method method) {
@@ -236,35 +241,44 @@ namespace DEngine.View {
             red.normal.textColor = Color.red;
 
             DrawType(method.returnType);
-            GUILayout.Label(method.name, GUILayout.Width(method.name.Length * SPACING));
+            GUILayout.Label(method.name );
+            GUILayout.Label("(");
+            if (method.parameters != null && method.parameters.Count > 0) {
+                for (int i = 0; i < method.parameters.Count - 1; i++) {
+                    DrawParameter(method.parameters[i]);
+                    GUILayout.Label(",");
+                }
+                DrawParameter(method.parameters[method.parameters.Count - 1]);
+            }
+            GUILayout.Label(")");
         }
 
         private void DrawParameter(Model::Parameter parameter) {
 
-            GUILayout.Label(parameter.type.name, GUILayout.Width(parameter.name.Length * SPACING));
+            GUILayout.Label(parameter.type.name );
             if (parameter.type.type != null && parameter.type.type.Count > 0) {
-                GUILayout.Label("<", GUILayout.Width(1 * SPACING));
+                GUILayout.Label("<");
                 for (int i = 0; i < parameter.type.type.Count - 1; i++) {
                     DrawType(parameter.type.type[i]);
-                    GUILayout.Label(",", GUILayout.Width(1 * SPACING));
+                    GUILayout.Label(",");
                 }
                 DrawType(parameter.type.type[parameter.type.type.Count - 1]);
-                GUILayout.Label(">", GUILayout.Width(1 * SPACING));
+                GUILayout.Label(">");
             }
-            GUILayout.Label(parameter.name, GUILayout.Width(parameter.name.Length * SPACING));
+            GUILayout.Label(parameter.name );
         }
 
         private void DrawType(Model::GenericType type) {
 
-            GUILayout.Label(type.name, GUILayout.Width(type.name.Length * SPACING));
+            GUILayout.Label(type.name );
             if (type.type != null && type.type.Count > 0) {
-                GUILayout.Label("<", GUILayout.Width(1 * SPACING));
+                GUILayout.Label("<");
                 for (int i = 0; i < type.type.Count - 1; i++) {
                     DrawType(type.type[i]);
-                    GUILayout.Label(",", GUILayout.Width(1 * SPACING));
+                    GUILayout.Label(",");
                 }
                 DrawType(type.type[type.type.Count - 1]);
-                GUILayout.Label(">", GUILayout.Width(1 * SPACING));
+                GUILayout.Label(">");
             }
         }
     }

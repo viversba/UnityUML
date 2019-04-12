@@ -41,22 +41,6 @@ namespace DEngine {
             // program.Start();
         }
 
-        public static void SaveEntitiesOnDisk(List<BaseModel> entities, string path = "") {
-
-            BinaryFormatter bf = new BinaryFormatter();
-            FileStream file = File.Open(storagePath + path, FileMode.Create);
-            
-            if(entities.Count > 0) {
-                bf.Serialize(file, entities);
-            }
-
-            file.Close();
-
-            //if(File.Exists(storagePath + path)) {
-            //    Debug.Log("Saved entities at " + storagePath + path);
-            //}
-        }
-
         public static List<BaseModel> LoadEntitiesFromDisk(string path="") {
 
             List<BaseModel> entities = null;
@@ -79,6 +63,22 @@ namespace DEngine {
                 //Debug.LogWarning("No entities to load");
             }
             return entities;
+        }
+
+        public static void SaveEntitiesOnDisk(List<BaseModel> entities, string path = "") {
+
+            BinaryFormatter bf = new BinaryFormatter();
+            FileStream file = File.Open(storagePath + path, FileMode.Create);
+
+            if (entities.Count > 0) {
+                bf.Serialize(file, entities);
+            }
+
+            file.Close();
+
+            //if(File.Exists(storagePath + path)) {
+            //    Debug.Log("Saved entities at " + storagePath + path);
+            //}
         }
     }
 }

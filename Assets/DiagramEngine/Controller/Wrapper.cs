@@ -133,6 +133,12 @@ namespace DEngine.Controller {
             // Add the currentEntity to it's corresponding namespace
             currentNamespace.AddEntity(currentEntity);
 
+
+            if(currentEntity.Type == EntityTypes.CLASS) {
+
+                Debug.Log(currentEntity.ToString());
+            }
+
             //Check if the last entity is a struct
             if (entities.Count == 1) {
                 allEntities.Add(entities[entities.Count - 1]);
