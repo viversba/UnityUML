@@ -78,18 +78,18 @@ namespace DEngine.View {
                     GUILayout.BeginHorizontal(header);
                     if (method.modifier == Model::AccessModifier.PRIVATE) {
                         GUILayout.Label("- ", private_, GUILayout.Width(5));
-                        GUILayout.Label(method.ToString() + "()");
+                        GUILayout.Label(method.ToString());
                     }
                     else if (method.modifier == Model::AccessModifier.PUBLIC) {
                         GUILayout.Label("+ ", public_, GUILayout.Width(5));
-                        GUILayout.Label(method.ToString() + "()");
+                        GUILayout.Label(method.ToString());
                     }
                     else if (method.modifier == Model::AccessModifier.PROTECTED) {
                         GUILayout.Label("# ", protected_, GUILayout.Width(5));
-                        GUILayout.Label(method.ToString() + "()");
+                        GUILayout.Label(method.ToString());
                     }
                     else {
-                        GUILayout.Label(method.ToString() + "()");
+                        GUILayout.Label(method.ToString());
                     }
                     GUILayout.EndHorizontal();
                 }

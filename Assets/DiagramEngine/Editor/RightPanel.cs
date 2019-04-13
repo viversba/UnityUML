@@ -213,12 +213,6 @@ namespace DEngine.View {
                         classNode.Init((ClassModel)entity);
                         windows.Add(classNode);
 
-                        ClassModel classModel = (ClassModel)entity;
-                        Debug.Log(classModel);
-                        if (classModel.GetSuperClassName().Name != null) {
-                            Debug.Log(classModel.GetSuperClassName().Name);
-                        }
-
                         // Validate limits
                         if (windowXPosition + 155f <= rightPanelRect.width - 150f) {
                             windowXPosition += 155f;

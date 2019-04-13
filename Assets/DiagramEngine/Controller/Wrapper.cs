@@ -306,7 +306,6 @@ namespace DEngine.Controller {
                             ClassModel superClass = new ClassModel(classModel.GetSuperClassName().GetName());
                             classModel.SetSuperClass(superClass);
                             selectedEntities.Add(superClass);
-                            Debug.Log("POR ACA");
                         }
                         else {
                             //Check if the entity is a class  or an interface and handle each one

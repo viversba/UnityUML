@@ -152,13 +152,6 @@ namespace DEngine.Model {
             wrapper.AddConstructor(construc);
         }
 
-        //public override void ExitConstructor_declaration([NotNull] CSharpParser.Constructor_declarationContext context) {
-
-        //    //Wrapper.ModifierMatch(modifiers, ref mod, ref methodType);
-
-        //    //wrapper.AddConstructor(new Constructor(constructor, parameters));
-        //}
-
         #endregion
 
         #region methods
@@ -184,12 +177,6 @@ namespace DEngine.Model {
             wrapper.AddMethodTo(new Method(methodName, type, this.parameters, accessModifier, methodType, staticType));
         }
 
-        //public override void ExitMethod_declaration([NotNull] CSharpParser.Method_declarationContext context) {
-
-        //    //Wrapper.ModifierMatch(modifiers, ref mod, ref methodType);
-        //    //wrapper.AddMethodTo(new Method(methodName, type, parameters));
-        //}
-
         #endregion
 
         #region properties-fields-constants
@@ -202,11 +189,6 @@ namespace DEngine.Model {
 
             wrapper.AddAttributeTo(new Attribute(propertyName, type, accessModifier, staticType));
         }
-
-        //public override void ExitProperty_declaration([NotNull] CSharpParser.Property_declarationContext context) {
-
-        //    //wrapper.AddAttributeTo(new Attribute(propertyName, type));
-        //}
 
         public override void EnterField_declaration([NotNull] CSharpParser.Field_declarationContext context) {
 
@@ -226,16 +208,6 @@ namespace DEngine.Model {
             }
         }
 
-        //public override void ExitField_declaration([NotNull] CSharpParser.Field_declarationContext context) {
-
-        //    //AccessModifier mod = AccessModifier.PRIVATE;
-        //    //StaticType attributeType = StaticType.NONE;
-
-        //    //foreach (var variable in variables) {
-        //    //    wrapper.AddAttributeTo(new Attribute(variable, type));
-        //    //}
-        //}
-
         public override void EnterConstant_declaration([NotNull] CSharpParser.Constant_declarationContext context) {
 
             constants.Clear();
@@ -251,15 +223,6 @@ namespace DEngine.Model {
                 }
             }
         }
-
-        //public override void ExitConstant_declaration([NotNull] CSharpParser.Constant_declarationContext context) {
-
-        //    //Wrapper.ModifierMatch(modifiers, ref mod, ref attributeType);
-
-        //    //foreach (var constant in constants) {
-        //    //    wrapper.AddAttributeTo(new Attribute(constant, type));
-        //    //}
-        //}
 
         #endregion
 
@@ -283,6 +246,7 @@ namespace DEngine.Model {
         public override void EnterInterface_definition([NotNull] CSharpParser.Interface_definitionContext context) {
 
             interfaceName = context.identifier().GetText();
+            this.interfaceParameters.Clear();
 
             // Handle Parameters
             var parameters = context.variant_type_parameter_list()?.variant_type_parameter();
@@ -510,6 +474,8 @@ namespace DEngine.Model {
 
         public void ResolveParameters(CSharpParser.Formal_parameter_listContext context) {
 
+            this.parameters.Clear();
+
             var params_ = context.fixed_parameters()?.fixed_parameter();
             if (params_ != null) {
                 foreach (var param in params_) {
@@ -613,6 +579,7 @@ namespace DEngine.Model {
                 foreach (var identifier in identifiers) {
                     if (!string.IsNullOrEmpty(identifier.GetText())) {
                         name = identifier.GetText();
+                        interface_.Name = name;
                         break;
                     }
                 }
