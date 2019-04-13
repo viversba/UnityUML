@@ -1,4 +1,4 @@
-﻿ using System;
+﻿using System;
 using System.Collections.Generic;
 
 namespace DEngine.Model {
@@ -51,15 +51,6 @@ namespace DEngine.Model {
             Type = EntityTypes.CLASS;
         }
 
-        public ClassModel(Dictionary<string,int> k,List<Dictionary<string, int>> ola) {
-
-            constructors = null;
-            superClass = null;
-            subClasses = null;
-            superClassName = new ImplementedType();
-            Type = EntityTypes.CLASS;
-        }
-
         public ClassModel GetSuperClass() {
 
             return superClass;
@@ -79,7 +70,6 @@ namespace DEngine.Model {
         }
 
         public void SetSuperClassName(ImplementedType superClassName) {
-
             this.superClassName = superClassName;
         }
 

@@ -113,6 +113,7 @@ namespace DEngine.View {
                     if (windows[i].IsEmpty() && !DisplayEmpty)
                         continue;
 
+
                     //Make sure the window is within the borders
                     //Take care of x axis
                     windows[i].windowRect.x = windows[i].windowRect.x < begginingOfRightPanel ? begginingOfRightPanel : windows[i].windowRect.x;
@@ -143,7 +144,7 @@ namespace DEngine.View {
                             break;
                     }
 
-                   
+
                 }
 
                 //draw each curve for every node
@@ -167,10 +168,10 @@ namespace DEngine.View {
 
             Event e = Event.current;
 
-            if(e.type == EventType.MouseDown && e.button == 1 && rightPanelRect.Contains(e.mousePosition)) {
+            if (e.type == EventType.MouseDown && e.button == 1 && rightPanelRect.Contains(e.mousePosition)) {
 
                 GenericMenu menu = new GenericMenu();
-                menu.AddItem(new GUIContent($"{(DisplayEmpty? "" : "√  ")}Ignore Empty Windows", "Don't draw the empty windows"), false, MenuOptionsCallback, "ignoreEmpty");
+                menu.AddItem(new GUIContent($"{(DisplayEmpty ? "" : "√  ")}Ignore Empty Windows", "Don't draw the empty windows"), false, MenuOptionsCallback, "ignoreEmpty");
 
                 menu.ShowAsContext();
 
@@ -204,12 +205,19 @@ namespace DEngine.View {
             if (selectedEntities != null || selectedEntities.Count != 0) {
                 drawNodes = true;
                 foreach (BaseModel entity in selectedEntities) {
+
                     // Draw Classes
                     if (entity.Type == EntityTypes.CLASS) {
                         ClassNode classNode = (ClassNode)CreateInstance("ClassNode");
                         classNode.windowRect = new Rect(windowXPosition, windowYPosition, 150f, 150f);
                         classNode.Init((ClassModel)entity);
                         windows.Add(classNode);
+
+                        ClassModel classModel = (ClassModel)entity;
+                        Debug.Log(classModel);
+                        if (classModel.GetSuperClassName().Name != null) {
+                            Debug.Log(classModel.GetSuperClassName().Name);
+                        }
 
                         // Validate limits
                         if (windowXPosition + 155f <= rightPanelRect.width - 150f) {
@@ -225,7 +233,7 @@ namespace DEngine.View {
                             }
                         }
                     }
-                    else if (entity.Type == EntityTypes.INTERFACE){
+                    else if (entity.Type == EntityTypes.INTERFACE) {
                         // Draw Interfaces
                         InterfaceNode interfaceNode = (InterfaceNode)CreateInstance("InterfaceNode");
                         interfaceNode.windowRect = new Rect(windowXPosition, windowYPosition, 170f, 150f);
@@ -273,7 +281,7 @@ namespace DEngine.View {
 
                     // Assign superclass or interface windows
                     // Is it a class?
-                    if(window.Type == EntityTypes.CLASS) {
+                    if (window.Type == EntityTypes.CLASS) {
                         ClassNode classNode = (ClassNode)window;
                         ClassNode superClassNode = (ClassNode)GetWindowWithTitle(classNode.GetSuperClassName());
                         classNode.SetSuperClassNode(superClassNode);
@@ -509,7 +517,7 @@ namespace DEngine.View {
         private BaseNode GetWindowWithTitle(string windowTitle) {
 
             foreach (BaseNode window in windows) {
-                if(window.Type == EntityTypes.CLASS) {
+                if (window.Type == EntityTypes.CLASS) {
                     ClassNode classNode = (ClassNode)window;
                     if (classNode.windowTitle == windowTitle) {
                         return classNode;

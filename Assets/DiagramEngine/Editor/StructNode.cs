@@ -6,8 +6,8 @@ using Model = DEngine.Model;
 
 namespace DEngine.View {
 
-    public class StructNode: BaseNode {
-    
+    public class StructNode : BaseNode {
+
         private List<Model::Attribute> attributes = new List<Model::Attribute>();
         private List<Model::Method> methods = new List<Model::Method>();
         private List<Model::Constructor> constructors = new List<Model::Constructor>();
@@ -41,7 +41,7 @@ namespace DEngine.View {
 
             if (structModel.GetInterfaceNames() != null) {
                 foreach (var interface_ in structModel.GetInterfaceNames()) {
-                    string interfaceName = interface_.name;
+                    string interfaceName = interface_.Name;
                     interfaceNames.Add(interfaceName);
                 }
             }

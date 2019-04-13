@@ -114,7 +114,7 @@ namespace DEngine.Model {
             this.returnType = returnType;
             this.type = type;
             this.staticType = staticType;
-            if(parameters != null) {
+            if (parameters != null) {
                 this.parameters = new List<Parameter>();
                 this.parameters.AddRange(parameters);
             }
@@ -155,7 +155,7 @@ namespace DEngine.Model {
             this.name = name;
             this.staticType = staticType;
             this.modifier = modifier;
-            if(parameters != null) {
+            if (parameters != null) {
                 this.parameters = new List<Parameter>();
                 this.parameters.AddRange(parameters);
             }
@@ -259,13 +259,15 @@ namespace DEngine.Model {
     [Serializable]
     public struct ImplementedType {
 
-        public string name;
+        public string Name { get { return this.name; } set { this.name = value; } }
+
+        private string name;
         public List<string> types;
 
-        public ImplementedType(string name, List<string> types = null) {
+        public ImplementedType(string name = null, List<string> types = null) {
             this.name = name;
 
-            if(types != null) {
+            if (types != null) {
                 this.types = new List<string>();
                 this.types.AddRange(types);
             }

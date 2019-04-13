@@ -7,8 +7,8 @@ using Model = DEngine.Model;
 
 namespace DEngine.View {
 
-    public class InterfaceNode : BaseNode{
-    
+    public class InterfaceNode : BaseNode {
+
         private List<Model::Method> methods = new List<Model::Method>();
         /// <summary>
         /// Scroll position of the list of entities to render
@@ -38,10 +38,10 @@ namespace DEngine.View {
             interfaceNames = new List<string>();
             Type = interfaceModel.Type;
 
-            if (interfaceModel.GetInterfaceNames() != null) { 
+            if (interfaceModel.GetInterfaceNames() != null) {
 
-                foreach(var interface_ in interfaceModel.GetInterfaceNames()) {
-                    string interfaceName = interface_.name;
+                foreach (var interface_ in interfaceModel.GetInterfaceNames()) {
+                    string interfaceName = interface_.Name;
                     interfaceNames.Add(interfaceName);
 
                     isEmpty = false;
@@ -70,7 +70,7 @@ namespace DEngine.View {
             private_.normal.textColor = Color.red;
             protected_.normal.textColor = Color.magenta;
 
-            if(methods?.Count > 0) {
+            if (methods?.Count > 0) {
                 scrollPos = EditorGUILayout.BeginScrollView(scrollPos);
                 GUILayout.Label("Methods (" + methods.Count + ")", header);
                 foreach (Model::Method method in methods) {

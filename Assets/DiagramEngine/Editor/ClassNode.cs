@@ -27,7 +27,7 @@ namespace DEngine.View {
         public int numberOfLines;
 
         public ClassNode(string title) {
-        
+
             windowTitle = title;
             numberOfLines = 0;
             superClass = null;
@@ -59,11 +59,11 @@ namespace DEngine.View {
             attributes.AddRange(classModel.GetAttributes());
             methods.AddRange(classModel.GetMethods());
             constructors.AddRange(classModel.GetConstructors());
-            superClassName = classModel.GetSuperClassName().name;
+            superClassName = classModel.GetSuperClassName().Name;
 
             if (classModel.GetInterfaceNames() != null) {
                 foreach (var interface_ in classModel.GetInterfaceNames()) {
-                    string interfaceName = interface_.name;
+                    string interfaceName = interface_.Name;
                     interfaceNames.Add(interfaceName);
                 }
             }
@@ -241,7 +241,7 @@ namespace DEngine.View {
             red.normal.textColor = Color.red;
 
             DrawType(method.returnType);
-            GUILayout.Label(method.name );
+            GUILayout.Label(method.name);
             GUILayout.Label("(");
             if (method.parameters != null && method.parameters.Count > 0) {
                 for (int i = 0; i < method.parameters.Count - 1; i++) {
@@ -255,7 +255,7 @@ namespace DEngine.View {
 
         private void DrawParameter(Model::Parameter parameter) {
 
-            GUILayout.Label(parameter.type.name );
+            GUILayout.Label(parameter.type.name);
             if (parameter.type.type != null && parameter.type.type.Count > 0) {
                 GUILayout.Label("<");
                 for (int i = 0; i < parameter.type.type.Count - 1; i++) {
@@ -265,12 +265,12 @@ namespace DEngine.View {
                 DrawType(parameter.type.type[parameter.type.type.Count - 1]);
                 GUILayout.Label(">");
             }
-            GUILayout.Label(parameter.name );
+            GUILayout.Label(parameter.name);
         }
 
         private void DrawType(Model::GenericType type) {
 
-            GUILayout.Label(type.name );
+            GUILayout.Label(type.name);
             if (type.type != null && type.type.Count > 0) {
                 GUILayout.Label("<");
                 for (int i = 0; i < type.type.Count - 1; i++) {
