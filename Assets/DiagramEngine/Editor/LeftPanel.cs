@@ -108,7 +108,7 @@ namespace DEngine.View {
                             string type = entity.Type == EntityTypes.CLASS ? "(C) " : "(I)  ";
                             GUILayout.Label(type + entity.GetName());
                         }
-                        if(loadingEntities)
+                        if (loadingEntities)
                             GUILayout.Label("Processing entities...");
                         EditorGUILayout.EndScrollView();
 
@@ -162,7 +162,16 @@ namespace DEngine.View {
 
                     scrollPos_DD = EditorGUILayout.BeginScrollView(scrollPos_DD);
                     foreach (var entity in selectedEntities_DD) {
-                        string type = entity.Type == EntityTypes.CLASS ? "(C) " : "(I)  ";
+                        string type = "";
+                        if (entity.Type == EntityTypes.CLASS) {
+                            type = "(C) ";
+                        }
+                        else if (entity.Type == EntityTypes.INTERFACE) {
+                            type = "(I)  ";
+                        }
+                        else if (entity.Type == EntityTypes.STRUCT) {
+                            type = "(S)  ";
+                        }
                         GUILayout.Label(type + entity.GetName());
                     }
                     if (loadingEntities)
@@ -219,9 +228,11 @@ namespace DEngine.View {
             List<BaseModel> entities = await Task.Run(() => EntityWrapper.GetEntitiesFromText(text));
             if (entities != null || entities.Count != 0) {
                 foreach (var entity in entities) {
-                    if (Wrapper.FindEntityWithName(ref selectedEntities_DD, entity.GetName()) == -1) {
-                        selectedEntities_DD.Add(entity);
+                    int position = Wrapper.FindEntityWithName(ref selectedEntities_DD, entity.GetName());
+                    if (position != -1) {
+                        selectedEntities_DD.RemoveAt(position);
                     }
+                    selectedEntities_DD.Add(entity);
                 }
             }
             Wrapper.RelateEntities(ref selectedEntities_DD);
@@ -240,9 +251,11 @@ namespace DEngine.View {
                 List<BaseModel> entities = await Task.Run(() => EntityWrapper.GetEntitiesFromFile(file));
                 if (entities != null || entities.Count != 0) {
                     foreach (var entity in entities) {
-                        if (Wrapper.FindEntityWithName(ref selectedEntities_DD, entity.GetName()) == -1) {
-                            selectedEntities_DD.Add(entity);
+                        int position = Wrapper.FindEntityWithName(ref selectedEntities_DD, entity.GetName());
+                        if (position != -1) {
+                            selectedEntities_DD.RemoveAt(position);
                         }
+                        selectedEntities_DD.Add(entity);
                     }
                 }
             }
@@ -262,9 +275,11 @@ namespace DEngine.View {
                 List<BaseModel> entities = await Task.Run(() => EntityWrapper.GetEntitiesFromFile(file));
                 if (entities != null || entities.Count != 0) {
                     foreach (var entity in entities) {
-                        if (Wrapper.FindEntityWithName(ref selectedEntities_ALL, entity.GetName()) == -1) {
-                            selectedEntities_ALL.Add(entity);
+                        int position = Wrapper.FindEntityWithName(ref selectedEntities_ALL, entity.GetName());
+                        if (position != -1) {
+                            selectedEntities_ALL.RemoveAt(position);
                         }
+                        selectedEntities_ALL.Add(entity);
                     }
                 }
             }

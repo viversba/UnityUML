@@ -26,13 +26,13 @@ namespace DEngine.View {
         }
 
         public InterfaceNode(Model::InterfaceModel interfaceModel) {
-            windowTitle = interfaceModel.GetName();
+            windowTitle = interfaceModel.GetCompleteName();
             methods.AddRange(interfaceModel.GetMethods());
         }
 
         public void Init(Model::InterfaceModel interfaceModel) {
             isEmpty = true;
-            windowTitle = "<<" + interfaceModel.GetName() + ">>";
+            windowTitle = "<<" + interfaceModel.GetCompleteName() + ">>";
             methods = new List<Model::Method>();
             interfaces = null;
             interfaceNames = new List<string>();
@@ -73,24 +73,21 @@ namespace DEngine.View {
             if (methods?.Count > 0) {
                 scrollPos = EditorGUILayout.BeginScrollView(scrollPos);
                 GUILayout.Label("Methods (" + methods.Count + ")", header);
+                GUILayout.Label("Methods (" + methods.Count + ")", header);
                 foreach (Model::Method method in methods) {
-
-                    GUILayout.BeginHorizontal(header);
-                    if (method.modifier == Model::AccessModifier.PRIVATE) {
-                        GUILayout.Label("- ", private_, GUILayout.Width(5));
-                        GUILayout.Label(method.ToString());
+                    GUILayout.BeginHorizontal();
+                    switch (method.modifier) {
+                        case Model::AccessModifier.PRIVATE:
+                            GUILayout.Label("- ", private_, GUILayout.Width(5));
+                            break;
+                        case Model::AccessModifier.PUBLIC:
+                            GUILayout.Label("+ ", public_, GUILayout.Width(5));
+                            break;
+                        case Model::AccessModifier.PROTECTED:
+                            GUILayout.Label("# ", protected_, GUILayout.Width(5));
+                            break;
                     }
-                    else if (method.modifier == Model::AccessModifier.PUBLIC) {
-                        GUILayout.Label("+ ", public_, GUILayout.Width(5));
-                        GUILayout.Label(method.ToString());
-                    }
-                    else if (method.modifier == Model::AccessModifier.PROTECTED) {
-                        GUILayout.Label("# ", protected_, GUILayout.Width(5));
-                        GUILayout.Label(method.ToString());
-                    }
-                    else {
-                        GUILayout.Label(method.ToString());
-                    }
+                    ClassNode.DrawMethod(method);
                     GUILayout.EndHorizontal();
                 }
                 EditorGUILayout.EndScrollView();
@@ -110,12 +107,7 @@ namespace DEngine.View {
         public override void DrawCurves() {
 
             if (interfaces != null) {
-                //Debug.Log(windowTitle);
                 foreach (InterfaceNode interfaceNode in interfaces) {
-                    //Rect windowRect = this.windowRect;
-                    //windowRect.y = this.windowRect.y + this.windowRect.height / 2;
-                    //windowRect.height = 1;
-                    //windowRect.width = 1;
                     Rect interfaceRect = interfaceNode.windowRect;
                     interfaceRect.y = interfaceNode.windowRect.y + interfaceNode.windowRect.height / 2;
                     interfaceRect.height = 1;

@@ -14,7 +14,7 @@ namespace DEngine.Model {
         [SerializeField]
         public EntityTypes Type { get; set; }
 
-        public bool Partial { get; set; } 
+        public bool Partial { get; set; }
 
         /// <summary>
         /// Name of the entity.
@@ -72,12 +72,25 @@ namespace DEngine.Model {
         }
 
         public BaseModel(List<Dictionary<string, int>> ola) {
-       
+
         }
 
         public string GetName() {
-
             return name;
+        }
+
+        public string GetCompleteName() {
+            string completeName = name;
+            if (parameters != null && parameters.Count > 0) {
+                completeName += "<";
+                for (int i = 0; i < parameters.Count - 1; i++) {
+                    completeName += parameters[i];
+                    completeName += ",";
+                }
+                completeName += parameters[parameters.Count - 1];
+                completeName += ">";
+            }
+            return completeName;
         }
 
         public void SetName(string name) {

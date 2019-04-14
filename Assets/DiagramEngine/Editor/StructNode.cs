@@ -24,7 +24,7 @@ namespace DEngine.View {
         }
 
         public void Init(Model::StructModel structModel) {
-            windowTitle = structModel.GetName();
+            windowTitle = structModel.GetCompleteName();
             isEmpty = false;
             attributes = new List<Model::Attribute>();
             methods = new List<Model::Method>();
@@ -72,23 +72,19 @@ namespace DEngine.View {
                 GUILayout.Label("Constructors (" + constructors.Count + ")", header);
                 foreach (Model::Constructor constructor in constructors) {
                     GUILayout.BeginHorizontal();
-                    if (constructor.modifier == Model::AccessModifier.PRIVATE) {
-                        GUILayout.Label("- ", private_, GUILayout.Width(5));
-                        GUILayout.Label(constructor.ToString() + "()");
+                    switch (constructor.modifier) {
+                        case Model::AccessModifier.PRIVATE:
+                            GUILayout.Label("- ", private_, GUILayout.Width(5));
+                            break;
+                        case Model::AccessModifier.PUBLIC:
+                            GUILayout.Label("+ ", public_, GUILayout.Width(5));
+                            break;
+                        case Model::AccessModifier.PROTECTED:
+                            GUILayout.Label("# ", protected_, GUILayout.Width(5));
+                            break;
                     }
-                    else if (constructor.modifier == Model::AccessModifier.PUBLIC) {
-                        GUILayout.Label("+ ", public_, GUILayout.Width(5));
-                        GUILayout.Label(constructor.ToString() + "()");
-                    }
-                    else if (constructor.modifier == Model::AccessModifier.PROTECTED) {
-                        GUILayout.Label("# ", protected_, GUILayout.Width(5));
-                        GUILayout.Label(constructor.ToString() + "()");
-                    }
-                    else {
-                        GUILayout.Label(constructor.ToString() + "()");
-                    }
+                    ClassNode.DrawConstructor(constructor);
                     GUILayout.EndHorizontal();
-                    //GUILayout.Label(constructor.ToString());
                 }
             }
 
@@ -97,45 +93,39 @@ namespace DEngine.View {
                 GUILayout.Label("Attributes (" + attributes.Count + ")", header);
                 foreach (Model::Attribute attribute in attributes) {
                     GUILayout.BeginHorizontal();
-                    if (attribute.modifier == Model::AccessModifier.PRIVATE) {
-                        GUILayout.Label("- ", private_, GUILayout.Width(5));
-                        GUILayout.Label(attribute.ToString());
+                    switch (attribute.modifier) {
+                        case Model::AccessModifier.PRIVATE:
+                            GUILayout.Label("- ", private_, GUILayout.Width(5));
+                            break;
+                        case Model::AccessModifier.PUBLIC:
+                            GUILayout.Label("+ ", public_, GUILayout.Width(5));
+                            break;
+                        case Model::AccessModifier.PROTECTED:
+                            GUILayout.Label("# ", protected_, GUILayout.Width(5));
+                            break;
                     }
-                    else if (attribute.modifier == Model::AccessModifier.PUBLIC) {
-                        GUILayout.Label("+ ", public_, GUILayout.Width(5));
-                        GUILayout.Label(attribute.ToString());
-                    }
-                    else if (attribute.modifier == Model::AccessModifier.PROTECTED) {
-                        GUILayout.Label("# ", protected_, GUILayout.Width(5));
-                        GUILayout.Label(attribute.ToString());
-                    }
-                    else {
-                        GUILayout.Label(attribute.ToString());
-                    }
+                    ClassNode.DrawAttribute(attribute);
                     GUILayout.EndHorizontal();
                 }
             }
 
             // Display Methods
-            if (methods.Count > 0) {
+            if (methods?.Count > 0) {
                 GUILayout.Label("Methods (" + methods.Count + ")", header);
                 foreach (Model::Method method in methods) {
                     GUILayout.BeginHorizontal();
-                    if (method.modifier == Model::AccessModifier.PRIVATE) {
-                        GUILayout.Label("- ", private_, GUILayout.Width(5));
-                        GUILayout.Label(method.ToString() + "()");
+                    switch (method.modifier) {
+                        case Model::AccessModifier.PRIVATE:
+                            GUILayout.Label("- ", private_, GUILayout.Width(5));
+                            break;
+                        case Model::AccessModifier.PUBLIC:
+                            GUILayout.Label("+ ", public_, GUILayout.Width(5));
+                            break;
+                        case Model::AccessModifier.PROTECTED:
+                            GUILayout.Label("# ", protected_, GUILayout.Width(5));
+                            break;
                     }
-                    else if (method.modifier == Model::AccessModifier.PUBLIC) {
-                        GUILayout.Label("+ ", public_, GUILayout.Width(5));
-                        GUILayout.Label(method.ToString() + "()");
-                    }
-                    else if (method.modifier == Model::AccessModifier.PROTECTED) {
-                        GUILayout.Label("# ", protected_, GUILayout.Width(5));
-                        GUILayout.Label(method.ToString() + "()");
-                    }
-                    else {
-                        GUILayout.Label(method.ToString() + "()");
-                    }
+                    ClassNode.DrawMethod(method);
                     GUILayout.EndHorizontal();
                 }
             }
@@ -155,12 +145,7 @@ namespace DEngine.View {
         public override void DrawCurves() {
 
             if (interfaces != null) {
-                //Debug.Log(windowTitle);
                 foreach (InterfaceNode interfaceNode in interfaces) {
-                    //Rect windowRect = this.windowRect;
-                    //windowRect.y = this.windowRect.y + this.windowRect.height / 2;
-                    //windowRect.height = 1;
-                    //windowRect.width = 1;
                     Rect interfaceRect = interfaceNode.windowRect;
                     interfaceRect.y = interfaceNode.windowRect.y + interfaceNode.windowRect.height / 2;
                     interfaceRect.height = 1;

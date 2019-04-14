@@ -34,7 +34,7 @@ namespace DEngine.View {
         }
 
         public ClassNode(Model::ClassModel classModel) {
-            windowTitle = classModel.GetName();
+            windowTitle = classModel.GetCompleteName();
             attributes.AddRange(classModel.GetAttributes());
             methods.AddRange(classModel.GetMethods());
             constructors.AddRange(classModel.GetConstructors());
@@ -43,7 +43,7 @@ namespace DEngine.View {
         }
 
         public void Init(Model::ClassModel classModel) {
-            windowTitle = classModel.GetName();
+            windowTitle = classModel.GetCompleteName();
             isEmpty = false;
             attributes = new List<Model::Attribute>();
             methods = new List<Model::Method>();
@@ -151,7 +151,7 @@ namespace DEngine.View {
             }
 
             // Display Methods
-            if (methods.Count > 0) {
+            if (methods?.Count > 0) {
                 GUILayout.Label("Methods (" + methods.Count + ")", header);
                 foreach (Model::Method method in methods) {
                     GUILayout.BeginHorizontal();
@@ -210,7 +210,7 @@ namespace DEngine.View {
             }
         }
 
-        private void DrawConstructor(Model::Constructor constructor) {
+        public static void DrawConstructor(Model::Constructor constructor) {
             //Debug.Log(constructor);
             var red = new GUIStyle();
             red.normal.textColor = Color.red;
@@ -227,7 +227,7 @@ namespace DEngine.View {
             GUILayout.Label(")");
         }
 
-        private void DrawAttribute(Model::Attribute attribute) {
+        public static void DrawAttribute(Model::Attribute attribute) {
 
             var red = new GUIStyle();
             red.normal.textColor = Color.red;
@@ -235,7 +235,7 @@ namespace DEngine.View {
             GUILayout.Label(attribute.name);
         }
 
-        private void DrawMethod(Model::Method method) {
+        public static void DrawMethod(Model::Method method) {
 
             var red = new GUIStyle();
             red.normal.textColor = Color.red;
@@ -253,7 +253,7 @@ namespace DEngine.View {
             GUILayout.Label(")");
         }
 
-        private void DrawParameter(Model::Parameter parameter) {
+        public static void DrawParameter(Model::Parameter parameter) {
 
             GUILayout.Label(parameter.type.name);
             if (parameter.type.type != null && parameter.type.type.Count > 0) {
@@ -268,7 +268,7 @@ namespace DEngine.View {
             GUILayout.Label(parameter.name);
         }
 
-        private void DrawType(Model::GenericType type) {
+        public static void DrawType(Model::GenericType type) {
 
             GUILayout.Label(type.name);
             if (type.type != null && type.type.Count > 0) {

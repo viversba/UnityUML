@@ -277,6 +277,7 @@ namespace DEngine.Model {
         }
 
         public void AddType(string type) {
+            this.types = this.types ?? new List<string>();
             this.types.Add(type);
         }
 
