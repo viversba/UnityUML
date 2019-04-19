@@ -125,7 +125,8 @@ namespace DEngine.Model {
         }
 
         public override string ToString() {
-            string description = type != MethodType.NONE ? (type.ToString() + " ") : "";
+            string description = staticType != StaticType.NONE ? (staticType.ToString() + " ") : "";
+            description += type != MethodType.NONE ? (type.ToString() + " ") : "";
             description += modifier != AccessModifier.NONE ? (modifier.ToString() + " ") : "";
             description += returnType + " " + name;
             description += "(";
@@ -167,8 +168,8 @@ namespace DEngine.Model {
         }
 
         public override string ToString() {
-            string description = modifier != AccessModifier.NONE ? (modifier.ToString() + " ") : "";
-            description += staticType != StaticType.NONE ? (staticType.ToString() + " ") : "";
+            string description = staticType != StaticType.NONE ? (staticType.ToString() + " ") : "";
+            description += modifier != AccessModifier.NONE ? (modifier.ToString() + " ") : "";
             description += name;
             description += "(";
             if (parameters != null && parameters.Count > 0) {

@@ -42,6 +42,8 @@ namespace DEngine.View {
             superClass = null;
         }
 
+        protected internal static void ola() { }
+
         public void Init(Model::ClassModel classModel) {
             windowTitle = classModel.GetCompleteName();
             isEmpty = false;

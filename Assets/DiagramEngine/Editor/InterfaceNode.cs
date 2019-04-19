@@ -73,7 +73,6 @@ namespace DEngine.View {
             if (methods?.Count > 0) {
                 scrollPos = EditorGUILayout.BeginScrollView(scrollPos);
                 GUILayout.Label("Methods (" + methods.Count + ")", header);
-                GUILayout.Label("Methods (" + methods.Count + ")", header);
                 foreach (Model::Method method in methods) {
                     GUILayout.BeginHorizontal();
                     switch (method.modifier) {

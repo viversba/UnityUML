@@ -505,22 +505,22 @@ namespace DEngine.Model {
             var modifiers = context.all_member_modifier();
             if (modifiers != null) {
                 foreach (var modifier in modifiers) {
-                    PARTIAL = modifier.PARTIAL() != null;
-                    STATIC = modifier.STATIC() != null;
-                    PUBLIC = modifier.PUBLIC() != null;
-                    PRIVATE = modifier.PRIVATE() != null;
-                    PROTECTED = modifier.PROTECTED() != null;
-                    INTERNAL = modifier.INTERNAL() != null;
-                    READONLY = modifier.READONLY() != null;
-                    VOLATILE = modifier.VOLATILE() != null;
-                    VIRTUAL = modifier.VIRTUAL() != null;
-                    SEALED = modifier.SEALED() != null;
-                    OVERRIDE = modifier.OVERRIDE() != null;
-                    ABSTRACT = modifier.ABSTRACT() != null;
-                    EXTERN = modifier.EXTERN() != null;
-                    UNSAFE = modifier.UNSAFE() != null;
-                    ASYNC = modifier.ASYNC() != null;
-                    NEW = modifier.NEW() != null;
+                    if (!string.IsNullOrEmpty(modifier.PARTIAL()?.GetText())) PARTIAL = true;
+                    if (!string.IsNullOrEmpty(modifier.STATIC()?.GetText())) STATIC = true;
+                    if (!string.IsNullOrEmpty(modifier.PUBLIC()?.GetText())) PUBLIC = true;
+                    if (!string.IsNullOrEmpty(modifier.PRIVATE()?.GetText())) PRIVATE = true;
+                    if (!string.IsNullOrEmpty(modifier.PROTECTED()?.GetText())) PROTECTED = true;
+                    if (!string.IsNullOrEmpty(modifier.INTERNAL()?.GetText())) INTERNAL = true;
+                    if (!string.IsNullOrEmpty(modifier.READONLY()?.GetText())) READONLY = true;
+                    if (!string.IsNullOrEmpty(modifier.VOLATILE()?.GetText())) VOLATILE = true;
+                    if (!string.IsNullOrEmpty(modifier.VIRTUAL()?.GetText())) VIRTUAL = true;
+                    if (!string.IsNullOrEmpty(modifier.SEALED()?.GetText())) SEALED = true;
+                    if (!string.IsNullOrEmpty(modifier.OVERRIDE()?.GetText())) OVERRIDE = true;
+                    if (!string.IsNullOrEmpty(modifier.ABSTRACT()?.GetText())) ABSTRACT = true;
+                    if (!string.IsNullOrEmpty(modifier.EXTERN()?.GetText())) EXTERN = true;
+                    if (!string.IsNullOrEmpty(modifier.UNSAFE()?.GetText())) UNSAFE = true;
+                    if (!string.IsNullOrEmpty(modifier.ASYNC()?.GetText())) ASYNC = true;
+                    if (!string.IsNullOrEmpty(modifier.NEW()?.GetText())) NEW = true;
                 }
             }
         }
