@@ -111,7 +111,8 @@ namespace DEngine.Model {
         public Method(string name, GenericType returnType, List<Parameter> parameters = null, AccessModifier modifier = AccessModifier.NONE, MethodType type = MethodType.NONE, StaticType staticType = StaticType.NONE) {
             this.name = name;
             this.modifier = modifier;
-            this.returnType = returnType;
+            //this.returnType = returnType;
+            this.returnType = new GenericType(returnType.name, returnType.type, returnType.rankSpecifier);
             this.type = type;
             this.staticType = staticType;
             if (parameters != null) {
