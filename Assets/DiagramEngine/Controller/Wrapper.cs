@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 namespace DEngine.Controller {
 
@@ -302,6 +303,12 @@ namespace DEngine.Controller {
                         // The fact that the entity was not found doesn't mean it is a class.
                         // But if it is not in the files, then screw it, i'll say it is a class
                         if (index == -1) {
+                            var type = (from assembly in AppDomain.CurrentDomain.GetAssemblies()
+                                        from type_ in assembly.GetTypes()
+                                        where type_.Name == classModel.GetSuperClassName().GetName()
+                                        select type_);
+                            Type myType = Type.GetType(classModel.GetSuperClassName().GetName());
+                            Debug.Log(type.ToString());
                             // If it doesn't exist, then create a new one because a window of it is still needed
                             ClassModel superClass = new ClassModel(classModel.GetSuperClassName().GetName());
                             classModel.SetSuperClass(superClass);

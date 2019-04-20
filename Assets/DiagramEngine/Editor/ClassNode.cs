@@ -11,7 +11,6 @@ namespace DEngine.View {
 
         private const int SPACING = 8;
         private string superClassName = "";
-        private Dictionary<string, int> olakase;
         private List<Model::Attribute> attributes = new List<Model::Attribute>();
         private List<Model::Method> methods = new List<Model::Method>();
         private List<Model::Constructor> constructors = new List<Model::Constructor>();
@@ -41,8 +40,6 @@ namespace DEngine.View {
             numberOfLines = 0;
             superClass = null;
         }
-
-        protected internal static void ola() { }
 
         public void Init(Model::ClassModel classModel) {
             windowTitle = classModel.GetCompleteName();
@@ -94,21 +91,23 @@ namespace DEngine.View {
 
         public override void DrawWindow() {
 
+            var MySkin = Instantiate(GUI.skin);
+            MySkin.label.padding = new RectOffset(0, 0, MySkin.label.padding.top, MySkin.label.padding.bottom);
+            //MySkin.label
+            GUI.skin = MySkin;
+
             var header = new GUIStyle();
             var public_ = new GUIStyle();
             var private_ = new GUIStyle();
             var protected_ = new GUIStyle();
+            var internal_ = new GUIStyle();
             header.normal.textColor = new Color(0.188f, 0.258f, 0.733f, 1f);
             public_.normal.textColor = Color.green;
             private_.normal.textColor = Color.red;
             protected_.normal.textColor = Color.magenta;
-            public_.margin = new RectOffset(0, 0, 0, 0);
-            private_.margin = new RectOffset(0, 0, 0, 0);
-            protected_.margin = new RectOffset(0, 0, 0, 0);
+            protected_.normal.textColor = Color.cyan;
 
             scrollPos = EditorGUILayout.BeginScrollView(scrollPos);
-
-            GUILayout.ExpandWidth(false);
 
             //Display Constructors
             if (constructors.Count > 0) {
@@ -125,6 +124,11 @@ namespace DEngine.View {
                         case Model::AccessModifier.PROTECTED:
                             GUILayout.Label("# ", protected_, GUILayout.Width(5));
                             break;
+                        case Model::AccessModifier.INTERNAL:
+                        case Model::AccessModifier.PROTECTED_INTERNAL:
+                            GUILayout.Label("~ ", internal_, GUILayout.Width(5));
+                            break;
+
                     }
                     DrawConstructor(constructor);
                     GUILayout.EndHorizontal();
@@ -146,6 +150,10 @@ namespace DEngine.View {
                         case Model::AccessModifier.PROTECTED:
                             GUILayout.Label("# ", protected_, GUILayout.Width(5));
                             break;
+                        case Model::AccessModifier.INTERNAL:
+                        case Model::AccessModifier.PROTECTED_INTERNAL:
+                            GUILayout.Label("~ ", internal_, GUILayout.Width(5));
+                            break;
                     }
                     DrawAttribute(attribute);
                     GUILayout.EndHorizontal();
@@ -166,6 +174,10 @@ namespace DEngine.View {
                             break;
                         case Model::AccessModifier.PROTECTED:
                             GUILayout.Label("# ", protected_, GUILayout.Width(5));
+                            break;
+                        case Model::AccessModifier.INTERNAL:
+                        case Model::AccessModifier.PROTECTED_INTERNAL:
+                            GUILayout.Label("~ ", internal_, GUILayout.Width(5));
                             break;
                     }
                     DrawMethod(method);
@@ -216,71 +228,88 @@ namespace DEngine.View {
             //Debug.Log(constructor);
             var red = new GUIStyle();
             red.normal.textColor = Color.red;
+            red.wordWrap = false;
+            red.stretchWidth = false;
 
-            GUILayout.Label(constructor.name);
-            GUILayout.Label("(");
+            GUILayout.Label(constructor.name, red);
+            GUILayout.Label("(", red);
             if (constructor.parameters != null && constructor.parameters.Count > 0) {
                 for (int i = 0; i < constructor.parameters.Count - 1; i++) {
                     DrawParameter(constructor.parameters[i]);
-                    GUILayout.Label(",");
+                    GUILayout.Label(",", red);
                 }
                 DrawParameter(constructor.parameters[constructor.parameters.Count - 1]);
             }
-            GUILayout.Label(")");
+            GUILayout.Label(")", red);
         }
 
         public static void DrawAttribute(Model::Attribute attribute) {
 
             var red = new GUIStyle();
             red.normal.textColor = Color.red;
+            red.wordWrap = false;
+            red.stretchWidth = false;
+
             DrawType(attribute.returnType);
-            GUILayout.Label(attribute.name);
+            GUILayout.Label(attribute.name, red);
         }
 
         public static void DrawMethod(Model::Method method) {
 
             var red = new GUIStyle();
             red.normal.textColor = Color.red;
+            red.wordWrap = false;
+            red.stretchWidth = false;
 
             DrawType(method.returnType);
-            GUILayout.Label(method.name);
-            GUILayout.Label("(");
+            GUILayout.Label(method.name, red);
+            GUILayout.Label("(", red);
             if (method.parameters != null && method.parameters.Count > 0) {
                 for (int i = 0; i < method.parameters.Count - 1; i++) {
                     DrawParameter(method.parameters[i]);
-                    GUILayout.Label(",");
+                    GUILayout.Label(",", red);
                 }
                 DrawParameter(method.parameters[method.parameters.Count - 1]);
             }
-            GUILayout.Label(")");
+            GUILayout.Label(")", red);
         }
 
         public static void DrawParameter(Model::Parameter parameter) {
 
-            GUILayout.Label(parameter.type.name);
+            var red = new GUIStyle();
+            red.normal.textColor = Color.red;
+            red.wordWrap = false;
+            red.stretchWidth = false;
+
+            GUILayout.Label(parameter.type.name, red);
             if (parameter.type.type != null && parameter.type.type.Count > 0) {
-                GUILayout.Label("<");
+                GUILayout.Label("<", red);
                 for (int i = 0; i < parameter.type.type.Count - 1; i++) {
                     DrawType(parameter.type.type[i]);
-                    GUILayout.Label(",");
+                    GUILayout.Label(",", red);
                 }
                 DrawType(parameter.type.type[parameter.type.type.Count - 1]);
-                GUILayout.Label(">");
+                GUILayout.Label(">", red);
             }
-            GUILayout.Label(parameter.name);
+            GUILayout.Label(parameter.name, red);
         }
 
         public static void DrawType(Model::GenericType type) {
 
-            GUILayout.Label(type.name);
+            var red = new GUIStyle();
+            red.normal.textColor = Color.red;
+            red.wordWrap = false;
+            red.stretchWidth = false;
+
+            GUILayout.Label(type.name, red);
             if (type.type != null && type.type.Count > 0) {
-                GUILayout.Label("<");
+                GUILayout.Label("<", red);
                 for (int i = 0; i < type.type.Count - 1; i++) {
                     DrawType(type.type[i]);
-                    GUILayout.Label(",");
+                    GUILayout.Label(",", red);
                 }
                 DrawType(type.type[type.type.Count - 1]);
-                GUILayout.Label(">");
+                GUILayout.Label(">", red);
             }
         }
     }

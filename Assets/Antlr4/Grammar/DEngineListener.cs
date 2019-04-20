@@ -175,7 +175,6 @@ namespace DEngine.Model {
             else if (VIRTUAL) methodType = MethodType.VIRTUAL;
 
             Method metodo = new Method(methodName, type, this.parameters, accessModifier, methodType, staticType);
-            Debug.Log(metodo);
             wrapper.AddMethodTo(metodo);
         }
 
