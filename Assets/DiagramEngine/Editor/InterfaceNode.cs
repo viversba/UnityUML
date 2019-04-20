@@ -75,18 +75,7 @@ namespace DEngine.View {
                 GUILayout.Label("Methods (" + methods.Count + ")", header);
                 foreach (Model::Method method in methods) {
                     GUILayout.BeginHorizontal();
-                    switch (method.modifier) {
-                        case Model::AccessModifier.PRIVATE:
-                            GUILayout.Label("- ", private_, GUILayout.Width(5));
-                            break;
-                        case Model::AccessModifier.PUBLIC:
-                            GUILayout.Label("+ ", public_, GUILayout.Width(5));
-                            break;
-                        case Model::AccessModifier.PROTECTED:
-                            GUILayout.Label("# ", protected_, GUILayout.Width(5));
-                            break;
-                    }
-                    ClassNode.DrawMethod(method);
+                    Drawer.DrawMethod(method);
                     GUILayout.EndHorizontal();
                 }
                 EditorGUILayout.EndScrollView();

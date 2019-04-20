@@ -72,18 +72,7 @@ namespace DEngine.View {
                 GUILayout.Label("Constructors (" + constructors.Count + ")", header);
                 foreach (Model::Constructor constructor in constructors) {
                     GUILayout.BeginHorizontal();
-                    switch (constructor.modifier) {
-                        case Model::AccessModifier.PRIVATE:
-                            GUILayout.Label("- ", private_, GUILayout.Width(5));
-                            break;
-                        case Model::AccessModifier.PUBLIC:
-                            GUILayout.Label("+ ", public_, GUILayout.Width(5));
-                            break;
-                        case Model::AccessModifier.PROTECTED:
-                            GUILayout.Label("# ", protected_, GUILayout.Width(5));
-                            break;
-                    }
-                    ClassNode.DrawConstructor(constructor);
+                    Drawer.DrawConstructor(constructor);
                     GUILayout.EndHorizontal();
                 }
             }
@@ -93,18 +82,7 @@ namespace DEngine.View {
                 GUILayout.Label("Attributes (" + attributes.Count + ")", header);
                 foreach (Model::Attribute attribute in attributes) {
                     GUILayout.BeginHorizontal();
-                    switch (attribute.modifier) {
-                        case Model::AccessModifier.PRIVATE:
-                            GUILayout.Label("- ", private_, GUILayout.Width(5));
-                            break;
-                        case Model::AccessModifier.PUBLIC:
-                            GUILayout.Label("+ ", public_, GUILayout.Width(5));
-                            break;
-                        case Model::AccessModifier.PROTECTED:
-                            GUILayout.Label("# ", protected_, GUILayout.Width(5));
-                            break;
-                    }
-                    ClassNode.DrawAttribute(attribute);
+                    Drawer.DrawAttribute(attribute);
                     GUILayout.EndHorizontal();
                 }
             }
@@ -114,18 +92,7 @@ namespace DEngine.View {
                 GUILayout.Label("Methods (" + methods.Count + ")", header);
                 foreach (Model::Method method in methods) {
                     GUILayout.BeginHorizontal();
-                    switch (method.modifier) {
-                        case Model::AccessModifier.PRIVATE:
-                            GUILayout.Label("- ", private_, GUILayout.Width(5));
-                            break;
-                        case Model::AccessModifier.PUBLIC:
-                            GUILayout.Label("+ ", public_, GUILayout.Width(5));
-                            break;
-                        case Model::AccessModifier.PROTECTED:
-                            GUILayout.Label("# ", protected_, GUILayout.Width(5));
-                            break;
-                    }
-                    ClassNode.DrawMethod(method);
+                    Drawer.DrawMethod(method);
                     GUILayout.EndHorizontal();
                 }
             }
