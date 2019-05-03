@@ -5,7 +5,6 @@ using UnityEngine;
 
 namespace DEngine.Model {
 
-
     [Serializable]
     /// <summary>
     /// Enum providing all access modifier types on C#
