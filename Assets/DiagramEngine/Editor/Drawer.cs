@@ -2,6 +2,7 @@
 using System.Linq;
 using UnityEngine;
 using Model = DEngine.Model;
+using System.Collections.Generic;
 
 namespace DEngine.View {
 
@@ -16,6 +17,9 @@ namespace DEngine.View {
         public static GUIStyle primitiveTypeColor;
         public static GUIStyle genericTypeColor;
         public static GUIStyle staticStyle;
+        public static GUIStyle classStyle;
+        public static GUIStyle interfaceStyle;
+        public static GUIStyle structStyle;
 
         static Drawer() {
 
@@ -29,6 +33,10 @@ namespace DEngine.View {
             genericTypeColor = new GUIStyle();
             staticStyle = new GUIStyle();
 
+            classStyle = new GUIStyle();
+            interfaceStyle = new GUIStyle();
+            structStyle = new GUIStyle();
+
             widthStyle.stretchWidth = false;
             header.stretchWidth = false;
             public_.stretchWidth = false;
@@ -38,6 +46,9 @@ namespace DEngine.View {
             primitiveTypeColor.stretchWidth = false;
             genericTypeColor.stretchWidth = false;
             staticStyle.stretchWidth = false;
+            classStyle.stretchWidth = false;
+            interfaceStyle.stretchWidth = false;
+            structStyle.stretchWidth = false;
 
             header.normal.textColor = new Color(0.188f, 0.258f, 0.733f, 1f);
             public_.normal.textColor = Color.green;
@@ -47,8 +58,13 @@ namespace DEngine.View {
             primitiveTypeColor.normal.textColor = new Color(0.694f, 0.129f, 0.286f);
             genericTypeColor.normal.textColor = new Color(0.278f, 0.458f, 0.396f);
             staticStyle.normal.textColor = new Color(0.210f, 0.210f, 0.210f);
+            classStyle.normal.textColor = new Color(0.168f, 0.552f, 0.003f);
+            interfaceStyle.normal.textColor = new Color(0.552f, 0.317f, 0.003f, 1f);
+            structStyle.normal.textColor = new Color(0.011f, 0.431f, 0.5883f, 1f);
 
             staticStyle.fontStyle = FontStyle.Bold;
+            interfaceStyle.fontStyle = FontStyle.Italic;
+            structStyle.fontStyle = FontStyle.BoldAndItalic;
         }
 
         public static void DrawMethod(Model::Method method) {
@@ -185,9 +201,29 @@ namespace DEngine.View {
             DrawSpace();
         }
 
-        public static void DrawSpace() {
+        public static void DrawSpace(int amount = 1) {
 
-            GUILayout.Label(" ", widthStyle);
+            GUILayout.Label(new String(' ', amount), widthStyle);
+        }
+
+        public static void DrawEntitiesList(List<Model::BaseModel> selectedEntities) {
+            
+            foreach (var entity in selectedEntities)
+            {
+                GUILayout.BeginHorizontal();
+                DrawSpace(3);
+                if (entity.Type == Model::EntityTypes.CLASS){
+                    GUILayout.Label("(C)  ", classStyle);
+                }
+                else if (entity.Type == Model::EntityTypes.INTERFACE){
+                    GUILayout.Label("(I)  ", interfaceStyle);
+                }
+                else if (entity.Type == Model::EntityTypes.STRUCT){
+                    GUILayout.Label("(S)  ", structStyle);
+                }
+                GUILayout.Label(entity.GetName(), widthStyle);
+                GUILayout.EndHorizontal();
+            }
         }
     }
 }
