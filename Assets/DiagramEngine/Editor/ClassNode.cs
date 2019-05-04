@@ -15,6 +15,8 @@ namespace DEngine.View {
         private List<Model::Method> methods = new List<Model::Method>();
         private List<Model::Constructor> constructors = new List<Model::Constructor>();
         private List<InterfaceNode> interfaces = new List<InterfaceNode>();
+        private List<ClassNode> classImplementations = new List<ClassNode>();
+        private List<StructNode> structImplementations = new List<StructNode>();
         private List<string> interfaceNames = new List<string>();
         private ClassNode superClass;
 
@@ -46,6 +48,8 @@ namespace DEngine.View {
             attributes = new List<Model::Attribute>();
             methods = new List<Model::Method>();
             constructors = new List<Model::Constructor>();
+            classImplementations = new List<ClassNode>();
+            structImplementations = new List<StructNode>();
             interfaces = null;
             interfaceNames = new List<string>();
             superClassName = "";
@@ -140,6 +144,16 @@ namespace DEngine.View {
             interfaces.AddRange(interfaceNodes);
         }
 
+        public void SetClassImplementationsNodes(List<ClassNode> implementationNodes){
+            classImplementations = classImplementations ?? new List<ClassNode>();
+            classImplementations.AddRange(implementationNodes);
+        }
+
+        public void SetStructImplementationsNodes(List<StructNode> implementationNodes){
+            structImplementations = structImplementations ?? new List<StructNode>();
+            structImplementations.AddRange(implementationNodes);
+        }
+
         public override void DrawCurves() {
 
             if (superClass != null) {
@@ -159,6 +173,15 @@ namespace DEngine.View {
                     interfaceRect.height = 1;
                     interfaceRect.width = 1;
                     RightPanel.DrawImplementationCurve(windowRect, interfaceRect);
+                }
+            }
+
+            // Already verified for null at ClassNode Getter
+            if(classImplementations != null) { 
+            
+                foreach(var implementation in classImplementations) { 
+                
+                    DrawImple
                 }
             }
         }

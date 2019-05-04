@@ -349,6 +349,37 @@ namespace DEngine.Controller {
                             }
                         }
                     }
+
+                    // Check implementations
+                    if(classModel.GetAttributes() != null && classModel.GetAttributes().Count > 0) { 
+
+                        foreach(var attribute in classModel.GetAttributes()) {
+
+                            int index = FindEntityWithName(ref selectedEntities, attribute.returnType.name);
+                            if(index != -1) {
+                                classModel.AddImplementation(selectedEntities[index]);
+                            }
+                        }
+                    }
+                }
+                else if (selectedEntities[i].Type == EntityTypes.STRUCT) {
+
+                    StructModel structModel = (StructModel)selectedEntities[i];
+
+                    // Check implementations
+                    if (structModel.GetAttributes() != null && structModel.GetAttributes().Count > 0)
+                    {
+
+                        foreach (var attribute in structModel.GetAttributes())
+                        {
+
+                            int index = FindEntityWithName(ref selectedEntities, attribute.returnType.name);
+                            if (index != -1)
+                            {
+                                structModel.AddImplementation(selectedEntities[index]);
+                            }
+                        }
+                    }
                 }
                 else if (selectedEntities[i].Type == EntityTypes.INTERFACE) {
                     InterfaceModel interfaceModel = (InterfaceModel)selectedEntities[i];
@@ -396,6 +427,35 @@ namespace DEngine.Controller {
             }
             // If not found, then return null
             return -1;
+        }
+
+        public static void FindReferenceToTypes(ref List<BaseModel> selectedEntities, ref BaseModel entity, GenericType type){
+
+            // Check for the name of the type
+            if (!String.IsNullOrEmpty(type.name)) {
+
+                int index = FindEntityWithName(ref selectedEntities, type.name);
+                if(index != -1) { 
+
+                    if(entity.Type == EntityTypes.CLASS) {
+                        ClassModel classModel = (ClassModel)entity;
+                        classModel.AddImplementation(selectedEntities[index]);
+                    }
+                    else if (entity.Type == EntityTypes.STRUCT)
+                    {
+                        StructModel structModel = (StructModel)entity;
+                        structModel.AddImplementation(selectedEntities[index]);
+                    }
+                }
+            }
+
+            if(type.type != null && type.type.Count > 0) { 
+
+                foreach(var subtype in type.type) {
+
+                    FindReferenceToTypes(ref selectedEntities, ref entity, subtype);
+                }
+            }
         }
     }
 }

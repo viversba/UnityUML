@@ -30,9 +30,7 @@ public abstract class BaseNode: ScriptableObject {
 	public abstract void DrawCurves();
 
 	//is called to all nodes when a node is deleted so that it is removed if it used as an input
-	public virtual void NodeDeleted(BaseNode node) {
-
-	}
+	public virtual void NodeDeleted(BaseNode node) {}
 
     public bool IsEmpty() {
         return isEmpty;

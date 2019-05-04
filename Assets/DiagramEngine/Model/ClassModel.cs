@@ -25,8 +25,10 @@ namespace DEngine.Model {
         /// </summary>
         private ImplementedType superClassName;
         /// <summary>
-        /// Tells us if the class is static or not
+        /// List containing all the classes or structs used in this class
         /// </summary>
+        [NonSerialized]
+        private List<BaseModel> implementations;
 
         public bool Static { get; set; }
         public bool Sealed { get; set; }
@@ -40,6 +42,7 @@ namespace DEngine.Model {
             subClasses = null;
             superClassName = new ImplementedType();
             Type = EntityTypes.CLASS;
+            implementations = null;
         }
 
         public ClassModel() {
@@ -49,6 +52,7 @@ namespace DEngine.Model {
             subClasses = null;
             superClassName = new ImplementedType();
             Type = EntityTypes.CLASS;
+            implementations = null;
         }
 
         public ClassModel GetSuperClass() {
@@ -69,6 +73,15 @@ namespace DEngine.Model {
             subClasses.Add(class_);
         }
 
+        public void AddImplementation(BaseModel entity) {
+            implementations = implementations ?? new List<BaseModel>();
+
+            foreach (var implementation in implementations)
+                if (implementation.GetName() == entity.GetName()) return;
+
+            implementations.Add(entity);
+        }
+
         public void SetSuperClassName(ImplementedType superClassName) {
             this.superClassName = superClassName;
         }
@@ -80,6 +93,10 @@ namespace DEngine.Model {
         public void DeleteSuperClass() {
             superClass = null;
             superClassName = new ImplementedType();
+        }
+
+        public List<BaseModel> GetImplementations() {
+            return implementations ?? new List<BaseModel>();
         }
 
         public List<Constructor> GetConstructors() {

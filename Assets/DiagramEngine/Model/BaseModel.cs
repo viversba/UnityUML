@@ -134,7 +134,6 @@ namespace DEngine.Model {
         }
 
         public List<Method> GetMethods() {
-
             return methods ?? new List<Method>();
         }
 
@@ -146,7 +145,6 @@ namespace DEngine.Model {
         }
 
         public void AddInterface(InterfaceModel interface_) {
-
             interfaces = interfaces ?? new List<InterfaceModel>();
             interfaces.Add(interface_);
         }
