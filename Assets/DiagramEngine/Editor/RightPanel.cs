@@ -455,8 +455,6 @@ namespace DEngine.View {
         /// <param name="end">End rect.</param>
         public static void DrawImplementationCurve(Rect start, Rect end) {
 
-            DrawHorizontalBezier(start, end, Color.white);
-
             // Draw the handle for Inheritance type
             float rectHeight = 5f * 2 / 3;
             float positionX = end.x - 5;
@@ -475,6 +473,10 @@ namespace DEngine.View {
                 new Vector3(end.x - 20, end.y),
                 new Vector3(end.x - 10, end.y + 5)
             };
+
+            end.x -= 20;
+            DrawHorizontalBezier(start, end, Color.white);
+
             Handles.DrawSolidRectangleWithOutline(handles, Color.green, Color.green);
             //Handles.DrawPolyLine(positions);
             Handles.color = Color.white;
