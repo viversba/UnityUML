@@ -455,20 +455,28 @@ namespace DEngine.View {
         /// <param name="end">End rect.</param>
         public static void DrawImplementationCurve(Rect start, Rect end) {
 
-            DrawHorizontalBezier(start, end, Color.cyan);
+            DrawHorizontalBezier(start, end, Color.white);
 
             // Draw the handle for Inheritance type
-            float triangleHeight = 5f * 2 / 3;
+            float rectHeight = 5f * 2 / 3;
             float positionX = end.x - 5;
             float positionY = end.y;
 
             Handles.color = new Color(0.8f, 0.8f, 0.8f, 1);
             Vector3[] positions = {
-            new Vector3(triangleHeight + positionX, positionY),
-            new Vector3(-triangleHeight + positionX, triangleHeight + positionY),
-            new Vector3(-triangleHeight + positionX, -triangleHeight + positionY),
-            new Vector3(triangleHeight + positionX, positionY)};
-            Handles.DrawPolyLine(positions);
+            new Vector3(rectHeight + positionX, positionY),
+            new Vector3(-rectHeight + positionX, rectHeight + positionY),
+            new Vector3(-rectHeight + positionX, -rectHeight + positionY),
+            new Vector3(rectHeight + positionX, positionY)};
+            //Handles.DrawRectangle(1, new Vector3(end.x, end.y), Quaternion.identity, 10);
+            Vector3[] handles = {
+                new Vector3(end.x, end.y),
+                new Vector3(end.x - 10, end.y - 5),
+                new Vector3(end.x - 20, end.y),
+                new Vector3(end.x - 10, end.y + 5)
+            };
+            Handles.DrawSolidRectangleWithOutline(handles, Color.green, Color.green);
+            //Handles.DrawPolyLine(positions);
             Handles.color = Color.white;
         }
 
@@ -524,6 +532,12 @@ namespace DEngine.View {
             GUILayout.Label("Inheritance  ", whiteText);
             Handles.color = Color.red;
             Handles.DrawLine(new Vector3(100f, 45f, 0f), new Vector3(130f, 45f, 0f));
+            GUILayout.EndHorizontal();
+
+            GUILayout.BeginHorizontal();
+            GUILayout.Label("Composition  ", whiteText);
+            Handles.color = Color.white;
+            Handles.DrawLine(new Vector3(100f, 60f, 0f), new Vector3(130f, 60f, 0f));
             GUILayout.EndHorizontal();
 
             GUILayout.EndArea();
