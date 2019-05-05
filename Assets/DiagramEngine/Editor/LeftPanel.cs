@@ -82,13 +82,72 @@ namespace DEngine.View {
         public bool DrawLeftPanel() {
 
             bool generateDiagramButton = false, reloadEntities = false, resetEntitiesButton = false;
-            string[] options = { "All", "Drag & Drop", "CheckBox" };
+            string[] options = { "Drag & Drop", "All!" };
             selected = GUILayout.Toolbar(selected, options, GUILayout.MinWidth(240));
 
             switch (selected) {
 
-                // All entities
+                // Drag And Drop
                 case 0:
+
+                    if (Event.current.type == EventType.DragExited)
+                    {
+
+                        Event.current.Use();
+
+                        selectedEntities = selectedEntities_DD;
+
+                        // This foreach loop handles loose scripts
+                        foreach (UnityEngine.Object obj in DragAndDrop.objectReferences)
+                        {
+                            if (obj.GetType() == typeof(MonoScript))
+                            {
+
+                                try
+                                {
+                                    MonoScript script = (MonoScript)obj;
+                                    LoadDroppedEntityAsyncCaller(script.text);
+                                }
+                                catch (Exception e)
+                                {
+                                    Debug.Log("Error (LeftPanel: DrawLeftPanel): " + e);
+                                }
+                            }
+                        }
+
+                        // This foreach loop handles folders
+                        foreach (string path in DragAndDrop.paths)
+                        {
+
+                            if (Directory.Exists($"{Directory.GetCurrentDirectory()}/{path}"))
+                            {
+                                LoadAllEntitiesInFolderAsyncCaller($"{Directory.GetCurrentDirectory()}/{path}");
+                            }
+                        }
+                    }
+
+                    scrollPos_DD = EditorGUILayout.BeginScrollView(scrollPos_DD);
+
+                    Drawer.DrawEntitiesList(selectedEntities_DD);
+
+                    if (loadingEntities)
+                        GUILayout.Label("Processing entities...");
+                    EditorGUILayout.EndScrollView();
+
+                    GUILayout.BeginHorizontal();
+                    generateDiagramButton = GUILayout.Button("Generate!");
+                    resetEntitiesButton = GUILayout.Button("Reset List");
+                    GUILayout.EndHorizontal();
+
+                    if (resetEntitiesButton)
+                    {
+                        selectedEntities_DD.Clear();
+                    }
+
+                    break;
+
+                // All entities
+                case 1:
 
                     GUILayout.BeginHorizontal();
                     reloadEntities = GUILayout.Button(reloadTexture, GUILayout.Width(50));
@@ -98,7 +157,7 @@ namespace DEngine.View {
                     // Render entities only if there are
                     if (selectedEntities_ALL.Count == 0 && !loadingEntities) {
                         GUILayout.Label("There's nothing to render here :(");
-                        GUILayout.Label("Add some scripts to the project and reopen the window");
+                        GUILayout.Label("Click the 'Reload' button to start");
                     }
                     else {
 
@@ -123,60 +182,6 @@ namespace DEngine.View {
                         LoadAllEntitiesAsyncCaller();
                     }
                     selectedEntities = selectedEntities_ALL;
-                    break;
-
-                // Drag And Drop
-                case 1:
-
-                    if (Event.current.type == EventType.DragExited) {
-
-                        Event.current.Use();
-
-                        selectedEntities = selectedEntities_DD;
-
-                        // This foreach loop handles loose scripts
-                        foreach (UnityEngine.Object obj in DragAndDrop.objectReferences) {
-                            if (obj.GetType() == typeof(MonoScript)) {
-
-                                try {
-                                    MonoScript script = (MonoScript)obj;
-                                    LoadDroppedEntityAsyncCaller(script.text);
-                                }
-                                catch (Exception e) {
-                                    Debug.Log("Error (LeftPanel: DrawLeftPanel): " + e);
-                                }
-                            }
-                        }
-
-                        // This foreach loop handles folders
-                        foreach (string path in DragAndDrop.paths) {
-
-                            if (Directory.Exists($"{Directory.GetCurrentDirectory()}/{path}")) {
-                                LoadAllEntitiesInFolderAsyncCaller($"{Directory.GetCurrentDirectory()}/{path}");
-                            }
-                        }
-                    }
-
-                    scrollPos_DD = EditorGUILayout.BeginScrollView(scrollPos_DD);
-
-                    Drawer.DrawEntitiesList(selectedEntities_DD);
-
-                    if (loadingEntities)
-                        GUILayout.Label("Processing entities...");
-                    EditorGUILayout.EndScrollView();
-
-                    GUILayout.BeginHorizontal();
-                    generateDiagramButton = GUILayout.Button("Generate!");
-                    resetEntitiesButton = GUILayout.Button("Reset List");
-                    GUILayout.EndHorizontal();
-
-                    if (resetEntitiesButton) {
-                        selectedEntities_DD.Clear();
-                    }
-
-                    break;
-                case 2:
-                    GUILayout.Label("Coming Soon!");
                     break;
                 default:
                     break;

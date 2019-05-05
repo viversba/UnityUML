@@ -43,6 +43,8 @@ namespace DEngine.View{
         /// </summary>
         private bool drawNodes;
 
+        private float begginingOfRightPanel;
+
         EditorGUISplitView horizontalSplitView = new EditorGUISplitView(EditorGUISplitView.Direction.Horizontal);
 
 #pragma warning disable 0414
@@ -74,6 +76,8 @@ namespace DEngine.View{
             drawNodes = false;
             leftPanel = leftPanel ?? (LeftPanel)ScriptableObject.CreateInstance("LeftPanel");
             rightPanel = rightPanel ?? (RightPanel)ScriptableObject.CreateInstance("RightPanel");
+
+            begginingOfRightPanel = horizontalSplitView.splitNormalizedPosition * position.width;
         }
 
         public void OnGUI() {
@@ -83,7 +87,10 @@ namespace DEngine.View{
             //verticalSplitView.BeginSplitView();
             //DrawRightPanel();
             //verticalSplitView.Split();
-            float begginingOfRightPanel = horizontalSplitView.splitNormalizedPosition * position.width;
+
+            // Leave this line uncommented if you want the panels to increase size on window resize as percentages
+            begginingOfRightPanel = horizontalSplitView.splitNormalizedPosition * position.width;
+
             rightPanel.SetBegginingOfRightPanel(begginingOfRightPanel);
             if (drawNodes) {
                 selectedEntities = leftPanel.GetSelectedEntities();

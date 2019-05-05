@@ -4,6 +4,7 @@ using UnityEditor;
 
 public class EditorGUISplitView
 {
+    public bool Resized { get { return resize; } }
 
 	public enum Direction {
 		Horizontal,
