@@ -82,6 +82,7 @@ namespace DEngine.View {
             DrawSpace();
             GUILayout.Label("(", widthStyle);
             if (method.parameters != null && method.parameters.Count > 0) {
+                DrawSpace();
                 for (int i = 0; i < method.parameters.Count - 1; i++) {
                     DrawParameter(method.parameters[i]);
                     GUILayout.Label(",", widthStyle);
@@ -89,11 +90,11 @@ namespace DEngine.View {
                 }
                 DrawParameter(method.parameters[method.parameters.Count - 1]);
             }
+            DrawSpace();
             GUILayout.Label(")", widthStyle);
         }
 
-        public static void DrawConstructor(Model::Constructor constructor)
-        {
+        public static void DrawConstructor(Model::Constructor constructor){
 
             DrawAccessModifier(constructor.modifier);
 
@@ -106,16 +107,16 @@ namespace DEngine.View {
 
             DrawSpace();
             GUILayout.Label("(", widthStyle);
-            if (constructor.parameters != null && constructor.parameters.Count > 0)
-            {
+            if (constructor.parameters != null && constructor.parameters.Count > 0){
                 DrawSpace();
-                for (int i = 0; i < constructor.parameters.Count - 1; i++)
-                {
+                for (int i = 0; i < constructor.parameters.Count - 1; i++){
                     DrawParameter(constructor.parameters[i]);
                     GUILayout.Label(",", widthStyle);
+                    DrawSpace();
                 }
                 DrawParameter(constructor.parameters[constructor.parameters.Count - 1]);
             }
+            DrawSpace();
             GUILayout.Label(")", widthStyle);
         }
 

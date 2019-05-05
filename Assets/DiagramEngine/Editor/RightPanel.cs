@@ -286,8 +286,19 @@ namespace DEngine.View {
                             foreach (string interface_ in classNode.GetInterfaceNames()) {
                                 interfacesToAdd.Add(GetWindowWithTitle(interface_) as InterfaceNode);
                             }
-                            //Debug.Log("Adding " + interfacesToAdd.Count + " to " + classNode.windowTitle);
                             classNode.SetInterfaceNodes(interfacesToAdd);
+                        }
+
+                        // Assign implementation windows
+                        if (classNode.GetImplementations() != null && classNode.GetImplementations().Count > 0) {
+                            List<BaseNode> implementations = new List<BaseNode>();
+                            foreach (var implementation in classNode.GetImplementations()) {
+                                BaseNode implementationNode = GetWindowWithTitle(implementation.GetName());
+                                if (implementationNode != null){
+                                    implementations.Add(implementationNode);
+                                }
+                            }
+                            classNode.SetImplementationNodes(implementations);
                         }
                     }
                     else if (window.Type == EntityTypes.INTERFACE) {
@@ -312,6 +323,18 @@ namespace DEngine.View {
                                 interfacesToAdd.Add(GetWindowWithTitle(interface_) as InterfaceNode);
                             }
                             structNode.SetInterfaceNodes(interfacesToAdd);
+                        }
+
+                        // Assign implementation windows
+                        if (structNode.GetImplementations() != null && structNode.GetImplementations().Count > 0){
+                            List<BaseNode> implementations = new List<BaseNode>();
+                            foreach (var implementation in structNode.GetImplementations()){
+                                BaseNode implementationNode = GetWindowWithTitle(implementation.GetName());
+                                if (implementationNode != null){
+                                    implementations.Add(implementationNode);
+                                }
+                            }
+                            structNode.SetImplementationNodes(implementations);
                         }
                     }
                 }
@@ -513,21 +536,18 @@ namespace DEngine.View {
             foreach (BaseNode window in windows) {
                 if (window.Type == EntityTypes.CLASS) {
                     ClassNode classNode = (ClassNode)window;
-                    if (classNode.windowTitle == windowTitle) {
+                    if (string.Equals(classNode.Name, windowTitle))
                         return classNode;
-                    }
                 }
                 else if (window.Type == EntityTypes.INTERFACE) {
                     InterfaceNode interfaceNode = (InterfaceNode)window;
-                    if (interfaceNode.windowTitle == ("<<" + windowTitle + ">>")) {
+                    if (string.Equals(interfaceNode.Name, windowTitle))
                         return interfaceNode;
-                    }
                 }
                 else if (window.Type == EntityTypes.STRUCT) {
                     StructNode structNode = (StructNode)window;
-                    if (structNode.windowTitle == ("*" + windowTitle + "*")) {
+                    if (string.Equals(structNode.Name, windowTitle))
                         return structNode;
-                    }
                 }
             }
             return null;

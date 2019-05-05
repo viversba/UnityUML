@@ -6,9 +6,11 @@ using DEngine.Model;
 //We use scriptable object because in the future we will need the messages that unity calls on scriptable objects
 //such as OnDestroy() OnEnable()
 public abstract class BaseNode: ScriptableObject {
-    
-	// Store the Rect of the window, location and size
-	public Rect windowRect;
+
+    public string Name { get; protected set; }
+
+    // Store the Rect of the window, location and size
+    public Rect windowRect;
 	// Indicates if the window has no attributes, methods and constructors
 	protected bool isEmpty;
 	// The title of our window

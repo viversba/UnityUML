@@ -14,9 +14,9 @@ namespace DEngine.View {
         private List<Model::Attribute> attributes = new List<Model::Attribute>();
         private List<Model::Method> methods = new List<Model::Method>();
         private List<Model::Constructor> constructors = new List<Model::Constructor>();
+        private List<Model::BaseModel> implementationsModels = new List<Model::BaseModel>();
         private List<InterfaceNode> interfaces = new List<InterfaceNode>();
-        private List<ClassNode> classImplementations = new List<ClassNode>();
-        private List<StructNode> structImplementations = new List<StructNode>();
+        private List<BaseNode> implementations = new List<BaseNode>();
         private List<string> interfaceNames = new List<string>();
         private ClassNode superClass;
 
@@ -43,13 +43,15 @@ namespace DEngine.View {
         }
 
         public void Init(Model::ClassModel classModel) {
+            Name = classModel.GetName();
             windowTitle = classModel.GetCompleteName();
             isEmpty = false;
             attributes = new List<Model::Attribute>();
             methods = new List<Model::Method>();
             constructors = new List<Model::Constructor>();
-            classImplementations = new List<ClassNode>();
-            structImplementations = new List<StructNode>();
+            implementationsModels = new List<Model::BaseModel>();
+            implementations = new List<BaseNode>();
+
             interfaces = null;
             interfaceNames = new List<string>();
             superClassName = "";
@@ -62,6 +64,7 @@ namespace DEngine.View {
             methods.AddRange(classModel.GetMethods());
             constructors.AddRange(classModel.GetConstructors());
             superClassName = classModel.GetSuperClassName().Name;
+            implementationsModels.AddRange(classModel.GetImplementations());
 
             if (classModel.GetInterfaceNames() != null) {
                 foreach (var interface_ in classModel.GetInterfaceNames()) {
@@ -138,20 +141,18 @@ namespace DEngine.View {
             return interfaceNames;
         }
 
+        public List<Model::BaseModel> GetImplementations() {
+            return implementationsModels;
+        }
+
         public void SetInterfaceNodes(List<InterfaceNode> interfaceNodes) {
             if (interfaces == null)
                 interfaces = new List<InterfaceNode>();
             interfaces.AddRange(interfaceNodes);
         }
 
-        public void SetClassImplementationsNodes(List<ClassNode> implementationNodes){
-            classImplementations = classImplementations ?? new List<ClassNode>();
-            classImplementations.AddRange(implementationNodes);
-        }
-
-        public void SetStructImplementationsNodes(List<StructNode> implementationNodes){
-            structImplementations = structImplementations ?? new List<StructNode>();
-            structImplementations.AddRange(implementationNodes);
+        public void SetImplementationNodes(List<BaseNode> implementations) {
+            this.implementations.AddRange(implementations);
         }
 
         public override void DrawCurves() {
@@ -177,11 +178,13 @@ namespace DEngine.View {
             }
 
             // Already verified for null at ClassNode Getter
-            if(classImplementations != null) { 
-            
-                foreach(var implementation in classImplementations) { 
-                
-                    DrawImple
+            if (implementations != null){
+                foreach (var implementation in implementations) {
+                    Rect implementationRect = implementation.windowRect;
+                    implementationRect.y = implementation.windowRect.y + implementation.windowRect.height / 2;
+                    implementationRect.height = 1;
+                    implementationRect.width = 1;
+                    RightPanel.DrawImplementationCurve(windowRect, implementationRect);
                 }
             }
         }

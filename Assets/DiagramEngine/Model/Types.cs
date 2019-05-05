@@ -18,7 +18,8 @@ namespace DEngine.Model
             "double",
             "char",
             "decimal",
-            "string"
+            "string",
+            "void"
         };
     }
 }

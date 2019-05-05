@@ -31,6 +31,7 @@ namespace DEngine.View {
         }
 
         public void Init(Model::InterfaceModel interfaceModel) {
+            Name = interfaceModel.GetName();
             isEmpty = true;
             windowTitle = "<<" + interfaceModel.GetCompleteName() + ">>";
             methods = new List<Model::Method>();

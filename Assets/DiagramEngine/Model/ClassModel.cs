@@ -104,7 +104,6 @@ namespace DEngine.Model {
         }
 
         public void ClearConstructors() {
-
             constructors.Clear();
         }
 

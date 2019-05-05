@@ -355,10 +355,8 @@ namespace DEngine.Controller {
 
                         foreach(var attribute in classModel.GetAttributes()) {
 
-                            int index = FindEntityWithName(ref selectedEntities, attribute.returnType.name);
-                            if(index != -1) {
-                                classModel.AddImplementation(selectedEntities[index]);
-                            }
+                            BaseModel entity = selectedEntities[i];
+                            FindReferenceToTypes(ref selectedEntities, ref entity, attribute.returnType);
                         }
                     }
                 }
@@ -435,20 +433,22 @@ namespace DEngine.Controller {
             if (!String.IsNullOrEmpty(type.name)) {
 
                 int index = FindEntityWithName(ref selectedEntities, type.name);
-                if(index != -1) { 
+                if(index != -1 && !string.Equals(entity.GetName(), type.name)) { 
 
                     if(entity.Type == EntityTypes.CLASS) {
                         ClassModel classModel = (ClassModel)entity;
                         classModel.AddImplementation(selectedEntities[index]);
                     }
-                    else if (entity.Type == EntityTypes.STRUCT)
-                    {
+                    else if (entity.Type == EntityTypes.STRUCT){
                         StructModel structModel = (StructModel)entity;
                         structModel.AddImplementation(selectedEntities[index]);
                     }
+
+                    //Debug.Log($"Just added {type.name} to {entity.GetName()}");
                 }
             }
 
+            // Check for the subtypes
             if(type.type != null && type.type.Count > 0) { 
 
                 foreach(var subtype in type.type) {
