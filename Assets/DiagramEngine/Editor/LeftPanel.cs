@@ -83,7 +83,7 @@ namespace DEngine.View {
 
             bool generateDiagramButton = false, reloadEntities = false, resetEntitiesButton = false;
             string[] options = { "Drag & Drop", "All!" };
-            selected = GUILayout.Toolbar(selected, options, GUILayout.MinWidth(240));
+            selected = GUILayout.Toolbar(selected, options, GUILayout.MinWidth(158));
 
             switch (selected) {
 

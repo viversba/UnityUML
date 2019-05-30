@@ -6,6 +6,8 @@ public class EditorGUISplitView
 {
     public bool Resized { get { return resize; } }
 
+    private const float MIN_WIDTH = 0.26f, MAX_WIDTH = 0.5f;
+
 	public enum Direction {
 		Horizontal,
 		Vertical
@@ -86,8 +88,8 @@ public class EditorGUISplitView
 				splitNormalizedPosition = Event.current.mousePosition.y / availableRect.height;
 
             //Limiters
-            splitNormalizedPosition = splitNormalizedPosition < 0.15f ? 0.15f : splitNormalizedPosition;
-            splitNormalizedPosition = splitNormalizedPosition > 0.85f ? 0.85f : splitNormalizedPosition;
+            splitNormalizedPosition = splitNormalizedPosition < MIN_WIDTH ? MIN_WIDTH : splitNormalizedPosition;
+            splitNormalizedPosition = splitNormalizedPosition > MAX_WIDTH ? MAX_WIDTH: splitNormalizedPosition;
         }
 		if(Event.current.type == EventType.MouseUp)
 			resize = false;        
