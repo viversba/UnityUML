@@ -15,7 +15,9 @@ namespace DEngine.View{
         /// <summary>
         /// Current instance of the window;
         /// </summary>
-        private static EditorWindow window;
+        public static EditorWindow Window { get; private set; }
+
+        public static int MinSizeOfLeftPanelInPixels { get; set; } = 150;
 
 #pragma warning disable 0649
 
@@ -67,10 +69,10 @@ namespace DEngine.View{
 
         private void Run() {
 
-            window = GetWindow<DiagramEngineGUI>();
-            window.titleContent.text = "DEngine";
-            window.position = new Rect(200, 100, 900, 600);
-            window.minSize = new Vector2(200, 200);
+            Window = GetWindow<DiagramEngineGUI>();
+            Window.titleContent.text = "DEngine";
+            Window.position = new Rect(200, 100, 900, 600);
+            Window.minSize = new Vector2(300, 200);
 
 
             drawNodes = false;
@@ -81,6 +83,9 @@ namespace DEngine.View{
         }
 
         public void OnGUI() {
+
+            horizontalSplitView.Min_Width = MinSizeOfLeftPanelInPixels / Window.position.width;
+
             horizontalSplitView.BeginSplitView();
             drawNodes = leftPanel.DrawLeftPanel();
             horizontalSplitView.Split();

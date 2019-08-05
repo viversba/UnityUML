@@ -1,12 +1,14 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEditor;
+using DEngine.View;
 
 public class EditorGUISplitView
 {
     public bool Resized { get { return resize; } }
 
-    private const float MIN_WIDTH = 0.26f, MAX_WIDTH = 0.5f;
+    public float Min_Width { get; set; } = 0.26f;
+    public float Max_Width { get; set; } = 0.55f;
 
 	public enum Direction {
 		Horizontal,
@@ -58,7 +60,7 @@ public class EditorGUISplitView
 
 	private void ResizeSplitFirstView(){
 
-		Rect resizeHandleRect;
+        Rect resizeHandleRect;
         Texture2D texture;
 
         if (splitDirection == Direction.Horizontal) {
@@ -72,6 +74,10 @@ public class EditorGUISplitView
 
 
         GUI.DrawTexture(resizeHandleRect, texture);
+
+        //Limiters
+        splitNormalizedPosition = splitNormalizedPosition < Min_Width ? Min_Width : splitNormalizedPosition;
+        splitNormalizedPosition = splitNormalizedPosition > Max_Width ? Max_Width : splitNormalizedPosition;
 
         if (splitDirection == Direction.Horizontal)
 			EditorGUIUtility.AddCursorRect(resizeHandleRect,MouseCursor.ResizeHorizontal);
@@ -88,8 +94,8 @@ public class EditorGUISplitView
 				splitNormalizedPosition = Event.current.mousePosition.y / availableRect.height;
 
             //Limiters
-            splitNormalizedPosition = splitNormalizedPosition < MIN_WIDTH ? MIN_WIDTH : splitNormalizedPosition;
-            splitNormalizedPosition = splitNormalizedPosition > MAX_WIDTH ? MAX_WIDTH: splitNormalizedPosition;
+            splitNormalizedPosition = splitNormalizedPosition < Min_Width ? Min_Width : splitNormalizedPosition;
+            splitNormalizedPosition = splitNormalizedPosition > Max_Width ? Max_Width: splitNormalizedPosition;
         }
 		if(Event.current.type == EventType.MouseUp)
 			resize = false;        

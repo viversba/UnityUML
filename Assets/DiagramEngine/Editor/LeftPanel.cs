@@ -39,6 +39,10 @@ namespace DEngine.View {
         /// </summary>
         private int selected = 0;
         /// <summary>
+        /// Main editor window
+        /// </summary>
+        private EditorWindow window;
+        /// <summary>
         /// Reload texture path
         /// </summary>
         string texturePath = "./Assets/DiagramEngine/Textures/reload.png";
@@ -60,6 +64,8 @@ namespace DEngine.View {
             selectedEntities_DD = new List<BaseModel>();
             loadingEntities = false;
 
+            window = DiagramEngineGUI.Window;
+
             if (File.Exists(texturePath)) {
                 byte[] fileData;
                 fileData = File.ReadAllBytes(texturePath);
@@ -67,12 +73,6 @@ namespace DEngine.View {
                 reloadTexture.LoadImage(fileData);
                 reloadTexture.Apply();
             }
-
-            // Try to load already existent entities from disk
-            //selectedEntities_ALL = DiagramEngine.LoadEntitiesFromDisk();
-            //if (selectedEntities_ALL != null)
-            //    return;
-            //LoadAllEntitiesAsyncCaller();
         }
 
         /// <summary>

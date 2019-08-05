@@ -147,15 +147,12 @@ namespace DEngine.View {
             }
             DrawSpace();
             if (parameter.type.type != null && parameter.type.type.Count > 0) {
-                DrawSpace();
                 GUILayout.Label("<", widthStyle);
                 for (int i = 0; i < parameter.type.type.Count - 1; i++) {
                     DrawType(parameter.type.type[i]);
                     GUILayout.Label(",", widthStyle);
-                    DrawSpace();
                 }
                 Drawer.DrawType(parameter.type.type[parameter.type.type.Count - 1]);
-                DrawSpace();
                 GUILayout.Label(">", widthStyle);
             }
             GUILayout.Label(parameter.name, widthStyle);
@@ -170,12 +167,10 @@ namespace DEngine.View {
                 GUILayout.Label(type.name, genericTypeColor);
             }
             if (type.type != null && type.type.Count > 0) {
-                DrawSpace();
                 GUILayout.Label("<", widthStyle);
                 for (int i = 0; i < type.type.Count - 1; i++) {
                     DrawType(type.type[i]);
                     GUILayout.Label(",", widthStyle);
-                    DrawSpace();
                 }
                 DrawType(type.type[type.type.Count - 1]);
                 GUILayout.Label(">", widthStyle);

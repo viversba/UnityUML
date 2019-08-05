@@ -308,7 +308,6 @@ namespace DEngine.Controller {
                                         where type_.Name == classModel.GetSuperClassName().GetName()
                                         select type_);
                             Type myType = Type.GetType(classModel.GetSuperClassName().GetName());
-                            Debug.Log(type.ToString());
                             // If it doesn't exist, then create a new one because a window of it is still needed
                             ClassModel superClass = new ClassModel(classModel.GetSuperClassName().GetName());
                             classModel.SetSuperClass(superClass);
